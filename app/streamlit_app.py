@@ -24,19 +24,24 @@ st.set_page_config(
 )
 
 from connector.settings import get_settings, MODEL_REGISTRY
-import subprocess, os
+import subprocess, os, stat
+
+SOUFFLE_BIN = "/tmp/souffle_bin/souffle"
 
 def install_souffle():
-    if os.path.exists("/usr/local/bin/souffle"):
+    if os.path.exists(SOUFFLE_BIN):
         return
+    os.makedirs("/tmp/souffle_bin", exist_ok=True)
     subprocess.run([
         "bash", "-c",
-        """
-        wget -q https://github.com/souffle-lang/souffle/releases/download/2.5/\
-souffle_2.5_amd64.deb -O /tmp/souffle.deb &&
-        dpkg -i /tmp/souffle.deb || apt-get install -f -y
+        f"""
+        curl -sL https://github.com/souffle-lang/souffle/releases/download/2.5/souffle_2.5_amd64.deb \
+            -o /tmp/souffle.deb &&
+        cd /tmp && ar x souffle.deb &&
+        tar -xf data.tar.* --wildcards '*/souffle' -C /tmp/souffle_bin --strip-components=4
         """
     ], check=True)
+    os.chmod(SOUFFLE_BIN, stat.S_IRWXU)
 
 install_souffle()
 # ── CSS ───────────────────────────────────────────────────────────────────────
