@@ -1,0 +1,11 @@
+question,answer
+Can a California business share consumer personal information with a service provider under a written contract that restricts its use to performing services?,Permitted
+Can a business disclose consumer data as required by a state court order?,Permitted
+Can a business process a California consumer's personal information for internal analytics with the consumer's explicit consent?,Permitted
+Can a California resident over 16 opt into the sale of their personal information to third parties?,Permitted
+Can a business share consumer PI with an auditor to complete an audit required by law?,Permitted
+Can a business sell a California consumer's personal information after the consumer has submitted a valid opt-out request?,Denied
+Can a business sell sensitive personal information including Social Security numbers without obtaining explicit opt-in consent?,Denied
+Can a business sell personal information of a consumer under 16 without obtaining opt-in authorization?,Denied
+Can a business deny goods or services to a California consumer solely because the consumer exercised their CCPA opt-out right?,Denied
+Can a business share a California consumer's precise geolocation data with third-party advertisers after the consumer has opted out of sharing?,Denied

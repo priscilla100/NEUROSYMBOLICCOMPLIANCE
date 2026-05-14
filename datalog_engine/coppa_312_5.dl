@@ -1,0 +1,62 @@
+// coppa_312_5.dl
+// COPPA §312.5 — Parental Consent (16 CFR §312.5)
+//
+// Operators must obtain verifiable parental consent (VPC) before collecting,
+// using, or disclosing personal information from children under 13.
+// Four exceptions under §312.5(c) do not require VPC.
+
+// ── §312.5 Collection permitted ────────────────────────────────────────────
+
+.decl permitted_by_coppa_312_5(COPPA_DECL_ARGS, e: Expl)
+
+// §312.5(a): General rule — VPC obtained AND notice satisfied.
+permitted_by_coppa_312_5(COPPA_ARGS,
+    $Step2("312.5(a): collection permitted — verifiable parental consent obtained after proper notice", e_notice, $Leaf("312.5(a): VPC confirmed"))) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    has_verifiable_parental_consent(p1, q, t),
+    notice_satisfied_312_4(p1, q, t, e_notice).
+
+// §312.5(c)(1): One-time direct response to child's specific request —
+// operator does NOT retain child's contact info or re-contact the child.
+// Applies only for internal_operations purpose.
+permitted_by_coppa_312_5(COPPA_ARGS,
+    $Leaf("312.5(c)(1): one-time direct response exception — no retention, no re-contact of child")) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    is_internal_use_only(p1, u),
+    // No disclosure to third party: recipient must be same as operator
+    p1 = p2.
+
+// §312.5(c)(2): Safety exception — collecting info is necessary to protect
+// a child from imminent harm (abuse, exploitation, immediate physical danger).
+permitted_by_coppa_312_5(COPPA_ARGS,
+    $Leaf("312.5(c)(2): safety exception — collection necessary to protect child from imminent harm")) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    u = "safety-purpose".
+
+// §312.5(c)(3): Educational context — school (acting in loco parentis)
+// provides authorization in place of parent for educational use.
+permitted_by_coppa_312_5(COPPA_ARGS,
+    $Leaf("312.5(c)(3): school authorization exception — school authorized collection for educational purpose")) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    is_educational_context(p1, q),
+    u = "school-educational-purpose".
+
+// ── §312.5 Collection blocked — no consent ────────────────────────────────
+
+.decl blocked_no_parental_consent_312_5(COPPA_DECL_ARGS, e: Expl)
+
+// Blocked when child is under 13 and none of the §312.5 pathways apply.
+blocked_no_parental_consent_312_5(COPPA_ARGS,
+    $Leaf("312.5: collection blocked — child under 13, no verifiable parental consent, no applicable exception")) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    !permitted_by_coppa_312_5(COPPA_ARGS, _).

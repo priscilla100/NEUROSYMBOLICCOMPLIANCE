@@ -1,0 +1,207 @@
+// ============================================================================
+// ccpa_hierarchies.dl — Role, PI category, and purpose hierarchies for CCPA
+// ============================================================================
+// Defines the specialization hierarchies for principals, personal information
+// categories, and purposes, plus transitive closure predicates.
+//
+// Reference: Cal. Civ. Code §1798.140 (definitions), §1798.145 (exemptions)
+// ============================================================================
+
+// =============================================
+// Role Hierarchy
+// =============================================
+
+// role_isa(child, parent): child is a specialization of parent role
+.decl role_isa(child: symbol, parent: symbol)
+
+// CCPA principal roles
+// Service providers and contractors are subtypes of third_party for hierarchy
+// but are EXCLUDED from "sale" definition (§1798.140(ag))
+role_isa("service-provider", "third-party").
+role_isa("contractor", "third-party").
+role_isa("data-broker", "third-party").
+
+// Business subtypes
+role_isa("joint-venture-business", "business").
+role_isa("common-ownership-business", "business").
+
+// Consumer subtypes (age-based)
+role_isa("minor-under-13", "california-consumer").
+role_isa("minor-13-to-16", "california-consumer").
+role_isa("adult-consumer", "california-consumer").
+
+// Transitive closure of role hierarchy
+.decl role_subtype(child: symbol, ancestor: symbol)
+role_subtype(C, P) :- role_isa(C, P).
+role_subtype(C, A) :- role_isa(C, P), role_subtype(P, A).
+
+// === Active role assignments (populated from facts) ===
+.decl activerole(p: Principal, r: symbol)
+
+// Check if principal has role r (directly or via hierarchy)
+.decl has_role(p: Principal, r: symbol)
+has_role(P, R) :- activerole(P, R).
+has_role(P, R) :- activerole(P, R2), role_subtype(R2, R).
+
+// =============================================
+// Personal Information Category Hierarchy
+// =============================================
+// §1798.140(o): "personal information" broadly defined
+// §1798.140(ae): "sensitive personal information" is a sub-category
+
+// pi_isa(child, parent): child is a sub-category of parent PI type
+.decl pi_isa(child: PersonalInfoCategory, parent: PersonalInfoCategory)
+
+// All personal information types are subtypes of "personal-info"
+pi_isa("sensitive-personal-info", "personal-info").
+// Extraction-layer aliases (LLM uses these names)
+pi_isa("personal-information",    "personal-info").
+pi_isa("sensitive-personal-information", "sensitive-personal-info").
+pi_isa("biometric-information",   "biometric-data").
+pi_isa("browsing-history",        "internet-activity").
+pi_isa("financial-information",   "commercial-info").
+pi_isa("health-information",      "health-data").
+pi_isa("racial-origin",           "racial-ethnic-origin").
+pi_isa("inferences",              "inferences-drawn").
+
+// Sensitive personal information sub-categories (§1798.140(ae))
+pi_isa("ssn",                     "sensitive-personal-info").
+pi_isa("drivers-license-number",  "sensitive-personal-info").
+pi_isa("state-id-number",         "sensitive-personal-info").
+pi_isa("passport-number",         "sensitive-personal-info").
+pi_isa("financial-account",       "sensitive-personal-info").
+pi_isa("credit-debit-card",       "sensitive-personal-info").
+pi_isa("health-data",             "sensitive-personal-info").
+pi_isa("mental-health-data",      "sensitive-personal-info").
+pi_isa("sex-life-data",           "sensitive-personal-info").
+pi_isa("sexual-orientation",      "sensitive-personal-info").
+pi_isa("precise-geolocation",     "sensitive-personal-info").
+pi_isa("racial-ethnic-origin",    "sensitive-personal-info").
+pi_isa("religious-beliefs",       "sensitive-personal-info").
+pi_isa("philosophical-beliefs",   "sensitive-personal-info").
+pi_isa("union-membership",        "sensitive-personal-info").
+pi_isa("private-communications",  "sensitive-personal-info").
+pi_isa("biometric-data",          "sensitive-personal-info").
+pi_isa("genetic-data",            "sensitive-personal-info").
+pi_isa("children-data",           "sensitive-personal-info").
+
+// General personal information sub-categories (§1798.140(o))
+pi_isa("name",                    "personal-info").
+pi_isa("alias",                   "personal-info").
+pi_isa("postal-address",          "personal-info").
+pi_isa("unique-identifier",       "personal-info").
+pi_isa("ip-address",              "personal-info").
+pi_isa("email-address",           "personal-info").
+pi_isa("account-name",            "personal-info").
+pi_isa("date-of-birth",           "personal-info").
+pi_isa("signature",               "personal-info").
+pi_isa("telephone-number",        "personal-info").
+pi_isa("education-info",          "personal-info").
+pi_isa("employment-info",         "personal-info").
+pi_isa("commercial-info",         "personal-info").
+pi_isa("internet-activity",       "personal-info").
+pi_isa("geolocation-data",        "personal-info").
+pi_isa("sensory-data",            "personal-info").
+pi_isa("inferences-drawn",        "personal-info").
+
+// De-identified and aggregate data are NOT personal information (§1798.140(h))
+pi_isa("deidentified-data",       "non-personal-info").
+pi_isa("aggregate-consumer-info", "non-personal-info").
+
+// Transitive closure
+.decl pi_subtype(child: PersonalInfoCategory, ancestor: PersonalInfoCategory)
+pi_subtype(C, P) :- pi_isa(C, P).
+pi_subtype(C, A) :- pi_isa(C, P), pi_subtype(P, A).
+
+// =============================================
+// Purpose Hierarchy
+// =============================================
+// §1798.140(e): "business purpose" — operational purposes with a contractual
+//               service provider relationship
+// §1798.140(t): "commercial purpose" — to advance commercial or economic interests
+// §1798.140(ah): "sale" — selling, renting, releasing, disclosing, disseminating,
+//                making available, transferring for monetary or other valuable consideration
+// §1798.140(aj): "sharing" — for cross-context behavioral advertising
+
+// purpose_isa(child, parent): child is a sub-purpose of parent
+.decl purpose_isa(child: Purpose, parent: Purpose)
+
+// Business purpose sub-purposes (§1798.140(e))
+purpose_isa("auditing-interactions",          "business-purpose").
+purpose_isa("security-detection",             "business-purpose").
+purpose_isa("debugging-errors",               "business-purpose").
+purpose_isa("short-term-transient-use",       "business-purpose").
+purpose_isa("performing-contracted-services", "business-purpose").
+purpose_isa("internal-research",              "business-purpose").
+purpose_isa("quality-improvement",            "business-purpose").
+// Extraction-layer aliases (LLM uses these purpose names)
+purpose_isa("service-provider",              "business-purpose").
+purpose_isa("required-by-law",               "business-purpose").
+purpose_isa("security",                      "security-detection").
+purpose_isa("legal-defense",                 "business-purpose").
+purpose_isa("consumer-request",              "business-purpose").
+purpose_isa("opt-in-sensitive",              "business-purpose").
+
+// Commercial purpose sub-purposes
+purpose_isa("targeted-advertising",           "commercial-purpose").
+purpose_isa("cross-context-behavioral-ads",   "commercial-purpose").
+
+// Sale aliases
+purpose_isa("sale-of-data",                   "sale").
+purpose_isa("sale-of-personal-information",   "sale").
+
+// Sharing aliases
+purpose_isa("sharing-for-cross-context",      "sharing").
+// Sharing is specifically cross-context behavioral advertising (§1798.140(aj))
+purpose_isa("sharing-for-behavioral-ads",     "sharing").
+
+// All top-level purposes (for grounding)
+.decl known_purpose(u: Purpose)
+known_purpose(U) :- purpose_isa(U, _).
+known_purpose(U) :- purpose_isa(_, U).
+known_purpose("business-purpose").
+known_purpose("commercial-purpose").
+known_purpose("sale").
+known_purpose("sharing").
+known_purpose("legal-compliance").
+known_purpose("research").
+known_purpose("public-interest").
+
+// Transitive closure
+.decl purpose_subtype(child: Purpose, ancestor: Purpose)
+purpose_subtype(C, P) :- purpose_isa(C, P).
+purpose_subtype(C, A) :- purpose_isa(C, P), purpose_subtype(P, A).
+
+// =============================================
+// Helper predicates derived from hierarchies
+// =============================================
+
+// is_personal_info(T): PI category T is personal information (or a subtype)
+.decl is_personal_info(t: PersonalInfoCategory)
+is_personal_info("personal-info").
+is_personal_info(T) :- pi_subtype(T, "personal-info").
+
+// is_sensitive_pi(T): PI category T is sensitive personal information
+.decl is_sensitive_pi(t: PersonalInfoCategory)
+is_sensitive_pi("sensitive-personal-info").
+is_sensitive_pi(T) :- pi_subtype(T, "sensitive-personal-info").
+
+// is_for_sale(U): purpose is a sale or sub-purpose of sale
+.decl is_for_sale(u: Purpose)
+is_for_sale("sale").
+is_for_sale(U) :- purpose_subtype(U, "sale").
+
+// is_for_sharing(U): purpose is sharing (cross-context behavioral advertising)
+.decl is_for_sharing(u: Purpose)
+is_for_sharing("sharing").
+is_for_sharing(U) :- purpose_subtype(U, "sharing").
+
+// is_for_business_purpose(U): purpose is a business purpose or sub-purpose
+.decl is_for_business_purpose(u: Purpose)
+is_for_business_purpose("business-purpose").
+is_for_business_purpose(U) :- purpose_subtype(U, "business-purpose").
+
+// is_for_commercial_purpose(U): purpose is commercial
+.decl is_for_commercial_purpose(u: Purpose)
+is_for_commercial_purpose("commercial-purpose").
+is_for_commercial_purpose(U) :- purpose_subtype(U, "commercial-purpose").

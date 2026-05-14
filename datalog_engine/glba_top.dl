@@ -1,0 +1,60 @@
+// glba_top.dl
+// GLBA entry point — Gramm-Leach-Bliley Act, 16 CFR Part 313
+//
+// Include order (types/macros must precede all use):
+#include "glba_types.dl"
+#include "glba_hierarchies.dl"
+#include "glba_313_14.dl"
+
+// ── Engine compatibility bridge ────────────────────────────────────────────
+// Map disclosure_attempted (engine format) → sharing_attempted (GLBA format).
+
+.decl disclosure_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, t: NPICategory, u: SharingPurpose)
+sharing_attempted(GLBA_ARGS) :- disclosure_attempted(GLBA_ARGS).
+
+// ── Top-level verdict: permitted_by_glba ──────────────────────────────────
+
+.decl permitted_by_glba(GLBA_DECL_ARGS, e: Expl)
+
+// Case 1: Consumer has NOT opted out — sharing is permitted by default
+// (GLBA uses opt-OUT not opt-IN; sharing is allowed unless consumer objects).
+permitted_by_glba(GLBA_ARGS, $Leaf("GLBA: consumer has not opted out — sharing permitted by default")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    !has_opted_out(q, p1).
+
+// Case 2: Consumer HAS opted out but sharing falls under a §313.14 exception.
+permitted_by_glba(GLBA_ARGS, $Step1("GLBA: consumer opted out, but §313.14 exception applies", e_exc)) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    has_opted_out(q, p1),
+    permitted_by_glba_313_14(GLBA_ARGS, e_exc).
+
+// ── Top-level verdict: blocked_by_glba ────────────────────────────────────
+
+.decl blocked_by_glba(GLBA_DECL_ARGS, e: Expl)
+
+// Blocked when consumer opted out AND no §313.14 exception applies.
+blocked_by_glba(GLBA_ARGS, $Leaf("GLBA: sharing blocked — consumer opted out and no §313.14 exception applies")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    has_opted_out(q, p1),
+    !permitted_by_glba_313_14(GLBA_ARGS, _).
+
+// ── Engine output bridge ───────────────────────────────────────────────────
+.decl is_disclosure_allowed(GLBA_DECL_ARGS, e: Expl)
+.decl is_disclosure_denied(GLBA_DECL_ARGS, e: Expl)
+is_disclosure_allowed(GLBA_ARGS, e) :- permitted_by_glba(GLBA_ARGS, e).
+is_disclosure_denied(GLBA_ARGS, e)  :- blocked_by_glba(GLBA_ARGS, e).
+is_disclosure_denied(GLBA_ARGS, $Leaf("GLBA: sharing not permitted")) :-
+    disclosure_attempted(GLBA_ARGS),
+    !permitted_by_glba(GLBA_ARGS, _),
+    !blocked_by_glba(GLBA_ARGS, _).
+
+// ── Outputs ────────────────────────────────────────────────────────────────
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output permitted_by_glba
+.output blocked_by_glba
+.output permitted_by_glba_313_14

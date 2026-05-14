@@ -1,0 +1,15 @@
+// Counterfactual: What if the image were properly de-identified (face obscured)?
+activerole("us_hospital_cf", "hospital").
+activerole("journal_cf", "individual").
+activerole("patient_cf", "patient").
+belongstorole("patient_cf", "adult").
+
+// Scenario A: Properly authorized (face obscured = authorization conditions met)
+obtained_authorization_164_508("us_hospital_cf", "journal_cf", "patient_cf", "medical-record", "research").
+// NO is_defective_authorization — authorization is valid
+msg_contains("good_image", "patient_cf", "medical-record").
+disclosure_attempted("us_hospital_cf", "journal_cf", "patient_cf", "good_image", "medical-record", "research").
+
+// Scenario B: Truly de-identified (statistical-data, not PHI)
+msg_contains("deidentified_image", "patient_cf", "statistical-data").
+disclosure_attempted("us_hospital_cf", "journal_cf", "patient_cf", "deidentified_image", "statistical-data", "research").

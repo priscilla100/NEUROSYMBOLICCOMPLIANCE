@@ -1,0 +1,11 @@
+question,answer
+Can an educational website collect a child's name and email to provide a requested educational service with verifiable parental consent?,Permitted
+Can a children's app collect a child's device identifier solely for internal operations such as security and session management without parental consent?,Permitted
+Can an operator collect a child's information to protect the child's safety in a one-time emergency and promptly notify parents?,Permitted
+Can a website directed at children collect personal information after receiving verifiable parental consent via a credit card authorization?,Permitted
+Can a children's online service retain collected child data only as long as reasonably necessary and then delete it securely?,Permitted
+Can a website collect personal information from a child under 13 for targeted advertising without verifiable parental consent?,Denied
+Can an operator share a child's personal information with third-party advertisers without parental consent?,Denied
+Can a mobile app collect a child's geolocation data persistently without notifying parents or obtaining consent?,Denied
+Can an online game collect more personal information from a child than reasonably necessary to participate in the activity?,Denied
+Can an operator retain personal information collected from a child indefinitely with no deletion policy?,Denied

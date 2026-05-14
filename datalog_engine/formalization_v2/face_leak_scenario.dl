@@ -1,0 +1,67 @@
+// ============================================================================
+// Face Leak Scenario — Medical Image Publication with Inadvertent Face Exposure
+// ============================================================================
+// Scenario: A hospital/researcher publishes medical images in a journal.
+// Patient consented to publication ONLY if face is not visible.
+// The published images inadvertently reveal patient faces.
+//
+// Three parties: patients, authors (at hospital), publishers (journal)
+// ============================================================================
+
+// === PRINCIPALS ===
+// The hospital/research institution is a covered entity
+activerole("us_hospital", "hospital").
+
+// The researcher/author is a doctor at the hospital (workforce member)
+activerole("author_dr", "doctor").
+is_employee_of("author_dr", "us_hospital").
+provider_of("author_dr", "patient_a").
+
+// The publisher (academic journal) — is it a BA?
+// If the journal has a BAA with the hospital, it's a business associate
+activerole("journal_publisher", "individual").
+// NOTE: If publisher has BAA, uncomment:
+// activerole("journal_publisher", "billing-company").
+// is_business_associate_of("journal_publisher", "us_hospital").
+
+// The patient
+activerole("patient_a", "patient").
+belongstorole("patient_a", "adult").
+
+// === MESSAGES ===
+// The medical image with face visible = PHI (individually identifiable health info)
+// A photo showing a patient's face + medical condition IS individually identifiable
+msg_contains("published_image", "patient_a", "medical-record").
+
+// === SCENARIO 1: Author discloses to publisher (with conditional authorization) ===
+// The patient gave authorization, BUT conditioned on face not being visible.
+// The face IS visible = authorization conditions were violated.
+//
+// Per §164.508(b)(1): "A valid authorization... must be consistent with..."
+// The disclosure is NOT consistent with the authorization because the
+// condition (face not visible) was violated.
+//
+// We model this as: authorization was obtained BUT it's defective
+// because the actual disclosure doesn't match the authorized scope.
+obtained_authorization_164_508("us_hospital", "journal_publisher", "patient_a", "medical-record", "research").
+// The authorization specified "face not visible" but face IS visible
+// = the disclosure is inconsistent with the authorization
+// = effectively the authorization does not cover this specific disclosure
+is_defective_authorization("auth_doc", "us_hospital", "journal_publisher", "patient_a", "medical-record", "research").
+
+disclosure_attempted("us_hospital", "journal_publisher", "patient_a", "published_image", "medical-record", "research").
+
+// === SCENARIO 2: Same but treating it as if no valid authorization ===
+// (separate query — what if we simply say no authorization covers this?)
+// disclosure_attempted("us_hospital", "journal_publisher", "patient_a", "published_image_2", "medical-record", "research").
+// msg_contains("published_image_2", "patient_a", "medical-record").
+
+// === SCENARIO 3: Publisher further discloses (if publisher is NOT a BA) ===
+// If the publisher is just "individual" (not a CE or BA),
+// then HIPAA technically doesn't regulate the publisher's actions.
+// But the hospital's INITIAL disclosure is still regulated.
+
+// === SCENARIO 4: What if the image were truly de-identified? ===
+// If face were properly obscured/removed, it might qualify as de-identified
+// msg_contains("deidentified_image", "patient_a", "statistical-data").
+// disclosure_attempted("us_hospital", "journal_publisher", "patient_a", "deidentified_image", "statistical-data", "research").

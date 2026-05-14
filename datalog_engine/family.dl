@@ -1,0 +1,57 @@
+// family.dl — Family relationships: ancestors, descendants, cousins, and unreachable pairs.
+// Demonstrates recursion, negation (stratification), and aggregation.
+
+// --- Base relation: parent(Child, Parent) ---
+.decl parent(child:symbol, par:symbol)
+parent("Alice",   "Bob").
+parent("Alice",   "Carol").
+parent("Bob",     "Dave").
+parent("Bob",     "Eve").
+parent("Carol",   "Frank").
+parent("Carol",   "Grace").
+parent("Dave",    "Henry").
+parent("Eve",     "Irene").
+
+// --- Derived: ancestor (transitive closure of parent) ---
+.decl ancestor(x:symbol, y:symbol)
+ancestor(x, y) :- parent(x, y).
+ancestor(x, y) :- parent(x, z), ancestor(z, y).
+
+// --- Derived: descendant (reverse of ancestor) ---
+.decl descendant(x:symbol, y:symbol)
+descendant(x, y) :- ancestor(y, x).
+
+// --- All persons in the family tree ---
+.decl person(name:symbol)
+person(x) :- parent(x, _).
+person(x) :- parent(_, x).
+
+// --- Graph reachability: related(x,y) if x is ancestor or descendant of y ---
+.decl related(x:symbol, y:symbol)
+related(x, y) :- ancestor(x, y).
+related(x, y) :- descendant(x, y).
+
+// --- Negation (requires stratification): pairs that are NOT related ---
+.decl unrelated(x:symbol, y:symbol)
+unrelated(x, y) :- person(x), person(y), x != y, !related(x, y).
+
+// --- Siblings: share at least one parent ---
+.decl sibling(x:symbol, y:symbol)
+sibling(x, y) :- parent(x, p), parent(y, p), x != y.
+
+// --- Cousins: parents are siblings ---
+.decl cousin(x:symbol, y:symbol)
+cousin(x, y) :- parent(x, px), parent(y, py), sibling(px, py), x != y.
+
+// --- Aggregation: count how many ancestors each person has ---
+.decl ancestor_count(who:symbol, cnt:number)
+ancestor_count(x, c) :- person(x), c = count : { ancestor(x, _) }.
+
+// --- Output all derived relations ---
+.output ancestor
+.output descendant
+.output related
+.output unrelated
+.output sibling
+.output cousin
+.output ancestor_count

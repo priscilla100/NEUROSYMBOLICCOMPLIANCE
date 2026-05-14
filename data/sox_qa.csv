@@ -1,0 +1,11 @@
+question,answer
+Can a public company file its quarterly 10-Q report when both the CEO and CFO have signed the required Section 302 certification?,Permitted
+Can a public company file its annual 10-K report when management has completed the internal control assessment and the registered auditor has attested to it?,Permitted
+Can a public company file an annual report that discloses a material weakness in internal controls that has been identified and reported?,Permitted
+Can a public company's registered auditor attest to the management's internal control assessment for the annual report?,Permitted
+Can an accelerated filer file its annual 10-K with a registered public accounting firm attestation on internal controls?,Permitted
+Can a public company file its quarterly financial report without the CEO's Section 302 certification?,Denied
+Can a public company's annual report omit disclosure of a known material weakness in internal controls?,Denied
+Can a non-accelerated filer file an annual report without a management assessment of internal controls over financial reporting?,Denied
+Can a company that is not registered with the SEC file annual financial statements without a registered auditor's attestation and certify SOX compliance?,Denied
+Can a public company's CEO certify a quarterly report knowing that significant deficiencies have not been disclosed to the audit committee?,Denied

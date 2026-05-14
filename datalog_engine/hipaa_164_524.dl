@@ -1,0 +1,208 @@
+// ============================================================================
+// hipaa_164_524.dl — §164.524: Access of individuals to protected health
+//                    information
+// ============================================================================
+// Reference: HIPAA_FORMALIZATION.pdf, Section 4.8 (pages 109–120)
+//
+// Structure:
+//   164.524(a)  — Right of access and denial grounds
+//   164.524(a)(2) — May deny WITHOUT review opportunity
+//   164.524(a)(3) — May deny WITH review opportunity
+//   164.524(b)  — Access procedures (request handling, timely action)
+//   164.524(d)  — Access review process
+//
+// The key output is required_by_164_524 which feeds into §164.502(a)(2)(i).
+// ============================================================================
+
+// =============================================
+// required_by_164_524 — declared in hipaa_stubs.dl
+// =============================================
+// A covered entity must provide access to PHI when requested by the
+// individual, UNLESS a denial ground under (a)(2) or (a)(3) applies.
+
+// is_access_request: oracle — individual has requested access to PHI
+.decl is_access_request(p2: Principal, p1: Principal,
+    q: Principal, t: Attribute)
+
+// is_in_designated_record_set: oracle — PHI is maintained in a designated record set
+.decl is_in_designated_record_set(p1: Principal, q: Principal, t: Attribute)
+
+required_by_164_524(ARGS) :-
+    is_covered_entity(p1),
+    (p2 = q ; is_personal_representative(p2, q)),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_access_request(p2, p1, q, t),
+    is_in_designated_record_set(p1, q, t),
+    !may_deny_without_review_524a2(p2, p1, t),
+    !may_deny_with_review_524a3(p2, p1, t),
+    known_purpose(u).
+
+// =============================================
+// §164.524(a)(2) — May deny WITHOUT review opportunity
+// =============================================
+// PDF (pages 110–111)
+
+.decl may_deny_without_review_524a2(p2: Principal, p1: Principal, t: Attribute)
+
+may_deny_without_review_524a2(P2, P1, T) :-
+    may_deny_without_review_524a2i(P2, P1, T).
+may_deny_without_review_524a2(P2, P1, T) :-
+    may_deny_without_review_524a2ii(P2, P1, T).
+may_deny_without_review_524a2(P2, P1, T) :-
+    may_deny_without_review_524a2iii(P2, P1, T).
+may_deny_without_review_524a2(P2, P1, T) :-
+    may_deny_without_review_524a2iv(P2, P1, T).
+may_deny_without_review_524a2(P2, P1, T) :-
+    may_deny_without_review_524a2v(P2, P1, T).
+
+// §524(a)(2)(i): Psychotherapy notes, legal proceedings, CLIA labs, Privacy Act
+.decl may_deny_without_review_524a2i(p2: Principal, p1: Principal, t: Attribute)
+
+// compiled_for_legal_proceeding: oracle
+.decl compiled_for_legal_proceeding(p1: Principal, t: Attribute)
+
+// prohibited_by_42USC263a: oracle (CLIA labs)
+.decl prohibited_by_42USC263a(p1: Principal, t: Attribute)
+
+// exempt_pursuant_to_42CFR493: oracle
+.decl exempt_pursuant_to_42CFR493(p1: Principal, t: Attribute)
+
+may_deny_without_review_524a2i(P2, P1, T) :-
+    is_psychotherapy_notes(T),
+    is_access_request(P2, P1, _, T).
+may_deny_without_review_524a2i(P2, P1, T) :-
+    compiled_for_legal_proceeding(P1, T),
+    is_access_request(P2, P1, _, T).
+may_deny_without_review_524a2i(P2, P1, T) :-
+    prohibited_by_42USC263a(P1, T),
+    is_access_request(P2, P1, _, T).
+may_deny_without_review_524a2i(P2, P1, T) :-
+    exempt_pursuant_to_42CFR493(P1, T),
+    is_access_request(P2, P1, _, T).
+
+// §524(a)(2)(ii): Correctional institution — jeopardizes health/safety
+.decl may_deny_without_review_524a2ii(p2: Principal, p1: Principal, t: Attribute)
+
+// jeopardizes_health_safety_custody: oracle
+.decl jeopardizes_health_safety_custody(p2: Principal, p1: Principal, t: Attribute)
+
+may_deny_without_review_524a2ii(P2, P1, T) :-
+    (activerole(P1, "correctional-institution") ;
+     (is_health_care_provider(P1),
+      activerole(CI, "correctional-institution"),
+      is_employee_of(P1, CI))),
+    belongs_to(P2, "inmate"),
+    jeopardizes_health_safety_custody(P2, P1, T).
+
+// §524(a)(2)(iii): Research with treatment — suspended access
+.decl may_deny_without_review_524a2iii(p2: Principal, p1: Principal, t: Attribute)
+
+// created_for_current_research: oracle
+.decl created_for_current_research(p1: Principal, t: Attribute)
+
+// agreed_to_denial_of_access: oracle
+.decl agreed_to_denial_of_access(p2: Principal, p1: Principal, t: Attribute)
+
+// informed_of_future_reinstatement: oracle
+.decl informed_of_future_reinstatement(p1: Principal, t: Attribute)
+
+may_deny_without_review_524a2iii(P2, P1, T) :-
+    created_for_current_research(P1, T),
+    is_health_care_provider(P1),
+    agreed_to_denial_of_access(P2, P1, T),
+    informed_of_future_reinstatement(P1, T).
+
+// §524(a)(2)(iv): Privacy Act records
+.decl may_deny_without_review_524a2iv(p2: Principal, p1: Principal, t: Attribute)
+
+// subject_to_privacy_act: oracle
+.decl subject_to_privacy_act(p1: Principal, t: Attribute)
+
+// may_deny_under_privacy_act: oracle
+.decl may_deny_under_privacy_act(p1: Principal, t: Attribute)
+
+may_deny_without_review_524a2iv(P2, P1, T) :-
+    subject_to_privacy_act(P1, T),
+    may_deny_under_privacy_act(P1, T),
+    is_access_request(P2, P1, _, T).
+
+// §524(a)(2)(v): Confidential source info
+.decl may_deny_without_review_524a2v(p2: Principal, p1: Principal, t: Attribute)
+
+// obtained_under_promise_of_confidentiality: oracle
+.decl obtained_under_promise_of_confidentiality(p1: Principal, t: Attribute)
+
+// would_reveal_source: oracle
+.decl would_reveal_source(p1: Principal, p2: Principal, t: Attribute)
+
+may_deny_without_review_524a2v(P2, P1, T) :-
+    obtained_under_promise_of_confidentiality(P1, T),
+    would_reveal_source(P1, P2, T),
+    is_access_request(P2, P1, _, T).
+
+// =============================================
+// §164.524(a)(3) — May deny WITH review opportunity
+// =============================================
+// PDF (pages 112–113)
+
+.decl may_deny_with_review_524a3(p2: Principal, p1: Principal, t: Attribute)
+
+may_deny_with_review_524a3(P2, P1, T) :-
+    may_deny_with_review_524a3i(P2, P1, T).
+may_deny_with_review_524a3(P2, P1, T) :-
+    may_deny_with_review_524a3ii(P2, P1, T).
+may_deny_with_review_524a3(P2, P1, T) :-
+    may_deny_with_review_524a3iii(P2, P1, T).
+
+// §524(a)(3)(i): Endangerment
+.decl may_deny_with_review_524a3i(p2: Principal, p1: Principal, t: Attribute)
+
+// determines_access_would_endanger: oracle
+.decl determines_access_would_endanger(p1: Principal, p2: Principal, t: Attribute)
+
+may_deny_with_review_524a3i(P2, P1, T) :-
+    determines_access_would_endanger(P1, P2, T).
+
+// §524(a)(3)(ii): Reference to another person
+.decl may_deny_with_review_524a3ii(p2: Principal, p1: Principal, t: Attribute)
+
+// determines_likely_to_cause_harm_to_other: oracle
+.decl determines_likely_to_cause_harm_to_other(p1: Principal, p2: Principal, t: Attribute)
+
+may_deny_with_review_524a3ii(P2, P1, T) :-
+    determines_likely_to_cause_harm_to_other(P1, P2, T).
+
+// §524(a)(3)(iii): Personal representative harm
+.decl may_deny_with_review_524a3iii(p2: Principal, p1: Principal, t: Attribute)
+
+// likely_to_harm_individual_via_rep: oracle
+.decl likely_to_harm_individual_via_rep(p1: Principal, p2: Principal, t: Attribute)
+
+may_deny_with_review_524a3iii(P2, P1, T) :-
+    is_personal_representative(P2, _),
+    likely_to_harm_individual_via_rep(P1, P2, T).
+
+// =============================================
+// §164.524(b) — Access procedures
+// =============================================
+// PDF (pages 113–115): Mostly procedural requirements (timely response within
+// 30 days, etc.). These involve temporal operators and are modeled as oracle
+// predicates for compliance checking.
+
+// request_accepted: oracle — CE has accepted the access request
+.decl request_accepted(p2: Principal, p1: Principal, t: Attribute)
+
+// request_denied: oracle — CE has denied the access request
+.decl request_denied(p2: Principal, p1: Principal, t: Attribute)
+
+// =============================================
+// §164.524(d) — Access review process
+// =============================================
+// PDF (pages 118–119): When access is denied under (a)(3), individual has
+// right to review by a licensed health care professional who did not
+// participate in the original denial.
+// This is a procedural requirement modeled as oracle predicates.
+
+// review_completed: oracle — review of denial has been completed
+.decl review_completed(p2: Principal, p1: Principal, t: Attribute)

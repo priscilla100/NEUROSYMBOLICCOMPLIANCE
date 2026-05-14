@@ -1,0 +1,1676 @@
+row_id,gold_label,verdict,match,citations,scenario_json,generated_facts,explanation_tree,artifact_dir,latency_s,error
+1,DENIED,DENIED,Y,,"{""sender_role"": ""government-entity"", ""receiver_role"": ""individual"", ""attribute"": ""phi"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_1 → patient_1 [phi / marketing]
+
+// --- Principals ---
+activerole(""sender_1"", ""government-entity"").
+activerole(""patient_1"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_1"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0001"", ""patient_1"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_1"",""patient_1"",""patient_1"",""msg_0001"",""phi"",""marketing"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_1,3.31,
+2,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_2 → receiver_2 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_2"", ""hospital"").
+activerole(""receiver_2"", ""law-enforcement-official"").
+activerole(""patient_2"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_2"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0002"", ""patient_2"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_2"",""receiver_2"",""patient_2"",""blood-test-results"",""law-e","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_2,2.84,
+3,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(a)","{""sender_role"": ""hospital"", ""receiver_role"": ""oversight-agency"", ""attribute"": ""medical-record"", ""purpose"": ""health-oversight"", ""subject_category"": ""incapacitated"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_3 → receiver_3 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_3"", ""hospital"").
+activerole(""receiver_3"", ""oversight-agency"").
+activerole(""patient_3"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_3"", ""incapacitated"").
+
+// --- Message ---
+msg_contains(""msg_0003"", ""patient_3"", ""medical-record"").
+
+// --- Extra facts ---
+is_required_by_law(""sender_3"",""receiver_3"",""patient_3"",""medical-record"",""law-enforcement"").
+
+// --- Di","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(a): required by law)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_3,3.52,
+4,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""hospital"", ""receiver_role"": ""individual"", ""attribute"": ""billing-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_4 → patient_4 [billing-record / treatment]
+
+// --- Principals ---
+activerole(""sender_4"", ""hospital"").
+activerole(""patient_4"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_4"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0004"", ""patient_4"", ""billing-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_4"",""patient_4"",""patient_4"",""msg_0004"",""billing-record"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_4,2.61,
+5,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(ii), 164.506, 164.506(c)(2)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""covered-entity"", ""attribute"": ""phi"", ""purpose"": ""healthcare-operations"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_5 → receiver_5 [phi / treatment]
+
+// --- Principals ---
+activerole(""sender_5"", ""hospital"").
+activerole(""receiver_5"", ""hospital"").
+activerole(""patient_5"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_5"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0005"", ""patient_5"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_5"",""receiver_5"",""patient_5"",""msg_0005"",""phi"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(ii): TPO per 164.506, $Leaf(164.506(c)(2): treatment activities of health care provider)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_5,3.31,
+6,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""doctor"", ""attribute"": ""phi"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_6 → patient_6 [phi / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_6"", ""hospital"").
+activerole(""patient_6"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_6"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0006"", ""patient_6"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_6"",""patient_6"",""patient_6"",""msg_0006"",""phi"",""law-enforcement"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_6,2.56,
+7,PERMITTED,DENIED,N,,"{""sender_role"": ""public-health-authority"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_7 → receiver_7 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_7"", ""government-entity"").
+activerole(""receiver_7"", ""law-enforcement-official"").
+activerole(""patient_7"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_7"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0007"", ""patient_7"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_7"",""receiver_7"",""patient_7"",""medical-record"",""law-enfo",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_7,2.65,
+8,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""psychiatrist"", ""receiver_role"": ""health-insurance-issuer"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_8 → receiver_8 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_8"", ""psychiatrist"").
+activerole(""receiver_8"", ""health-insurance-issuer"").
+activerole(""patient_8"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_8"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0008"", ""patient_8"", ""psychotherapy-notes"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_8"",""receiver_8"",""patient_8"",""psychotherap","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_8,6.09,
+9,PERMITTED,DENIED,N,,"{""sender_role"": ""individual"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""healthcare-operations"", ""subject_category"": ""adult"", ""same_org"": true, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_9 → receiver_9 [medical-record / healthcare-operations]
+
+// --- Principals ---
+activerole(""sender_9"", ""law-enforcement-official"").
+activerole(""receiver_9"", ""government-entity"").
+activerole(""patient_9"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_9"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0009"", ""patient_9"", ""medical-record"").
+
+// --- Relationships ---
+organization_member(""receiver_9"", ""sender_9"").
+
+// --- Disclosure query ---
+disclosur",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_9,2.67,
+10,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(ii)","{""sender_role"": ""provider"", ""receiver_role"": ""government-entity"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_10 → receiver_10 [psychotherapy-notes / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_10"", ""hospital"").
+activerole(""receiver_10"", ""government-entity"").
+activerole(""patient_10"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_10"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0010"", ""patient_10"", ""psychotherapy-notes"").
+
+// --- Extra facts ---
+has_lawful_process_with_assurance(""sender_10"",""receiver_10"",""patient_10"",","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(ii): subpoena with satisfactory assurance)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_10,2.94,
+11,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""doctor"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""prescription"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_11 → receiver_11 [prescription / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_11"", ""hospital"").
+activerole(""receiver_11"", ""law-enforcement-official"").
+activerole(""patient_11"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_11"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0011"", ""patient_11"", ""prescription"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_11"",""receiver_11"",""patient_11"",""prescription"",""law-enforceme","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_11,2.78,
+12,DENIED,DENIED,Y,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""legal-guardian"", ""attribute"": ""medical-record"", ""purpose"": ""treatment"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": true, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_12 → receiver_12 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_12"", ""hospital"").
+activerole(""receiver_12"", ""legal-guardian"").
+activerole(""patient_12"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_12"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0012"", ""patient_12"", ""medical-record"").
+
+// --- Relationships ---
+is_guardian(""receiver_12"", ""patient_12"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_12"",""r",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_12,2.93,
+13,DENIED,DENIED,Y,,"{""sender_role"": ""business-associate"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""compliance-audit"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_13 → patient_13 [medical-record / health-oversight]
+
+// --- Principals ---
+activerole(""sender_13"", ""business-associate"").
+activerole(""patient_13"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_13"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0013"", ""patient_13"", ""medical-record"").
+
+// --- Relationships ---
+is_business_associate_of(""patient_13"", ""sender_13"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""patient_13"",""health-over",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_13,2.73,
+14,PERMITTED,DENIED,N,,"{""sender_role"": ""government-authority"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""reports-of-child-abuse"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_14 → receiver_14 [medical-record / reports-of-child-abuse]
+
+// --- Principals ---
+activerole(""sender_14"", ""government-authority"").
+activerole(""receiver_14"", ""law-enforcement-official"").
+activerole(""patient_14"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_14"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0014"", ""patient_14"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_14"",""receiver_14"",""patient_1",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_14,10.45,
+15,PERMITTED,DENIED,N,,"{""sender_role"": ""health-plan"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_15 → patient_15 [medical-record / marketing]
+
+// --- Principals ---
+activerole(""sender_15"", ""health-plan"").
+activerole(""patient_15"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_15"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0015"", ""patient_15"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_15"",""patient_15"",""patient_15"",""msg_0015"",""medical-record"",""marketing"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_15,2.25,
+16,PERMITTED,DENIED,N,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""government-entity"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""incapacitated"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_16 → receiver_16 [psychotherapy-notes / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_16"", ""hospital"").
+activerole(""receiver_16"", ""law-enforcement-official"").
+activerole(""patient_16"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_16"", ""incapacitated"").
+
+// --- Message ---
+msg_contains(""msg_0016"", ""patient_16"", ""psychotherapy-notes"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_16"",""receiver_16"",""patie",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_16,3.01,
+17,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""doctor"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_17 → patient_17 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_17"", ""hospital"").
+activerole(""patient_17"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_17"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0017"", ""patient_17"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_17"",""patient_17"",""patient_17"",""msg_0017"",""medical-record"",""legal-defense"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_17,2.75,
+18,DENIED,DENIED,Y,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""government-authority"", ""attribute"": ""phi"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_18 → receiver_18 [phi / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_18"", ""covered-entity"").
+activerole(""receiver_18"", ""law-enforcement-official"").
+activerole(""patient_18"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_18"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0018"", ""patient_18"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_18"",""receiver_18"",""patient_18"",""msg_0018"",""phi"",""judicial-",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_18,2.77,
+19,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""name-and-address"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_19 → patient_19 [name-and-address / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_19"", ""hospital"").
+activerole(""patient_19"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_19"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0019"", ""patient_19"", ""name-and-address"").
+
+// --- Extra facts ---
+has_court_order(""sender_19"",""patient_19"",""patient_19"",""name-and-address"",""judicial-administrative-proceeding"").
+
+// --- Discl","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_19,2.47,
+20,PERMITTED,DENIED,N,,"{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_20 → receiver_20 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_20"", ""hospital"").
+activerole(""receiver_20"", ""law-enforcement-official"").
+activerole(""patient_20"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_20"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0020"", ""patient_20"", ""psychotherapy-notes"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_20"",""receiver_20"",""patient_20"",""psychotherapy-",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_20,3.0,
+21,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_21 → receiver_21 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_21"", ""hospital"").
+activerole(""receiver_21"", ""law-enforcement-official"").
+activerole(""patient_21"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_21"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0021"", ""patient_21"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_21"",""receiver_21"",""patient_21"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_21,2.85,
+22,PERMITTED,DENIED,N,,"{""sender_role"": ""provider"", ""receiver_role"": ""provider"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_22 → receiver_22 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_22"", ""hospital"").
+activerole(""receiver_22"", ""provider"").
+activerole(""patient_22"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_22"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0022"", ""patient_22"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_22"",""receiver_22"",""patient_22"",""msg_0022"",""medical-reco",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_22,2.16,
+23,PERMITTED,DENIED,N,,"{""sender_role"": ""correctional-institution"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""treatment"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_23 → patient_23 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_23"", ""correctional-institution"").
+activerole(""patient_23"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_23"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0023"", ""patient_23"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_23"",""patient_23"",""patient_23"",""msg_0023"",""medical-record"",""treatment"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_23,3.34,
+24,PERMITTED,DENIED,N,,"{""sender_role"": ""government-authority"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""incapacitated"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_24 → receiver_24 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_24"", ""law-enforcement-official"").
+activerole(""receiver_24"", ""government-entity"").
+activerole(""patient_24"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_24"", ""incapacitated"").
+
+// --- Message ---
+msg_contains(""msg_0024"", ""patient_24"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_24"",""receiver_24"",""patien",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_24,2.09,
+25,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_25 → receiver_25 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_25"", ""hospital"").
+activerole(""receiver_25"", ""law-enforcement-official"").
+activerole(""patient_25"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_25"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0025"", ""patient_25"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_25"",""receiver_25"",""patient_25"",""medical-record"",""law-enf","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_25,2.72,
+26,DENIED,DENIED,Y,,"{""sender_role"": ""provider"", ""receiver_role"": ""business-associate"", ""attribute"": ""medical-record"", ""purpose"": ""collections"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_26 → receiver_26 [medical-record / collections]
+
+// --- Principals ---
+activerole(""sender_26"", ""provider"").
+activerole(""receiver_26"", ""business-associate"").
+activerole(""patient_26"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_26"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0026"", ""patient_26"", ""medical-record"").
+
+// --- Relationships ---
+is_business_associate_of(""receiver_26"", ""sender_26"").
+
+// --- Disclosure query ---
+disclosure_attempted",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_26,2.67,
+27,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_27 → patient_27 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_27"", ""hospital"").
+activerole(""patient_27"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_27"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0027"", ""patient_27"", ""medical-record"").
+
+// --- Extra facts ---
+has_lawful_process_with_assurance(""sender_27"",""patient_27"",""patient_27"",""medical-record"",""judicial-administrative-proceeding"").
+
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_27,2.97,
+28,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""hospital"", ""attribute"": ""medical-record"", ""purpose"": ""determine-legal-options"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_28 → patient_28 [medical-record / determine-legal-options]
+
+// --- Principals ---
+activerole(""sender_28"", ""hospital"").
+activerole(""patient_28"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_28"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0028"", ""patient_28"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_28"",""patient_28"",""patient_28"",""msg_0028"",""medical-record"",""determine-legal-options"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_28,2.18,
+29,PERMITTED,DENIED,N,,"{""sender_role"": ""doctor"", ""receiver_role"": ""parent"", ""attribute"": ""patient-condition"", ""purpose"": ""treatment"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": true, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_29 → receiver_29 [patient-condition / treatment]
+
+// --- Principals ---
+activerole(""sender_29"", ""hospital"").
+activerole(""receiver_29"", ""parent"").
+activerole(""patient_29"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_29"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0029"", ""patient_29"", ""patient-condition"").
+
+// --- Relationships ---
+is_guardian(""receiver_29"", ""patient_29"").
+
+// --- Disclosure query ---
+disclosure_attempted(""send",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_29,9.87,
+30,PERMITTED,DENIED,N,,"{""sender_role"": ""government-authority"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""law-enforcement"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_30 → receiver_30 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_30"", ""government-authority"").
+activerole(""receiver_30"", ""law-enforcement-official"").
+activerole(""patient_30"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_30"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0030"", ""patient_30"", ""medical-record"").
+
+// --- Extra facts ---
+is_required_by_law(""sender_30"",""receiver_30"",""patient_30"",""medical-re",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_30,2.19,
+31,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(ii)","{""sender_role"": ""provider"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_31 → receiver_31 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_31"", ""hospital"").
+activerole(""receiver_31"", ""government-entity"").
+activerole(""patient_31"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_31"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0031"", ""patient_31"", ""medical-record"").
+
+// --- Extra facts ---
+has_lawful_process_with_assurance(""sender_31"",""receiver_31"",""patient_31"",""medical-r","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(ii): subpoena with satisfactory assurance)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_31,2.83,
+32,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_32 → patient_32 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_32"", ""hospital"").
+activerole(""patient_32"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_32"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0032"", ""patient_32"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_32"",""patient_32"",""patient_32"",""medical-record"",""law-enforcement"").
+
+// --- Disclosure query ---
+disclosure_at","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_32,2.04,
+33,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_33 → patient_33 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_33"", ""provider"").
+activerole(""patient_33"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_33"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0033"", ""patient_33"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_33"",""patient_33"",""patient_33"",""medical-record"",""law-enforcement"").
+
+// --- Disclosure query ---
+disclos","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_33,2.7,
+34,PERMITTED,DENIED,N,,"{""sender_role"": ""oversight-agency"", ""receiver_role"": ""provider"", ""attribute"": ""medical-record"", ""purpose"": ""health-oversight"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_34 → receiver_34 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_34"", ""government-entity"").
+activerole(""receiver_34"", ""provider"").
+activerole(""patient_34"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_34"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0034"", ""patient_34"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_34"",""receiver_34"",""patient_34"",""msg_0034"",""medical-record"",""law-enfo",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_34,2.83,
+35,PERMITTED,DENIED,N,,"{""sender_role"": ""business-associate"", ""receiver_role"": ""health-insurance-issuer"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_35 → receiver_35 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_35"", ""business-associate"").
+activerole(""receiver_35"", ""health-plan"").
+activerole(""patient_35"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_35"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0035"", ""patient_35"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_35"",""receiver_35"",""patient_35"",""medical-record"",""law-enforc",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_35,3.21,
+36,PERMITTED,DENIED,N,,"{""sender_role"": ""provider"", ""receiver_role"": ""covered-entity"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_36 → receiver_36 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_36"", ""hospital"").
+activerole(""receiver_36"", ""covered-entity"").
+activerole(""patient_36"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_36"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0036"", ""patient_36"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_36"",""receiver_36"",""patient_36"",""msg_0036"",""medical-record"",""law-enforce",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_36,4.98,
+37,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""doctor"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_37 → receiver_37 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_37"", ""hospital"").
+activerole(""receiver_37"", ""law-enforcement-official"").
+activerole(""patient_37"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_37"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0037"", ""patient_37"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_37"",""receiver_37"",""patient_37"",""medical-record"",""law-enf","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_37,2.23,
+38,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""individual"", ""receiver_role"": ""doctor"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_38 → patient_38 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_38"", ""hospital"").
+activerole(""patient_38"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_38"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0038"", ""patient_38"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_38"",""patient_38"",""patient_38"",""medical-record"",""legal-defense"").
+
+// --- Disclosure query ---
+disclosure_","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_38,2.08,
+39,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""billing-company"", ""attribute"": ""billing-record"", ""purpose"": ""collections"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_39 → patient_39 [billing-record / collections]
+
+// --- Principals ---
+activerole(""sender_39"", ""hospital"").
+activerole(""patient_39"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_39"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0039"", ""patient_39"", ""billing-record"").
+
+// --- Relationships ---
+is_business_associate_of(""patient_39"", ""sender_39"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_39"",""patient_39"",""patient_39"",""msg_0039","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_39,2.83,
+40,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""billing-company"", ""receiver_role"": ""individual"", ""attribute"": ""social-security-number"", ""purpose"": ""billing"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_40 → patient_40 [social-security-number / billing]
+
+// --- Principals ---
+activerole(""sender_40"", ""hospital"").
+activerole(""patient_40"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_40"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0040"", ""patient_40"", ""social-security-number"").
+
+// --- Relationships ---
+is_business_associate_of(""patient_40"", ""sender_40"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_40"",""patient_40"",""patient_4","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_40,3.12,
+41,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(a)","{""sender_role"": ""health-insurance-issuer"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_41 → receiver_41 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_41"", ""health-insurance-issuer"").
+activerole(""receiver_41"", ""law-enforcement-official"").
+activerole(""patient_41"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_41"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0041"", ""patient_41"", ""medical-record"").
+
+// --- Extra facts ---
+is_required_by_law(""sender_41"",""receiver_41"",""patient_41"",""medical-record"",""law-","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(a): required by law)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_41,2.57,
+42,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""hospital"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_42 → patient_42 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_42"", ""hospital"").
+activerole(""patient_42"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_42"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0042"", ""patient_42"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_42"",""patient_42"",""patient_42"",""medical-record"",""law-enforcement"").
+
+// --- Disclosure query ---
+disclosure_at","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_42,2.7,
+43,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_43 → patient_43 [medical-record / funeral-director-duties]
+
+// --- Principals ---
+activerole(""sender_43"", ""covered-entity"").
+activerole(""patient_43"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_43"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0043"", ""patient_43"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_43"",""patient_43"",""patient_43"",""msg_0043"",""medical-record"",""funeral-director-duties"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_43,1.99,
+44,PERMITTED,DENIED,N,,"{""sender_role"": ""pharmacist"", ""receiver_role"": ""business-associate"", ""attribute"": ""limited-data-set"", ""purpose"": ""marketing"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_44 → receiver_44 [limited-data-set / marketing]
+
+// --- Principals ---
+activerole(""sender_44"", ""pharmacist"").
+activerole(""receiver_44"", ""business-associate"").
+activerole(""patient_44"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_44"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0044"", ""patient_44"", ""limited-data-set"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_44"",""receiver_44"",""patient_44"",""msg_0044"",""limited-data-set"",""marke",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_44,2.7,
+45,DENIED,DENIED,Y,,"{""sender_role"": ""hospital"", ""receiver_role"": ""individual"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_45 → patient_45 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_45"", ""hospital"").
+activerole(""patient_45"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_45"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0045"", ""patient_45"", ""psychotherapy-notes"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_45"",""patient_45"",""patient_45"",""psychotherapy-notes"",""law-enforcement"").
+
+// --- Disclosure query --",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_45,2.11,
+46,DENIED,DENIED,Y,,"{""sender_role"": ""individual"", ""receiver_role"": ""government-entity"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_46 → receiver_46 [psychotherapy-notes / legal-defense]
+
+// --- Principals ---
+activerole(""sender_46"", ""individual"").
+activerole(""receiver_46"", ""government-entity"").
+activerole(""patient_46"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_46"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0046"", ""patient_46"", ""psychotherapy-notes"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_46"",""receiver_46"",""patient_46"",""msg_0046"",""psychotherapy-n",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_46,9.81,
+47,PERMITTED,DENIED,N,,"{""sender_role"": ""doctor"", ""receiver_role"": ""doctor"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_47 → receiver_47 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_47"", ""hospital"").
+activerole(""receiver_47"", ""hospital"").
+activerole(""patient_47"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_47"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0047"", ""patient_47"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_47"",""receiver_47"",""patient_47"",""msg_0047"",""medical-record"",""legal-defense"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_47,1.98,
+48,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""treatment"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_48 → patient_48 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_48"", ""hospital"").
+activerole(""patient_48"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_48"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0048"", ""patient_48"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_48"",""patient_48"",""patient_48"",""msg_0048"",""medical-record"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_48,2.0,
+49,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(ii), 164.506, 164.506(c)(3)","{""sender_role"": ""doctor"", ""receiver_role"": ""covered-entity"", ""attribute"": ""phi"", ""purpose"": ""fraud-detection"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_49 → receiver_49 [phi / billing]
+
+// --- Principals ---
+activerole(""sender_49"", ""hospital"").
+activerole(""receiver_49"", ""covered-entity"").
+activerole(""patient_49"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_49"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0049"", ""patient_49"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_49"",""receiver_49"",""patient_49"",""msg_0049"",""phi"",""billing"").
+","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(ii): TPO per 164.506, $Leaf(164.506(c)(3): payment activities of receiving entity)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_49,10.21,
+50,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""individual"", ""receiver_role"": ""business-associate"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_50 → patient_50 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_50"", ""hospital"").
+activerole(""patient_50"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_50"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0050"", ""patient_50"", ""medical-record"").
+
+// --- Relationships ---
+is_business_associate_of(""patient_50"", ""sender_50"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_50"",""patient_50"",""patient_","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_50,2.13,
+51,PERMITTED,DENIED,N,,"{""sender_role"": ""doctor"", ""receiver_role"": ""business-associate"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_51 → receiver_51 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_51"", ""doctor"").
+activerole(""receiver_51"", ""hospital"").
+activerole(""patient_51"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_51"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0051"", ""patient_51"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_51"",""receiver_51"",""patient_51"",""msg_0051"",""medical-record"",""legal-defense"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_51,3.45,
+52,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(b)(1)(i)","{""sender_role"": ""doctor"", ""receiver_role"": ""public-health-authority"", ""attribute"": ""hiv-status"", ""purpose"": ""public-health-surveillance"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_52 → receiver_52 [hiv-status / public-health-surveillance]
+
+// --- Principals ---
+activerole(""sender_52"", ""hospital"").
+activerole(""receiver_52"", ""public-health-authority"").
+activerole(""patient_52"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_52"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0052"", ""patient_52"", ""hiv-status"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""receiver_52"",""public-health-surveillance"").
+
+// --- Disclos","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(b)(1)(i): to public health authority for disease prevention/control)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_52,2.68,
+53,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""nurse"", ""receiver_role"": ""government-entity"", ""attribute"": ""hiv-status"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_53 → receiver_53 [hiv-status / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_53"", ""hospital"").
+activerole(""receiver_53"", ""law-enforcement-official"").
+activerole(""patient_53"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_53"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0053"", ""patient_53"", ""hiv-status"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_53"",""receiver_53"",""patient_53"",""hiv-status"",""law-enforcement"").
+","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_53,2.78,
+54,PERMITTED,DENIED,N,,"{""sender_role"": ""group-health-plan"", ""receiver_role"": ""business-associate"", ""attribute"": ""phi"", ""purpose"": ""compliance-audit"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": true, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_54 → receiver_54 [phi / health-oversight]
+
+// --- Principals ---
+activerole(""sender_54"", ""hospital"").
+activerole(""receiver_54"", ""business-associate"").
+activerole(""patient_54"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_54"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0054"", ""patient_54"", ""phi"").
+
+// --- Relationships ---
+is_business_associate_of(""receiver_54"", ""sender_54"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""receiver",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_54,2.68,
+55,PERMITTED,DENIED,N,,"{""sender_role"": ""hospital"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_55 → receiver_55 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_55"", ""hospital"").
+activerole(""receiver_55"", ""government-entity"").
+activerole(""patient_55"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_55"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0055"", ""patient_55"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_55"",""receiver_55"",""patient_55"",""msg_0055"",""medical-record"",""treatment"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_55,9.47,
+56,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_56 → receiver_56 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_56"", ""hospital"").
+activerole(""receiver_56"", ""law-enforcement-official"").
+activerole(""patient_56"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_56"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0056"", ""patient_56"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_56"",""receiver_56"",""patient_56"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_56,2.29,
+57,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""pharmacist"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""prescription"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_57 → receiver_57 [prescription / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_57"", ""pharmacist"").
+activerole(""receiver_57"", ""law-enforcement-official"").
+activerole(""patient_57"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_57"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0057"", ""patient_57"", ""prescription"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_57"",""receiver_57"",""patient_57"",""prescription"",""law-enforce","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_57,2.24,
+58,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_58 → receiver_58 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_58"", ""hospital"").
+activerole(""receiver_58"", ""law-enforcement-official"").
+activerole(""patient_58"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_58"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0058"", ""patient_58"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_58"",""receiver_58"",""patient_58"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_58,2.87,
+59,PERMITTED,DENIED,N,,"{""sender_role"": ""hospital"", ""receiver_role"": ""oversight-agency"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""health-oversight"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_59 → receiver_59 [psychotherapy-notes / treatment]
+
+// --- Principals ---
+activerole(""sender_59"", ""hospital"").
+activerole(""receiver_59"", ""hospital"").
+activerole(""patient_59"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_59"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0059"", ""patient_59"", ""psychotherapy-notes"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_59"",""receiver_59"",""patient_59"",""msg_0059"",""psychotherapy-notes"",""treatmen",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_59,2.93,
+60,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_60 → receiver_60 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_60"", ""hospital"").
+activerole(""receiver_60"", ""law-enforcement-official"").
+activerole(""patient_60"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_60"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0060"", ""patient_60"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_60"",""receiver_60"",""patient_60"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_60,3.0,
+61,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""doctor"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_61 → patient_61 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_61"", ""hospital"").
+activerole(""patient_61"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_61"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0061"", ""patient_61"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_61"",""patient_61"",""patient_61"",""msg_0061"",""medical-record"",""legal-defense"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_61,9.25,
+62,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_62 → receiver_62 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_62"", ""hospital"").
+activerole(""receiver_62"", ""law-enforcement-official"").
+activerole(""patient_62"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_62"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0062"", ""patient_62"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_62"",""receiver_62"",""patient_62"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_62,2.72,
+63,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_63 → receiver_63 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_63"", ""hospital"").
+activerole(""receiver_63"", ""law-enforcement-official"").
+activerole(""patient_63"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_63"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0063"", ""patient_63"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_63"",""receiver_63"",""patient_63"",""medical-record"",""law-enf","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_63,1.98,
+64,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_64 → patient_64 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_64"", ""provider"").
+activerole(""patient_64"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_64"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0064"", ""patient_64"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_64"",""patient_64"",""patient_64"",""medical-record"",""legal-defense"").
+
+// --- Disclosure query ---
+disclosure_","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_64,3.04,
+65,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""pharmacist"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""prescription"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_65 → receiver_65 [prescription / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_65"", ""hospital"").
+activerole(""receiver_65"", ""law-enforcement-official"").
+activerole(""patient_65"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_65"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0065"", ""patient_65"", ""prescription"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_65"",""receiver_65"",""patient_65"",""prescription"",""law-enforceme","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_65,2.67,
+66,PERMITTED,DENIED,N,,"{""sender_role"": ""individual"", ""receiver_role"": ""government-entity"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_66 → receiver_66 [psychotherapy-notes / legal-defense]
+
+// --- Principals ---
+activerole(""sender_66"", ""individual"").
+activerole(""receiver_66"", ""government-entity"").
+activerole(""patient_66"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_66"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0066"", ""patient_66"", ""psychotherapy-notes"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_66"",""receiver_66"",""patient_66"",""msg_0066"",""psychotherapy-n",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_66,2.07,
+67,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""hospital"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": true, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_67 → patient_67 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_67"", ""hospital"").
+activerole(""patient_67"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_67"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0067"", ""patient_67"", ""medical-record"").
+
+// --- Relationships ---
+is_guardian(""patient_67"", ""patient_67"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_67"",""patient_67"",""patient_67"",""msg_0067"",""medical-","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_67,2.11,
+68,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""hospital"", ""receiver_role"": ""doctor"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_68 → receiver_68 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_68"", ""hospital"").
+activerole(""receiver_68"", ""doctor"").
+activerole(""patient_68"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_68"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0068"", ""patient_68"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_68"",""receiver_68"",""patient_68"",""medical-record"",""legal-defense"").
+
+// ","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_68,2.84,
+69,PERMITTED,DENIED,N,,"{""sender_role"": ""legal-guardian"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": true, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_69 → patient_69 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_69"", ""legal-guardian"").
+activerole(""patient_69"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_69"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0069"", ""patient_69"", ""medical-record"").
+
+// --- Relationships ---
+is_guardian(""patient_69"", ""patient_69"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_69"",""patient_69""",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_69,2.13,
+70,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""provider"", ""receiver_role"": ""provider"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_70 → receiver_70 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_70"", ""hospital"").
+activerole(""receiver_70"", ""hospital"").
+activerole(""patient_70"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_70"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0070"", ""patient_70"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_70"",""receiver_70"",""patient_70"",""medical-record"",""treatment"").
+
+// --- Di","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_70,2.85,
+71,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""hospital"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_71 → patient_71 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_71"", ""hospital"").
+activerole(""patient_71"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_71"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0071"", ""patient_71"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_71"",""patient_71"",""patient_71"",""msg_0071"",""medical-record"",""judicial-administrative-proceeding"")","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_71,2.06,
+72,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_72 → patient_72 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_72"", ""hospital"").
+activerole(""patient_72"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_72"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0072"", ""patient_72"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_72"",""patient_72"",""patient_72"",""msg_0072"",""medical-record"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_72,2.84,
+73,PERMITTED,DENIED,N,,"{""sender_role"": ""doctor"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""alert-law-enforcement-of-crime"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_73 → receiver_73 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_73"", ""hospital"").
+activerole(""receiver_73"", ""law-enforcement-official"").
+activerole(""patient_73"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_73"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0073"", ""patient_73"", ""blood-test-results"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_73"",""receiver_73"",""patient_73"",""msg_0073"",""blood-test",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_73,2.8,
+74,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(i)","{""sender_role"": ""health-insurance-issuer"", ""receiver_role"": ""individual"", ""attribute"": ""name-and-address"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_74 → receiver_74 [name-and-address / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_74"", ""health-plan"").
+activerole(""receiver_74"", ""health-plan"").
+activerole(""patient_74"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_74"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0074"", ""patient_74"", ""name-and-address"").
+
+// --- Extra facts ---
+has_court_order(""sender_74"",""receiver_74"",""patient_74"",""name-and-address"",""judicia","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(i): in response to court order)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_74,2.31,
+75,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_75 → receiver_75 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_75"", ""hospital"").
+activerole(""receiver_75"", ""law-enforcement-official"").
+activerole(""patient_75"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_75"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0075"", ""patient_75"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_75"",""receiver_75"",""patient_75"",""medical-record"",""law-enf","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_75,2.37,
+76,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_76 → patient_76 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_76"", ""hospital"").
+activerole(""patient_76"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_76"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0076"", ""patient_76"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_76"",""patient_76"",""patient_76"",""medical-record"",""law-enforcement"").
+
+// --- Disclosure query ---
+disclosure","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_76,3.57,
+77,PERMITTED,DENIED,N,,"{""sender_role"": ""government-entity"", ""receiver_role"": ""individual"", ""attribute"": ""statistical-data"", ""purpose"": ""health-oversight"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_77 → patient_77 [statistical-data / health-oversight]
+
+// --- Principals ---
+activerole(""sender_77"", ""government-entity"").
+activerole(""patient_77"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_77"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0077"", ""patient_77"", ""statistical-data"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""patient_77"",""health-oversight"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_77"",""pati",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_77,5.54,
+78,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_78 → receiver_78 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_78"", ""hospital"").
+activerole(""receiver_78"", ""law-enforcement-official"").
+activerole(""patient_78"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_78"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0078"", ""patient_78"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_78"",""receiver_78"",""patient_78"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_78,5.89,
+79,PERMITTED,DENIED,N,,"{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_79 → receiver_79 [blood-test-results / funeral-director-duties]
+
+// --- Principals ---
+activerole(""sender_79"", ""hospital"").
+activerole(""receiver_79"", ""law-enforcement-official"").
+activerole(""patient_79"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_79"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0079"", ""patient_79"", ""blood-test-results"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_79"",""receiver_79"",""patient_79"",""msg_0079"",""bl",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_79,5.91,
+80,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""government-entity"", ""attribute"": ""phi"", ""purpose"": ""emergency-treatment"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_80 → patient_80 [phi / treatment]
+
+// --- Principals ---
+activerole(""sender_80"", ""hospital"").
+activerole(""patient_80"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_80"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0080"", ""patient_80"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_80"",""patient_80"",""patient_80"",""msg_0080"",""phi"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_80,2.79,
+81,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_81 → patient_81 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_81"", ""provider"").
+activerole(""patient_81"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_81"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0081"", ""patient_81"", ""psychotherapy-notes"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_81"",""patient_81"",""patient_81"",""psychotherapy-notes"",""law-enforcement"").
+
+// --- Extra facts -","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_81,2.84,
+82,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""provider"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_82 → receiver_82 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_82"", ""hospital"").
+activerole(""receiver_82"", ""law-enforcement-official"").
+activerole(""patient_82"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_82"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0082"", ""patient_82"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_82"",""receiver_82"",""patient_82"",""medical-record"",""law-enf","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_82,12.11,
+83,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_83 → patient_83 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_83"", ""hospital"").
+activerole(""patient_83"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_83"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0083"", ""patient_83"", ""medical-record"").
+
+// --- Extra facts ---
+has_court_order(""sender_83"",""patient_83"",""patient_83"",""medical-record"",""judicial-administrative-proceeding"").
+
+// --- Disclosu","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_83,2.6,
+84,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_84 → receiver_84 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_84"", ""hospital"").
+activerole(""receiver_84"", ""law-enforcement-official"").
+activerole(""patient_84"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_84"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0084"", ""patient_84"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_84"",""receiver_84"",""patient_84"",""blood-test-resul","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_84,10.29,
+85,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(a)","{""sender_role"": ""hospital"", ""receiver_role"": ""oversight-agency"", ""attribute"": ""medical-record"", ""purpose"": ""reports-of-abuse"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_85 → receiver_85 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_85"", ""hospital"").
+activerole(""receiver_85"", ""oversight-agency"").
+activerole(""patient_85"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_85"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0085"", ""patient_85"", ""medical-record"").
+
+// --- Extra facts ---
+is_required_by_law(""sender_85"",""receiver_85"",""patient_85"",""medical-record"",""law-enforceme","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(a): required by law)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_85,2.72,
+86,PERMITTED,DENIED,N,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_86 → receiver_86 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_86"", ""hospital"").
+activerole(""receiver_86"", ""government-entity"").
+activerole(""patient_86"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_86"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0086"", ""patient_86"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_86"",""receiver_86"",""patient_86"",""msg_0086"",""medical-record"",""legal-defe",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_86,2.58,
+87,PERMITTED,DENIED,N,,"{""sender_role"": ""nurse"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_87 → receiver_87 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_87"", ""hospital"").
+activerole(""receiver_87"", ""law-enforcement-official"").
+activerole(""patient_87"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_87"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0087"", ""patient_87"", ""psychotherapy-notes"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_87"",""receiver_87"",""patient_87"",""msg_0087"",""psychoth",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_87,2.24,
+88,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""doctor"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_88 → patient_88 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_88"", ""hospital"").
+activerole(""patient_88"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_88"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0088"", ""patient_88"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_88"",""patient_88"",""patient_88"",""msg_0088"",""medical-record"",""judicial-administrative-proceeding"")","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_88,2.91,
+89,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""doctor"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_89 → patient_89 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_89"", ""hospital"").
+activerole(""patient_89"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_89"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0089"", ""patient_89"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_89"",""patient_89"",""patient_89"",""msg_0089"",""medical-record"",""treatment"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_89,2.0,
+90,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_90 → receiver_90 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_90"", ""hospital"").
+activerole(""receiver_90"", ""government-entity"").
+activerole(""patient_90"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_90"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0090"", ""patient_90"", ""medical-record"").
+
+// --- Extra facts ---
+has_lawful_process_with_assurance(""sender_90"",""receiver_90"",""patient_90"",""medical-r","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(ii): subpoena with satisfactory assurance)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_90,2.16,
+91,PERMITTED,DENIED,N,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""oversight-agency"", ""attribute"": ""medical-record"", ""purpose"": ""health-oversight"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_91 → receiver_91 [medical-record / health-oversight]
+
+// --- Principals ---
+activerole(""sender_91"", ""hospital"").
+activerole(""receiver_91"", ""government-entity"").
+activerole(""patient_91"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_91"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0091"", ""patient_91"", ""medical-record"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""receiver_91"",""health-oversight"").
+
+// --- Disclosure query ---
+disc",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_91,2.53,
+92,DENIED,DENIED,Y,,"{""sender_role"": ""covered-entity"", ""receiver_role"": ""parent"", ""attribute"": ""psychotherapy-notes"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""unemancipated-minor"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_92 → receiver_92 [psychotherapy-notes / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_92"", ""hospital"").
+activerole(""receiver_92"", ""parent"").
+activerole(""patient_92"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_92"", ""unemancipated-minor"").
+
+// --- Message ---
+msg_contains(""msg_0092"", ""patient_92"", ""psychotherapy-notes"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_92"",""receiver_92"",""patient_92"",""psychotherapy-note",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_92,3.11,
+93,PERMITTED,DENIED,N,,"{""sender_role"": ""hospital"", ""receiver_role"": ""individual"", ""attribute"": ""name-and-address"", ""purpose"": ""compliance-investigation"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_93 → patient_93 [name-and-address / health-oversight]
+
+// --- Principals ---
+activerole(""sender_93"", ""public-health-authority"").
+activerole(""patient_93"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_93"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0093"", ""patient_93"", ""name-and-address"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""patient_93"",""health-oversight"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_93""",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_93,2.58,
+94,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""name-and-address"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_94 → patient_94 [name-and-address / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_94"", ""covered-entity"").
+activerole(""patient_94"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_94"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0094"", ""patient_94"", ""name-and-address"").
+
+// --- Extra facts ---
+has_lawful_process_with_assurance(""sender_94"",""patient_94"",""patient_94"",""name-and-address"",""judicial-administrative-pro","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_94,2.15,
+95,DENIED,DENIED,Y,,"{""sender_role"": ""nurse"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_95 → receiver_95 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_95"", ""hospital"").
+activerole(""receiver_95"", ""law-enforcement-official"").
+activerole(""patient_95"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_95"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0095"", ""patient_95"", ""blood-test-results"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_95"",""receiver_95"",""patient_95"",""msg_0095"",""blood-test",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_95,2.66,
+96,DENIED,DENIED,Y,,"{""sender_role"": ""individual"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_96 → patient_96 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_96"", ""individual"").
+activerole(""patient_96"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_96"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0096"", ""patient_96"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_96"",""patient_96"",""patient_96"",""msg_0096"",""medical-record"",""judicial-administrative-proceeding",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_96,2.24,
+97,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""individual"", ""receiver_role"": ""psychiatrist"", ""attribute"": ""medical-record"", ""purpose"": ""determine-legal-options"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_97 → patient_97 [medical-record / treatment]
+
+// --- Principals ---
+activerole(""sender_97"", ""hospital"").
+activerole(""patient_97"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_97"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0097"", ""patient_97"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_97"",""patient_97"",""patient_97"",""medical-record"",""treatment"").
+
+// --- Disclosure query ---
+disclosure_attem","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_97,2.87,
+98,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(j)(1)(i)","{""sender_role"": ""nurse"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""patient-condition"", ""purpose"": ""lessen-health-threat"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_98 → receiver_98 [patient-condition / lessen-health-threat]
+
+// --- Principals ---
+activerole(""sender_98"", ""nurse"").
+activerole(""receiver_98"", ""law-enforcement-official"").
+activerole(""patient_98"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_98"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0098"", ""patient_98"", ""patient-condition"").
+
+// --- Extra facts ---
+consistent_with_applicable_law(""sender_98"",""receiver_98"",""patient_98"",""patient-conditio","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(j)(1)(i): prevent/lessen serious and imminent threat)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_98,2.63,
+99,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""provider"", ""receiver_role"": ""individual"", ""attribute"": ""phi"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_99 → patient_99 [phi / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_99"", ""hospital"").
+activerole(""patient_99"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_99"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0099"", ""patient_99"", ""phi"").
+
+// --- Extra facts ---
+has_court_order(""sender_99"",""patient_99"",""patient_99"",""phi"",""judicial-administrative-proceeding"").
+
+// --- Disclosure query ---
+disclosure_attempted(""s","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_99,2.11,
+100,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(i)","{""sender_role"": ""correctional-institution"", ""receiver_role"": ""government-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_100 → receiver_100 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_100"", ""hospital"").
+activerole(""receiver_100"", ""government-entity"").
+activerole(""patient_100"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_100"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0100"", ""patient_100"", ""medical-record"").
+
+// --- Extra facts ---
+has_court_order(""sender_100"",""receiver_100"",""patient_100"",""medical-record"",""","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(i): in response to court order)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_100,2.72,
+101,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(d)(1)","{""sender_role"": ""provider"", ""receiver_role"": ""oversight-agency"", ""attribute"": ""phi"", ""purpose"": ""health-oversight"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_101 → receiver_101 [phi / health-oversight]
+
+// --- Principals ---
+activerole(""sender_101"", ""hospital"").
+activerole(""receiver_101"", ""oversight-agency"").
+activerole(""patient_101"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_101"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0101"", ""patient_101"", ""phi"").
+
+// --- Extra facts ---
+is_authorized_by_law_for_purpose(""receiver_101"",""health-oversight"").
+
+// --- Disclosure query ---
+disclosure_attempte","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(d)(1): health oversight activities)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_101,2.8,
+102,PERMITTED,DENIED,N,,"{""sender_role"": ""doctor"", ""receiver_role"": ""covered-entity"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_102 → receiver_102 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_102"", ""hospital"").
+activerole(""receiver_102"", ""covered-entity"").
+activerole(""patient_102"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_102"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0102"", ""patient_102"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_102"",""receiver_102"",""patient_102"",""msg_0102"",""medical-record"",""leg",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_102,2.64,
+103,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""pharmacist"", ""receiver_role"": ""individual"", ""attribute"": ""prescription"", ""purpose"": ""treatment"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_103 → patient_103 [prescription / treatment]
+
+// --- Principals ---
+activerole(""sender_103"", ""pharmacist"").
+activerole(""patient_103"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_103"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0103"", ""patient_103"", ""prescription"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_103"",""patient_103"",""patient_103"",""prescription"",""treatment"").
+
+// --- Disclosure query ---
+disclosure_att","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_103,2.43,
+104,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""hospital"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""medical-record"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_104 → receiver_104 [medical-record / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_104"", ""hospital"").
+activerole(""receiver_104"", ""law-enforcement-official"").
+activerole(""patient_104"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_104"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0104"", ""patient_104"", ""medical-record"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_104"",""receiver_104"",""patient_104"",""medical-record","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_104,2.88,
+105,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(i)","{""sender_role"": ""individual"", ""receiver_role"": ""provider"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_105 → patient_105 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_105"", ""hospital"").
+activerole(""patient_105"", ""individual"").
+
+// --- Subject category ---
+belongstorole(""patient_105"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0105"", ""patient_105"", ""medical-record"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_105"",""patient_105"",""patient_105"",""msg_0105"",""medical-record"",""legal-defense"").
+","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(i): disclosure to the individual or personal representative))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_105,2.87,
+106,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(e)(1)(i)","{""sender_role"": ""hospital"", ""receiver_role"": ""covered-entity"", ""attribute"": ""medical-record"", ""purpose"": ""judicial-administrative-proceeding"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_106 → receiver_106 [medical-record / judicial-administrative-proceeding]
+
+// --- Principals ---
+activerole(""sender_106"", ""hospital"").
+activerole(""receiver_106"", ""covered-entity"").
+activerole(""patient_106"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_106"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0106"", ""patient_106"", ""medical-record"").
+
+// --- Extra facts ---
+has_court_order(""sender_106"",""receiver_106"",""patient_106"",""medical-record"",""jud","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(e)(1)(i): in response to court order)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_106,2.81,
+107,DENIED,PERMITTED,N,"164.502(a), 164.502(a)(1)(iv), 164.508","{""sender_role"": ""covered-entity"", ""receiver_role"": ""individual"", ""attribute"": ""medical-record"", ""purpose"": ""legal-defense"", ""subject_category"": ""deceased"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": true}","// Auto-generated facts: sender_107 → receiver_107 [medical-record / legal-defense]
+
+// --- Principals ---
+activerole(""sender_107"", ""covered-entity"").
+activerole(""receiver_107"", ""hospital"").
+activerole(""patient_107"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_107"", ""deceased"").
+
+// --- Message ---
+msg_contains(""msg_0107"", ""patient_107"", ""medical-record"").
+
+// --- Oracle predicates ---
+obtained_authorization_164_508(""sender_107"",""receiver_107"",""patient_107"",""medical-record"",""","$Step1(164.502(a): permitted use by covered entity, $Leaf(164.502(a)(1)(iv): valid authorization per 164.508))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_full/row_107,2.74,

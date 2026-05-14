@@ -1,0 +1,197 @@
+// ============================================================================
+// hipaa_164_508.dl — §164.508: Uses and disclosures for which an
+//                    authorization is required
+// ============================================================================
+// Reference: HIPAA_FORMALIZATION.pdf, Section 4.4 (pages 55–62)
+//
+// Structure:
+//   164.508(a)  — When authorization is required
+//   164.508(a)(2) — Psychotherapy notes require authorization
+//   164.508(a)(3) — Marketing requires authorization
+//   164.508(b)  — Authorization validity (oracle predicates)
+//   164.508(c)  — Authorization content requirements (oracle predicates)
+//
+// The key output of this section is require_authorization_by_164_508,
+// which is the NEGATIVE norm used by §164.506(a) to block TPO disclosures
+// when authorization is needed.
+// ============================================================================
+
+// =============================================
+// Oracle predicates for §164.508
+// =============================================
+
+// obtained_authorization_164_508 is declared in hipaa_stubs.dl
+// It is an oracle: the individual has sent a valid authorization message.
+// PDF (page 58): obtained-authorization-164.508(p1, p2, (q, t), u)
+
+// is_for_marketing(U): purpose is marketing
+.decl is_for_marketing(u: Purpose)
+is_for_marketing("marketing").
+is_for_marketing(U) :- purpose_subtype(U, "marketing").
+
+// is_for_counseling_training(P, U): CE's own training programs for counseling
+// PDF (page 56): u in counseling-training-programs(p1)
+.decl is_for_counseling_training(p: Principal, u: Purpose)
+is_for_counseling_training(P, "training-programs") :- is_covered_entity(P).
+
+// is_for_legal_defense(P, Q, U): CE defending itself in legal proceeding by Q
+// PDF (page 56): u in defense-in-legal-proceeding(p1, q)
+.decl is_for_legal_defense(p: Principal, q: Principal, u: Purpose)
+// Oracle — asserted as facts
+.decl legal_defense_purpose(p1: Principal, q: Principal, u: Purpose)
+is_for_legal_defense(P, Q, U) :- legal_defense_purpose(P, Q, U).
+
+// face_to_face: disclosure is a face-to-face communication
+// PDF (page 57): face-to-face(p1, p2, (q, t), u)
+.decl face_to_face(p1: Principal, p2: Principal, q: Principal,
+    t: Attribute, u: Purpose)
+
+// promotional_gift_of_nominal_value: disclosure involves a promotional gift
+// PDF (page 57): promotional-gift-of-nominal-value(p1, p2, (q, t), u)
+.decl promotional_gift_of_nominal_value(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// =============================================
+// §164.508(a)(2) — Psychotherapy notes require authorization
+// =============================================
+// PDF (page 56):
+//   phi-_508a2: activerole(p1, covered-entity) ^
+//     (t in psychotherapy-notes) =>
+//     obtained-authorization-164.508(p1, p2, (q, t), u)
+//
+// Exceptions:
+//   (i)(B) CE training programs for counseling
+//   (i)(C) Legal defense by CE
+//   (ii) Required by 502(a)(2)(ii) or permitted by 512(a)/512(d)/512(g)(1)/512(j)(1)(i)
+//
+// The negative norm fires (requiring authorization) when:
+// - CE is disclosing psychotherapy notes
+// - UNLESS an exception applies
+.decl exception_508a2(DECL_ARGS)
+
+// §508(a)(2)(i)(B): CE's own training programs
+exception_508a2(ARGS) :-
+    is_covered_entity(p1),
+    is_psychotherapy_notes(t),
+    msg_contains(m, q, t),
+    is_for_counseling_training(p1, u),
+    disclosure_attempted(ARGS).
+
+// §508(a)(2)(i)(C): Legal defense by CE against individual
+exception_508a2(ARGS) :-
+    is_covered_entity(p1),
+    is_psychotherapy_notes(t),
+    msg_contains(m, q, t),
+    is_for_legal_defense(p1, q, u),
+    disclosure_attempted(ARGS).
+
+// §508(a)(2)(ii): Required by 502(a)(2)(ii) or permitted by 512(a), 512(d),
+// 512(g)(1), 512(j)(1)(i)
+// These are cross-references to other sections that independently permit
+// disclosure of psychotherapy notes without authorization.
+exception_508a2(ARGS) :-
+    is_covered_entity(p1),
+    is_psychotherapy_notes(t),
+    msg_contains(m, q, t),
+    (permitted_by_164_512_a(ARGS, _) ;
+     permitted_by_164_512_d(ARGS, _) ;
+     permitted_by_164_512_e(ARGS, _) ;
+     permitted_by_164_512_g_1(ARGS, _) ;
+     permitted_by_164_512_j_1_i(ARGS, _)).
+
+// Forward declarations for cross-referenced predicates
+// (permitted_by_164_512_e is declared in hipaa_164_512.dl — no duplicate needed)
+.decl permitted_by_164_512_a(DECL_ARGS, e: Expl)
+.decl permitted_by_164_512_d(DECL_ARGS, e: Expl)
+.decl permitted_by_164_512_g_1(DECL_ARGS, e: Expl)
+.decl permitted_by_164_512_j_1_i(DECL_ARGS, e: Expl)
+
+// =============================================
+// §164.508(a)(3) — Marketing requires authorization
+// =============================================
+// PDF (page 57):
+//   phi-_508a3i: activerole(p1, covered-entity) ^
+//     (t in phi) ^ (u in marketing) =>
+//     obtained-authorization-164.508(p1, p2, (q, t), u)
+//
+// Exceptions:
+//   (A) face-to-face communication
+//   (B) promotional gift of nominal value
+.decl exception_508a3(DECL_ARGS)
+
+// §508(a)(3)(i)(A): Face-to-face communication
+exception_508a3(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_marketing(u),
+    (p2 = q ; is_personal_representative(p2, q)),
+    face_to_face(p1, p2, q, t, u).
+
+// §508(a)(3)(i)(B): Promotional gift of nominal value
+exception_508a3(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_marketing(u),
+    promotional_gift_of_nominal_value(p1, p2, q, t, u).
+
+// =============================================
+// require_authorization_by_164_508 — The negative norm
+// =============================================
+// This predicate fires when authorization IS REQUIRED but NOT obtained.
+// It is used by §164.506(a) to block TPO disclosures.
+//
+// Authorization is required for:
+// (1) Psychotherapy notes (508(a)(2)) unless exception applies
+// (2) Marketing (508(a)(3)) unless exception applies
+//
+// The predicate fires when the disclosure needs authorization
+// (i.e., it blocks 506(a) via negation).
+
+// Psychotherapy notes require authorization (unless exception)
+require_authorization_by_164_508(ARGS) :-
+    is_covered_entity(p1),
+    is_psychotherapy_notes(t),
+    msg_contains(m, q, t),
+    known_purpose(u),
+    disclosure_attempted(ARGS),
+    !exception_508a2(ARGS),
+    !obtained_authorization_164_508(p1, p2, q, t, u).
+
+// Marketing requires authorization (unless exception)
+require_authorization_by_164_508(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_marketing(u),
+    disclosure_attempted(ARGS),
+    !exception_508a3(ARGS),
+    !obtained_authorization_164_508(p1, p2, q, t, u).
+
+// =============================================
+// §164.508(b) — Authorization validity
+// =============================================
+// PDF (page 58): An authorization is valid if it is valid under
+// 508(b)(1) and not defective under 508(b)(2).
+// All sub-predicates are oracles since they involve document content checks.
+
+// is_valid_authorization: oracle — the authorization document is valid
+// per §508(b)(1) and not defective per §508(b)(2)
+.decl is_valid_authorization(m_auth: Message, p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// is_defective_authorization: oracle — authorization has defects per §508(b)(2)
+// (i) expiration passed, (ii) incomplete, (iii) revoked, (iv) violates (b)(3)/(b)(4),
+// (v) material info known to be false
+.decl is_defective_authorization(m_auth: Message, p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// =============================================
+// §164.508(c) — Authorization content requirements
+// =============================================
+// PDF (pages 61–62): These are all oracle predicates checking document contents.
+// §508(c)(1): description, senders, recipients, purpose, expiration, signature
+// §508(c)(2): right to revoke, conditioning statement, redisclosure potential
+// §508(c)(3): plain language
+// All modeled as oracles in is_valid_authorization above.

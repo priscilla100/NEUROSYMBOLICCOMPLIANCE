@@ -1,0 +1,68 @@
+// sox_hierarchies.dl
+// Role, record-type, and action hierarchies for SOX.
+
+// ── Role hierarchy ─────────────────────────────────────────────────────────
+.decl sox_role_subtype(child_role: Role, parent_role: Role)
+sox_role_subtype("ceo",                 "executive").
+sox_role_subtype("cfo",                 "executive").
+sox_role_subtype("executive",           "company-officer").
+sox_role_subtype("company-officer",     "sox-party").
+sox_role_subtype("public-issuer",       "company").
+sox_role_subtype("company",             "sox-party").
+sox_role_subtype("registered-auditor",  "auditor").
+sox_role_subtype("auditor",             "sox-party").
+sox_role_subtype("sec",                 "regulator").
+sox_role_subtype("regulator",           "sox-party").
+sox_role_subtype("audit-committee",     "sox-party").
+
+// Transitive closure
+.decl sox_role_subtype_tc(r1: Role, r2: Role)
+sox_role_subtype_tc(r1, r2) :- sox_role_subtype(r1, r2).
+sox_role_subtype_tc(r1, r3) :- sox_role_subtype_tc(r1, r2), sox_role_subtype(r2, r3).
+
+// Propagate activerole upward
+has_sox_role(p, r2) :- activerole(p, r1), sox_role_subtype_tc(r1, r2).
+has_sox_role(p, r)  :- activerole(p, r).
+
+// ── Record type hierarchy ──────────────────────────────────────────────────
+.decl rec_subtype(child_rec: RecordType, parent_rec: RecordType)
+rec_subtype("quarterly-report",              "financial-statement").
+rec_subtype("annual-report",                 "financial-statement").
+rec_subtype("financial-statement",           "sec-filing").
+rec_subtype("audit-report",                  "sec-filing").
+rec_subtype("internal-control-assessment",   "sec-filing").
+rec_subtype("management-certification-302",  "sec-filing").
+rec_subtype("accelerated-filer-assessment",  "internal-control-assessment").
+// Extraction aliases
+rec_subtype("internal-control-report",       "internal-control-assessment").
+rec_subtype("certification",                 "management-certification-302").
+
+.decl rec_subtype_tc(r1: RecordType, r2: RecordType)
+rec_subtype_tc(r1, r2) :- rec_subtype(r1, r2).
+rec_subtype_tc(r1, r3) :- rec_subtype_tc(r1, r2), rec_subtype(r2, r3).
+
+.decl is_financial_statement(t: RecordType)
+is_financial_statement(t) :- rec_subtype_tc(t, "financial-statement").
+is_financial_statement("financial-statement").
+
+.decl is_sec_filing(t: RecordType)
+is_sec_filing(t) :- rec_subtype_tc(t, "sec-filing").
+is_sec_filing("sec-filing").
+
+// ── Action type hierarchy ──────────────────────────────────────────────────
+.decl action_subtype(child_act: ActionType, parent_act: ActionType)
+action_subtype("certify",      "sox-action").
+action_subtype("attest",       "sox-action").
+action_subtype("disclose",     "sox-action").
+action_subtype("file-with-sec","sox-action").
+action_subtype("assess",       "sox-action").
+
+// ── Helper predicates ──────────────────────────────────────────────────────
+.decl is_company(p: Principal)
+is_company(p) :- has_sox_role(p, "company").
+
+.decl is_auditor(p: Principal)
+is_auditor(p) :- has_sox_role(p, "auditor").
+
+.decl is_executive_officer(p: Principal)
+is_executive_officer(p) :- has_sox_role(p, "executive").

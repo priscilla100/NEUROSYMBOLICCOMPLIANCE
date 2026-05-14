@@ -1,0 +1,205 @@
+// ============================================================================
+// gdpr_hierarchies.dl — Role and data-category hierarchies for GDPR
+// ============================================================================
+// Defines hierarchical relationships with transitive closure so that
+// e.g. activerole(P, "bank") implies has_role(P, "data-controller") after
+// the appropriate role_isa facts are added.
+//
+// Reference: GDPR 2016/679 — Art.4 definitions, Art.8, Art.9
+// ============================================================================
+
+// =============================================
+// Role Hierarchy
+// =============================================
+
+// role_isa(child, parent): child is a specialisation of parent
+.decl role_isa(child: Role, parent: Role)
+
+// --- Data controller subtypes ---
+// A joint controller is still a data controller (Art.26)
+role_isa("joint-controller", "data-controller").
+// A data processor acts on behalf of a controller (Art.4(8))
+role_isa("data-processor", "data-controller").
+// Sub-processors engaged by the primary processor (Art.28(2))
+role_isa("sub-processor", "data-processor").
+
+// --- Data subject subtypes ---
+// Children require extra protections under Art.8
+role_isa("child-data-subject", "data-subject").
+// Employees are data subjects in an employment context (Recital 155)
+role_isa("employee", "data-subject").
+// Patients are data subjects in a health context
+role_isa("patient", "data-subject").
+// Customers are data subjects in a commercial context
+role_isa("customer", "data-subject").
+
+// --- Supervisory authority subtypes (Art.4(21)) ---
+// Lead supervisory authority (Art.56)
+role_isa("lead-supervisory-authority", "supervisory-authority").
+
+// --- Recipient subtypes (Art.4(9)) ---
+// A third party that receives data (Art.4(10))
+role_isa("third-party-recipient", "recipient").
+// A processor receiving data under instruction is also a recipient
+role_isa("data-processor", "recipient").
+
+// Transitive closure of role hierarchy
+.decl role_subtype(child: Role, ancestor: Role)
+role_subtype(C, P) :- role_isa(C, P).
+role_subtype(C, A) :- role_isa(C, P), role_subtype(P, A).
+
+// === Active role assignments (base facts — populated from input) ===
+// activerole is declared in gdpr_types.dl
+
+// Check if principal has role R (directly or via hierarchy)
+// has_role is declared in gdpr_types.dl
+has_role(P, R) :- activerole(P, R).
+has_role(P, R) :- activerole(P, R2), role_subtype(R2, R).
+
+// =============================================
+// Data Category Hierarchy
+// =============================================
+
+// category_isa(child, parent): child is a subcategory of parent
+.decl category_isa(child: DataCategory, parent: DataCategory)
+
+// All personal data subtypes are personal data (Art.4(1))
+category_isa("special-category-data", "personal-data").
+category_isa("children-data",          "personal-data").
+category_isa("pseudonymous-data",      "personal-data").
+// Additional personal data categories used by the extraction layer
+category_isa("financial-data",         "personal-data").
+category_isa("location-data",          "personal-data").
+
+// Art.9(1) special categories (sensitive personal data)
+// These require an additional Art.9 basis on top of Art.6
+category_isa("racial-origin",              "special-category-data").
+category_isa("ethnic-origin",              "special-category-data").
+category_isa("political-opinion",          "special-category-data").
+category_isa("religious-belief",           "special-category-data").
+category_isa("philosophical-belief",       "special-category-data").
+category_isa("trade-union-membership",     "special-category-data").
+category_isa("genetic-data",               "special-category-data").
+category_isa("biometric-data",             "special-category-data").
+category_isa("health-data",                "special-category-data").
+category_isa("sex-life-data",              "special-category-data").
+category_isa("sexual-orientation",         "special-category-data").
+
+// Art.8 children's data (extra protections — consent requires parental authority)
+// children-data is already a direct subtype of personal-data above
+
+// Transitive closure of category hierarchy
+.decl category_subtype(child: DataCategory, ancestor: DataCategory)
+category_subtype(C, P) :- category_isa(C, P).
+category_subtype(C, A) :- category_isa(C, P), category_subtype(P, A).
+
+// =============================================
+// Legal Basis Hierarchy / Classification
+// =============================================
+
+// legal_basis_isa(child, parent): child is a sub-type of parent basis
+.decl legal_basis_isa(child: LegalBasis, parent: LegalBasis)
+
+// Art.6(1)(a) sub-cases of consent
+legal_basis_isa("explicit-consent",   "consent").
+legal_basis_isa("parental-consent",   "consent").  // Art.8 children
+
+// Art.6(1)(b) sub-cases
+legal_basis_isa("pre-contractual",    "contract").
+
+// Art.6(1)(e) public task sub-cases
+legal_basis_isa("official-authority", "public-task").
+legal_basis_isa("public-interest",    "public-task").
+
+// Art.9(2) additional bases for special-category data
+// (separate from Art.6 — must ALSO be satisfied)
+.decl art9_basis(lb: LegalBasis)
+art9_basis("explicit-consent").          // Art.9(2)(a)
+art9_basis("employment-social-security").// Art.9(2)(b)
+art9_basis("vital-interests-art9").      // Art.9(2)(c)
+art9_basis("legitimate-activities-npo"). // Art.9(2)(d)
+art9_basis("manifestly-public-data").    // Art.9(2)(e)
+art9_basis("legal-proceedings").         // Art.9(2)(f)
+art9_basis("substantial-public-interest").// Art.9(2)(g)
+art9_basis("health-care-purposes").      // Art.9(2)(h)
+art9_basis("public-health").             // Art.9(2)(i)
+art9_basis("archiving-research-stats").  // Art.9(2)(j)
+
+// Transitive closure of legal basis hierarchy
+.decl legal_basis_subtype(child: LegalBasis, ancestor: LegalBasis)
+legal_basis_subtype(C, P) :- legal_basis_isa(C, P).
+legal_basis_subtype(C, A) :- legal_basis_isa(C, P), legal_basis_subtype(P, A).
+
+// =============================================
+// Purpose Classification
+// =============================================
+
+// purpose_isa(child, parent): child is a sub-purpose of parent
+.decl purpose_isa(child: Purpose, parent: Purpose)
+
+// Legitimate interests sub-purposes
+purpose_isa("fraud-prevention",            "legitimate-interests").
+purpose_isa("network-security",            "legitimate-interests").
+purpose_isa("direct-marketing",            "legitimate-interests").
+purpose_isa("intragroup-admin",            "legitimate-interests").
+purpose_isa("client-relationship-mgmt",    "legitimate-interests").
+
+// Public task sub-purposes
+purpose_isa("law-enforcement-gdpr",        "public-task").
+purpose_isa("public-health-gdpr",          "public-task").
+purpose_isa("statistical-research",        "public-task").
+purpose_isa("archiving-public-interest",   "public-task").
+
+// Contract sub-purposes
+purpose_isa("delivery-of-goods",           "contract").
+purpose_isa("provision-of-services",       "contract").
+purpose_isa("employment-contract",         "contract").
+
+// All known purposes (for grounding)
+.decl known_purpose_gdpr(u: Purpose)
+known_purpose_gdpr(U) :- purpose_isa(U, _).
+known_purpose_gdpr(U) :- purpose_isa(_, U).
+known_purpose_gdpr("consent-purpose").
+known_purpose_gdpr("vital-interests").
+known_purpose_gdpr("legal-obligation").
+known_purpose_gdpr("legitimate-interests").
+known_purpose_gdpr("public-task").
+known_purpose_gdpr("contract").
+known_purpose_gdpr("research").
+known_purpose_gdpr("archiving").
+known_purpose_gdpr("freedom-of-expression").
+
+// Transitive closure of purpose hierarchy
+.decl purpose_subtype_gdpr(child: Purpose, ancestor: Purpose)
+purpose_subtype_gdpr(C, P) :- purpose_isa(C, P).
+purpose_subtype_gdpr(C, A) :- purpose_isa(C, P), purpose_subtype_gdpr(P, A).
+
+// =============================================
+// Helper role checks
+// =============================================
+
+// is_data_controller(P): P is a data controller (or subtype thereof)
+.decl is_data_controller(p: Principal)
+is_data_controller(P) :- has_role(P, "data-controller").
+
+// is_data_processor(P): P is a data processor
+.decl is_data_processor(p: Principal)
+is_data_processor(P) :- has_role(P, "data-processor").
+
+// is_data_subject(P): P is a data subject
+.decl is_data_subject(p: Principal)
+is_data_subject(P) :- has_role(P, "data-subject").
+
+// is_child_subject(P): P is a child data subject (Art.8)
+.decl is_child_subject(p: Principal)
+is_child_subject(P) :- has_role(P, "child-data-subject").
+
+// is_special_category(CAT): the data category is a special category (Art.9)
+.decl is_special_category(dc: DataCategory)
+is_special_category("special-category-data").
+is_special_category(C) :- category_subtype(C, "special-category-data").
+
+// is_personal_data(CAT): the data category is personal data
+.decl is_personal_data(dc: DataCategory)
+is_personal_data("personal-data").
+is_personal_data(C) :- category_subtype(C, "personal-data").

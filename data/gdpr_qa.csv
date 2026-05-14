@@ -1,0 +1,11 @@
+question,answer
+Can a company send marketing emails to EU users who gave explicit consent to receive them?,Permitted
+Can a healthcare provider process patient medical records to provide direct treatment?,Permitted
+Can a controller share a user's data with a processor under a data processing agreement for IT support?,Permitted
+Can a company process employee salary data for payroll based on contractual necessity?,Permitted
+Can a data controller delete a user's personal data when the user exercises their right to erasure and no overriding legal obligation exists?,Permitted
+Can a company process sensitive health data for employment screening without explicit consent?,Denied
+Can a business transfer EU personal data to a third country without an adequacy decision or appropriate safeguards?,Denied
+Can a controller continue to process user data for marketing after the user withdraws consent?,Denied
+Can a company process genetic data for insurance risk profiling without an Art.9(2) exception?,Denied
+Can a social media platform retain user data indefinitely after the user deletes their account with no legal basis for retention?,Denied

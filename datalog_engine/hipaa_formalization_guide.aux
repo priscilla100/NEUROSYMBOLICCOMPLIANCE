@@ -1,0 +1,329 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction to Souffl\'{e} Datalog}{6}{section.1}\protected@file@percent }
+\newlabel{sec:intro-souffle}{{1}{6}{Introduction to Souffl\'{e} Datalog}{section.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}What is Datalog?}{6}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}What is Souffl\'{e}?}{6}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Installing Souffl\'{e}}{6}{subsection.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Running Souffl\'{e} Programs}{7}{subsection.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.5}Core Syntax Summary}{7}{subsection.1.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Minimal Souffl\'{e} example}{7}{lstlisting.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.6}The Explain Feature}{8}{subsection.1.6}\protected@file@percent }
+\newlabel{sec:explain}{{1.6}{8}{The Explain Feature}{subsection.1.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.7}Stratification Visualization}{8}{subsection.1.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Project Overview}{8}{section.2}\protected@file@percent }
+\newlabel{sec:project-overview}{{2}{8}{Project Overview}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}What is HIPAA?}{8}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}What is the Privacy Rule?}{9}{subsection.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}What are \S  164.502 and \S  164.506?}{9}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}The Goal: A Compliance Checker}{9}{subsection.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Architecture and File Organization}{10}{section.3}\protected@file@percent }
+\newlabel{sec:architecture}{{3}{10}{Architecture and File Organization}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}File Overview}{10}{subsection.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces File organization of the HIPAA compliance checker.}}{10}{table.1}\protected@file@percent }
+\newlabel{tab:files}{{1}{10}{File organization of the HIPAA compliance checker}{table.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Dependency Order}{10}{subsection.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}hipaa\_main.dl --- include order}{10}{lstlisting.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}General Principles of Modeling}{11}{section.4}\protected@file@percent }
+\newlabel{sec:modeling-principles}{{4}{11}{General Principles of Modeling}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}High-Level Rule Organization Pattern}{11}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:rule-organization}{{4.1}{11}{High-Level Rule Organization Pattern}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Top-level disjunction.}{11}{section*.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}Top-level disjunction for \S  164.502 (from hipaa\_164\_502.dl)}{11}{lstlisting.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Hierarchical decomposition.}{12}{section*.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}Hierarchical decomposition (from hipaa\_164\_502.dl)}{12}{lstlisting.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Naming convention.}{12}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Rule hierarchy visualization.}{12}{section*.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Rule hierarchy for \S  164.502.}}{13}{figure.1}\protected@file@percent }
+\newlabel{fig:hierarchy-502}{{1}{13}{Rule hierarchy for \S 164.502}{figure.1}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Rule hierarchy for \S  164.506.}}{13}{figure.2}\protected@file@percent }
+\newlabel{fig:hierarchy-506}{{2}{13}{Rule hierarchy for \S 164.506}{figure.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Three Types of Norms}{13}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:norm-types}{{4.2}{13}{Three Types of Norms}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Exception Handling Patterns}{14}{subsection.4.3}\protected@file@percent }
+\newlabel{sec:exception-patterns}{{4.3}{14}{Exception Handling Patterns}{subsection.4.3}{}}
+\@writefile{toc}{\contentsline {paragraph}{Pattern 1: Exception-as-negation.}{14}{section*.6}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {5}Exception-as-negation pattern (from hipaa\_164\_502.dl)}{15}{lstlisting.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Pattern 2: Exception-as-separate-path.}{15}{section*.7}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {6}Exception-as-separate-path pattern (from hipaa\_164\_502.dl)}{15}{lstlisting.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Pattern 3: Exception-as-disjunction.}{16}{section*.8}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {7}Exception-as-disjunction pattern (from hipaa\_164\_502.dl)}{16}{lstlisting.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Oracle Predicates vs.\ Derived Predicates}{16}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:oracle-vs-derived}{{4.4}{16}{Oracle Predicates vs.\ Derived Predicates}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {paragraph}{Oracle predicates (EDB --- Extensional Database).}{16}{section*.9}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {8}Oracle predicates (from hipaa\_macros.dl and hipaa\_164\_502.dl)}{16}{lstlisting.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Derived predicates (IDB --- Intensional Database).}{17}{section*.10}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {9}Derived predicates (from hipaa\_macros.dl)}{17}{lstlisting.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{When to use which.}{17}{section*.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}The Action Parameter Translation}{17}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:action-param}{{4.5}{17}{The Action Parameter Translation}{subsection.4.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {10}Action parameter macros (from hipaa\_types.dl)}{18}{lstlisting.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Closed-World Assumption for Denial}{18}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:closed-world}{{4.6}{18}{Closed-World Assumption for Denial}{subsection.4.6}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {11}Denial via closed-world assumption (from hipaa\_top.dl)}{18}{lstlisting.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.7}Stub Pattern for Incremental Formalization}{19}{subsection.4.7}\protected@file@percent }
+\newlabel{sec:stub-pattern-principles}{{4.7}{19}{Stub Pattern for Incremental Formalization}{subsection.4.7}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {12}Stub declarations (from hipaa\_stubs.dl)}{19}{lstlisting.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Type System and ADT Explanation Trees}{19}{section.5}\protected@file@percent }
+\newlabel{sec:types-adt}{{5}{19}{Type System and ADT Explanation Trees}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}The 6-Tuple Action Signature}{19}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The 6-tuple action signature.}}{20}{table.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Preprocessor Macros for the Signature}{20}{subsection.5.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {13}Preprocessor macros from hipaa\_types.dl}{20}{lstlisting.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Primitive Domain Types}{20}{subsection.5.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {14}Type declarations from hipaa\_types.dl}{20}{lstlisting.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}The \texttt  {Expl} ADT: Explanation Trees}{21}{subsection.5.4}\protected@file@percent }
+\newlabel{sec:expl-adt}{{5.4}{21}{The \texttt {Expl} ADT: Explanation Trees}{subsection.5.4}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {15}The Expl ADT from hipaa\_types.dl}{21}{lstlisting.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}How Explanation Trees Compose}{21}{subsection.5.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Hierarchy Design}{22}{section.6}\protected@file@percent }
+\newlabel{sec:hierarchies}{{6}{22}{Hierarchy Design}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Role Hierarchy}{22}{subsection.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {16}Role hierarchy from hipaa\_hierarchies.dl}{22}{lstlisting.16}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Role hierarchy for covered entities. Arrows point from child to parent (specialization).}}{23}{figure.3}\protected@file@percent }
+\newlabel{fig:role-hierarchy}{{3}{23}{Role hierarchy for covered entities. Arrows point from child to parent (specialization)}{figure.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Transitive Closure}{23}{subsection.6.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {17}Transitive closure for roles}{23}{lstlisting.17}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {18}has\_role uses both direct and inherited roles}{23}{lstlisting.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Attribute Hierarchy}{23}{subsection.6.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {19}Attribute hierarchy (selected entries)}{23}{lstlisting.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Purpose Hierarchy}{24}{subsection.6.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {20}Purpose hierarchy (selected entries)}{24}{lstlisting.20}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {21}known\_purpose for grounding}{25}{lstlisting.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Macro/Helper Predicates}{25}{section.7}\protected@file@percent }
+\newlabel{sec:macros}{{7}{25}{Macro/Helper Predicates}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Entity Role Checks}{25}{subsection.7.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {22}Entity role check predicates}{25}{lstlisting.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Attribute and Purpose Checks}{26}{subsection.7.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {23}Attribute and purpose check predicates}{26}{lstlisting.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Personal Representative (\S  164.502(g))}{26}{subsection.7.3}\protected@file@percent }
+\newlabel{sec:personal-rep}{{7.3}{26}{Personal Representative (\S 164.502(g))}{subsection.7.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {24}Personal representative rules from hipaa\_macros.dl}{26}{lstlisting.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Oracle Predicates}{27}{subsection.7.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {25}Oracle predicates from hipaa\_macros.dl}{27}{lstlisting.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Formalization of \S  164.506}{27}{section.8}\protected@file@percent }
+\newlabel{sec:506}{{8}{27}{Formalization of \S 164.506}{section.8}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}\S  164.506 --- Top-Level}{27}{subsection.8.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {26}\S  164.506 top-level}{27}{lstlisting.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}\S  164.506(a) --- Standard Permitted Uses}{28}{subsection.8.2}\protected@file@percent }
+\newlabel{sec:506a}{{8.2}{28}{\S 164.506(a) --- Standard Permitted Uses}{subsection.8.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {27}\S  164.506(a) --- Souffl\'{e} translation}{28}{lstlisting.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}\S  164.506(b) --- Consent for TPO}{29}{subsection.8.3}\protected@file@percent }
+\newlabel{sec:506b}{{8.3}{29}{\S 164.506(b) --- Consent for TPO}{subsection.8.3}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {28}\S  164.506(b) --- Consent for TPO}{29}{lstlisting.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}\S  164.506(c) --- Implementation Specification}{29}{subsection.8.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {29}\S  164.506(c) --- disjunction of sub-rules}{29}{lstlisting.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.1}\S  164.506(c)(1) --- Own TPO}{30}{subsubsection.8.4.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {30}\S  164.506(c)(1)}{30}{lstlisting.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.2}\S  164.506(c)(2) --- Treatment Activities of a Provider}{30}{subsubsection.8.4.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {31}\S  164.506(c)(2)}{30}{lstlisting.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.3}\S  164.506(c)(3) --- Payment Activities of Receiving Entity}{31}{subsubsection.8.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {32}\S  164.506(c)(3)}{31}{lstlisting.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.4}\S  164.506(c)(4) --- Healthcare Operations Between Covered Entities}{31}{subsubsection.8.4.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {33}\S  164.506(c)(4)}{31}{lstlisting.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.5}\S  164.506(c)(5) --- Organized Health Care Arrangement}{32}{subsubsection.8.4.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {34}\S  164.506(c)(5)}{32}{lstlisting.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Formalization of \S  164.502}{32}{section.9}\protected@file@percent }
+\newlabel{sec:502}{{9}{32}{Formalization of \S 164.502}{section.9}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}\S  164.502 --- Top-Level}{32}{subsection.9.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {35}\S  164.502 top-level}{32}{lstlisting.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}\S  164.502(a) --- Permitted and Required Disclosures}{33}{subsection.9.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {36}\S  164.502(a)}{33}{lstlisting.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}\S  164.502(a)(1) --- Permitted Uses (i through vi)}{34}{subsection.9.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {37}\S  164.502(a)(1) --- six pathways}{34}{lstlisting.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.1}\S  164.502(a)(1)(i) --- To the Individual}{34}{subsubsection.9.3.1}\protected@file@percent }
+\newlabel{sec:502a1i}{{9.3.1}{34}{\S 164.502(a)(1)(i) --- To the Individual}{subsubsection.9.3.1}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {38}\S  164.502(a)(1)(i) --- disclosure to individual}{34}{lstlisting.38}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.2}\S  164.502(a)(1)(ii) --- TPO per \S  164.506}{35}{subsubsection.9.3.2}\protected@file@percent }
+\newlabel{sec:502a1ii}{{9.3.2}{35}{\S 164.502(a)(1)(ii) --- TPO per \S 164.506}{subsubsection.9.3.2}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {39}\S  164.502(a)(1)(ii) --- delegates to \S  164.506}{35}{lstlisting.39}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.3}\S  164.502(a)(1)(iii) --- Incident to Use}{35}{subsubsection.9.3.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {40}\S  164.502(a)(1)(iii) --- incident to use}{35}{lstlisting.40}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.4}\S  164.502(a)(1)(iv) --- Valid Authorization per \S  164.508}{35}{subsubsection.9.3.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {41}\S  164.502(a)(1)(iv) --- authorization}{35}{lstlisting.41}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.5}\S  164.502(a)(1)(v) --- Agreement per \S  164.510}{36}{subsubsection.9.3.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {42}\S  164.502(a)(1)(v) --- agreement}{36}{lstlisting.42}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.3.6}\S  164.502(a)(1)(vi) --- Per \S  164.512, \S  164.514(e)(f)(g)}{36}{subsubsection.9.3.6}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {43}\S  164.502(a)(1)(vi) --- other sections}{36}{lstlisting.43}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}\S  164.502(a)(2) --- Required Disclosures}{36}{subsection.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.4.1}\S  164.502(a)(2)(i) --- To Individual Upon Request}{36}{subsubsection.9.4.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {44}\S  164.502(a)(2)(i)}{36}{lstlisting.44}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.4.2}\S  164.502(a)(2)(ii) --- To the Secretary for Investigation}{37}{subsubsection.9.4.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {45}\S  164.502(a)(2)(ii)}{37}{lstlisting.45}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}\S  164.502(b) --- Minimum Necessary Standard}{37}{subsection.9.5}\protected@file@percent }
+\newlabel{sec:502b}{{9.5}{37}{\S 164.502(b) --- Minimum Necessary Standard}{subsection.9.5}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {46}\S  164.502(b) --- minimum necessary}{37}{lstlisting.46}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {47}\S  164.502(b)(2) --- minimum necessary exceptions}{38}{lstlisting.47}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.6}\S  164.502(d) --- De-identified Information}{38}{subsection.9.6}\protected@file@percent }
+\newlabel{sec:502d}{{9.6}{38}{\S 164.502(d) --- De-identified Information}{subsection.9.6}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {48}\S  164.502(d) --- de-identified info}{38}{lstlisting.48}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.7}\S  164.502(e) --- Business Associates}{39}{subsection.9.7}\protected@file@percent }
+\newlabel{sec:502e}{{9.7}{39}{\S 164.502(e) --- Business Associates}{subsection.9.7}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {49}\S  164.502(e) --- business associates}{39}{lstlisting.49}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {50}\S  164.502(e)(1)(ii) --- exclusions}{40}{lstlisting.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.8}\S  164.502(h) --- Provider/Plan Communication}{40}{subsection.9.8}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {51}\S  164.502(h)}{40}{lstlisting.51}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.9}\S  164.502(i) --- Notice Consistency}{40}{subsection.9.9}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {52}\S  164.502(i)}{40}{lstlisting.52}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.10}\S  164.502(j) --- Whistleblower and Crime Victim Protections}{41}{subsection.9.10}\protected@file@percent }
+\newlabel{sec:502j}{{9.10}{41}{\S 164.502(j) --- Whistleblower and Crime Victim Protections}{subsection.9.10}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.10.1}\S  164.502(j)(1) --- Whistleblower}{41}{subsubsection.9.10.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {53}\S  164.502(j)(1) --- whistleblower}{41}{lstlisting.53}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.10.2}\S  164.502(j)(2) --- Crime Victim}{41}{subsubsection.9.10.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {54}\S  164.502(j)(2) --- crime victim}{41}{lstlisting.54}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Handling Negation}{42}{section.10}\protected@file@percent }
+\newlabel{sec:negation}{{10}{42}{Handling Negation}{section.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Stratified Negation in Souffl\'{e}}{42}{subsection.10.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Stratification Design in the HIPAA Checker}{42}{subsection.10.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Stratification design.}}{42}{table.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3}Examples of Negation in the Codebase}{42}{subsection.10.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.4}Safety Rule for Negation}{43}{subsection.10.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Handling Temporal Logic}{43}{section.11}\protected@file@percent }
+\newlabel{sec:temporal}{{11}{43}{Handling Temporal Logic}{section.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Why Temporal Logic Matters}{43}{subsection.11.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Why Kamp-Style Translation Was Deferred}{43}{subsection.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.3}Oracle Predicates as Temporal Substitutes}{44}{subsection.11.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4}Future Temporal Infrastructure}{44}{subsection.11.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {55}Sketch of temporal infrastructure}{44}{lstlisting.55}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {12}Stub Pattern for Unformalized Sections}{44}{section.12}\protected@file@percent }
+\newlabel{sec:stubs}{{12}{44}{Stub Pattern for Unformalized Sections}{section.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.1}The Problem}{44}{subsection.12.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.2}The Solution: Empty Declarations}{44}{subsection.12.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {56}Examples from hipaa\_stubs.dl}{44}{lstlisting.56}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {12.3}Conservative Default}{45}{subsection.12.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {13}Grounding Issues}{45}{section.13}\protected@file@percent }
+\newlabel{sec:grounding}{{13}{45}{Grounding Issues}{section.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.1}The Grounding Requirement}{45}{subsection.13.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.2}Problem: Unrestricted Purpose Variable}{46}{subsection.13.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.3}Solution: known\_purpose(u)}{46}{subsection.13.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {13.4}Problem: Unrestricted Disclosure in (d)(2)}{46}{subsection.13.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {14}Prolog to Souffl\'{e} Translation}{46}{section.14}\protected@file@percent }
+\newlabel{sec:prolog-translation}{{14}{46}{Prolog to Souffl\'{e} Translation}{section.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Prolog to Souffl\'{e} translation reference.}}{47}{table.4}\protected@file@percent }
+\newlabel{tab:prolog-translation}{{4}{47}{Prolog to Souffl\'{e} translation reference}{table.4}{}}
+\gdef \LT@i {\LT@entry 
+    {3}{22.95pt}\LT@entry 
+    {1}{168.49014pt}\LT@entry 
+    {1}{63.29788pt}\LT@entry 
+    {1}{111.58464pt}}
+\@writefile{toc}{\contentsline {section}{\numberline {15}Test Scenarios}{48}{section.15}\protected@file@percent }
+\newlabel{sec:tests}{{15}{48}{Test Scenarios}{section.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {15.1}Principals and Roles}{48}{subsection.15.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Test principals.}}{48}{table.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {15.2}The 10 Scenarios}{48}{subsection.15.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{Test scenarios with expected outcomes.}}{49}{table.6}\protected@file@percent }
+\newlabel{tab:scenarios}{{6}{49}{Test scenarios with expected outcomes}{table.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {15.3}Scenario Analysis}{49}{subsection.15.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {15.3.1}Scenario 1: Hospital to Doctor for Treatment}{49}{subsubsection.15.3.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {57}Scenario 1 facts}{49}{lstlisting.57}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {15.3.2}Scenario 4: Hospital to Random Person for Marketing (DENY)}{49}{subsubsection.15.3.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {58}Scenario 4 facts}{49}{lstlisting.58}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {15.3.3}Scenario 9: Parent Requests PHI About Minor Child}{50}{subsubsection.15.3.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {59}Scenario 9 facts}{50}{lstlisting.59}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {16}How to Run Everything}{50}{section.16}\protected@file@percent }
+\newlabel{sec:running}{{16}{50}{How to Run Everything}{section.16}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.1}Step 1: Install Souffl\'{e}}{50}{subsection.16.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.2}Step 2: Navigate to the Project Directory}{50}{subsection.16.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.3}Step 3: Run the Compliance Checker}{50}{subsection.16.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.4}Step 4: Interpret the Output}{51}{subsection.16.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.5}Step 5: Use Explain Mode for Debugging}{51}{subsection.16.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {16.6}Step 6: Add New Test Scenarios}{51}{subsection.16.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {17}Lessons Learned and Debugging Tips}{52}{section.17}\protected@file@percent }
+\newlabel{sec:lessons}{{17}{52}{Lessons Learned and Debugging Tips}{section.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.1}Reserved Words}{52}{subsection.17.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.2}Grounding Errors}{52}{subsection.17.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.3}Stratification Errors}{52}{subsection.17.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.4}ADT Constructor Names Must Be Globally Unique}{52}{subsection.17.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.5}Disjunction Gotchas}{52}{subsection.17.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.6}Empty Stubs and Unintended Blocking}{53}{subsection.17.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {17.7}The Closed-World Assumption and Denial}{53}{subsection.17.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {18}Formalization of \S  164.508 --- Authorization Required}{53}{section.18}\protected@file@percent }
+\newlabel{sec:508}{{18}{53}{Formalization of \S 164.508 --- Authorization Required}{section.18}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {18.1}What is Authorization?}{53}{subsection.18.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {18.2}The Negative Norm Concept}{53}{subsection.18.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {60}How \S  508 blocks \S  506(a) via negation}{54}{lstlisting.60}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {18.3}Structure of the Negative Norm}{54}{subsection.18.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {61}The negative norm --- require\_authorization (from hipaa\_164\_508.dl)}{54}{lstlisting.61}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {18.4}Exception Predicates}{55}{subsection.18.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {18.5}Example: Psychotherapy Notes for Payment}{55}{subsection.18.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {19}Formalization of \S  164.510 --- Opportunity to Agree or Object}{55}{section.19}\protected@file@percent }
+\newlabel{sec:510}{{19}{55}{Formalization of \S 164.510 --- Opportunity to Agree or Object}{section.19}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.1}Overview}{55}{subsection.19.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {62}Top-level \S  510 (from hipaa\_164\_510.dl)}{56}{lstlisting.62}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.2}Facility Directories (\S  510(a))}{56}{subsection.19.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {63}Clergy vs.\ by-name directory lookup (from hipaa\_164\_510.dl)}{56}{lstlisting.63}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.3}Incapacity and Emergency Exceptions (\S  510(a)(3))}{57}{subsection.19.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {64}Emergency exception for directory (\S  510(a)(3))}{57}{lstlisting.64}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.4}Care Involvement (\S  510(b))}{57}{subsection.19.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {65}Who can receive care involvement disclosures}{57}{lstlisting.65}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Example.}{58}{section*.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Notification (\S  510(b)(1)(ii)).}{58}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {19.5}Disaster Relief (\S  510(b)(4))}{58}{subsection.19.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {20}Formalization of \S  164.512 --- Uses and Disclosures Without Authorization or Agreement}{58}{section.20}\protected@file@percent }
+\newlabel{sec:512}{{20}{58}{Formalization of \S 164.512 --- Uses and Disclosures Without Authorization or Agreement}{section.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.1}Overview}{58}{subsection.20.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {66}Top-level \S  512 disjunction (from hipaa\_164\_512.dl)}{58}{lstlisting.66}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.2}Sub-section (a): Required by Law}{58}{subsection.20.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {67}\S  512(a): Required by law}{58}{lstlisting.67}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.3}Sub-section (b): Public Health Activities}{59}{subsection.20.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.4}Sub-section (c): Abuse, Neglect, or Domestic Violence}{59}{subsection.20.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {68}\S  512(c): Three alternative conditions combined with ;\ (OR)}{59}{lstlisting.68}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.5}Sub-section (d): Health Oversight Activities}{59}{subsection.20.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.6}Sub-section (e): Judicial and Administrative Proceedings}{59}{subsection.20.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.7}Sub-section (f): Law Enforcement}{59}{subsection.20.7}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {69}\S  512(f)(6): Nested negative norm}{60}{lstlisting.69}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.8}Sub-section (g): Decedents}{60}{subsection.20.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.9}Sub-section (h): Organ, Eye, or Tissue Donation}{60}{subsection.20.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.10}Sub-section (i): Research}{60}{subsection.20.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.11}Sub-section (j): Serious Threat to Health or Safety}{60}{subsection.20.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.12}Sub-section (k): Specialized Government Functions}{61}{subsection.20.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.13}Sub-section (l): Workers' Compensation}{61}{subsection.20.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {20.14}The Oracle Predicate Pattern in \S  512}{61}{subsection.20.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {21}Formalization of \S  164.514 --- Other Requirements}{61}{section.21}\protected@file@percent }
+\newlabel{sec:514}{{21}{61}{Formalization of \S 164.514 --- Other Requirements}{section.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.1}Overview}{61}{subsection.21.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.2}De-identification Standards (\S  514(a)--(c))}{61}{subsection.21.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.3}Minimum Necessary Implementation (\S  514(d))}{62}{subsection.21.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {70}Minimum necessary implementation (\S  514(d))}{62}{lstlisting.70}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.4}Limited Data Sets (\S  514(e))}{62}{subsection.21.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {71}Limited data set disclosure (\S  514(e))}{62}{lstlisting.71}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.5}Fundraising (\S  514(f))}{63}{subsection.21.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {72}Fundraising disclosure (\S  514(f))}{63}{lstlisting.72}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {21.6}Health Plan Underwriting (\S  514(g))}{63}{subsection.21.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {22}Formalization of \S  164.524 --- Individual Access}{63}{section.22}\protected@file@percent }
+\newlabel{sec:524}{{22}{63}{Formalization of \S 164.524 --- Individual Access}{section.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {22.1}Overview}{63}{subsection.22.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {22.2}The Right of Access}{63}{subsection.22.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {73}Right of access (\S  524) --- from hipaa\_164\_524.dl}{63}{lstlisting.73}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {22.3}Denial Grounds Without Review (\S  524(a)(2))}{64}{subsection.22.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {22.4}Denial Grounds With Review (\S  524(a)(3))}{64}{subsection.22.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {22.5}How \S  524 Connects to \S  502}{64}{subsection.22.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {74}How \S  524 feeds into the main permission framework}{64}{lstlisting.74}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {23}Testing Methodology}{65}{section.23}\protected@file@percent }
+\newlabel{sec:testing}{{23}{65}{Testing Methodology}{section.23}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {23.1}Test Case Structure}{65}{subsection.23.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Test case file structure.}}{65}{table.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {23.2}The Run Script Pattern}{65}{subsection.23.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {75}Typical test case run script}{65}{lstlisting.75}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {23.3}Test Coverage}{65}{subsection.23.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {24}Oracle Predicates --- A Complete Reference}{66}{section.24}\protected@file@percent }
+\newlabel{sec:oracle-reference}{{24}{66}{Oracle Predicates --- A Complete Reference}{section.24}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {24.1}What are Oracle Predicates?}{66}{subsection.24.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {24.2}How Oracle Predicates are Used}{66}{subsection.24.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {76}Oracle predicate used in a rule}{66}{lstlisting.76}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {77}Asserting an oracle predicate as a fact}{67}{lstlisting.77}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {24.3}Oracle Predicates by Section}{67}{subsection.24.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.502/506 (General Rules and TPO):}{67}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.508 (Authorization):}{67}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.510 (Agree/Object):}{67}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.512 (Without Authorization):}{68}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.514 (Other Requirements):}{68}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{\S  164.524 (Individual Access):}{68}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {25}Conclusion}{68}{section.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Complete File: hipaa\_types.dl}{69}{appendix.1.A}\protected@file@percent }
+\newlabel{app:types}{{A}{69}{Complete File: hipaa\_types.dl}{appendix.1.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Complete File: hipaa\_top.dl}{69}{appendix.1.B}\protected@file@percent }
+\newlabel{app:top}{{B}{69}{Complete File: hipaa\_top.dl}{appendix.1.B}{}}
+\gdef \@abspage@last{70}

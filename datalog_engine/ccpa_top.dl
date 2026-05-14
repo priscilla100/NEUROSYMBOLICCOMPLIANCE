@@ -1,0 +1,110 @@
+// ============================================================================
+// ccpa_top.dl — Top-level disclosure rule and output directives for CCPA
+// ============================================================================
+// Entry point for the CCPA compliance checker. Run with:
+//
+//   souffle -D output_ccpa ccpa_top.dl
+//
+// Reference: Cal. Civ. Code §1798.100 et seq.
+//
+// Top-level logic:
+//   A disclosure is ALLOWED if:
+//     - It is permitted by §1798.100 (service provider, required by law,
+//       or consumer consent), OR
+//     - It is permitted by §1798.120 (sale/sharing with no opt-out or
+//       required minor authorization)
+//     AND
+//     - It is NOT blocked by §1798.120 (opt-out exercised)
+//     AND
+//     - It is NOT blocked by §1798.121 (sensitive PI without consent)
+//
+// Include order:
+//   1. ccpa_types.dl     — type declarations, Expl ADT, oracle predicates
+//   2. ccpa_hierarchies.dl — role, PI category, and purpose hierarchies
+//   3. ccpa_1798_100.dl  — §1798.100 general disclosure rules
+//   4. ccpa_1798_120.dl  — §1798.120 opt-out of sale/sharing
+// ============================================================================
+
+#include "ccpa_types.dl"
+#include "ccpa_hierarchies.dl"
+#include "ccpa_1798_100.dl"
+#include "ccpa_1798_120.dl"
+
+// =============================================
+// Top-level: is_disclosure_allowed_ccpa
+// =============================================
+// A disclosure is allowed under CCPA when it satisfies at least one permitted
+// pathway AND is not overridden by any blocking norm.
+.decl is_disclosure_allowed_ccpa(CCPA_DECL_ARGS, e: Expl)
+
+// Pathway 1: §1798.100 permitted (service provider, required by law, or consent)
+// and not blocked by sensitive-PI rule or opt-out rule.
+is_disclosure_allowed_ccpa(CCPA_ARGS,
+    $Step1("CCPA: disclosure permitted under §1798.100", E)) :-
+    disclosure_attempted(CCPA_ARGS),
+    permitted_by_ccpa_1798_100(CCPA_ARGS, E),
+    !blocked_by_ccpa_1798_120(CCPA_ARGS, _),
+    !blocked_sensitive_pi_no_consent(CCPA_ARGS, _),
+    !blocked_incompatible_purpose(CCPA_ARGS, _).
+
+// Pathway 2: §1798.120 permitted (sale/sharing — no opt-out, or minor authorized)
+// and not blocked by sensitive-PI rule.
+is_disclosure_allowed_ccpa(CCPA_ARGS,
+    $Step1("CCPA: sale or sharing permitted under §1798.120", E)) :-
+    disclosure_attempted(CCPA_ARGS),
+    permitted_by_ccpa_1798_120(CCPA_ARGS, E),
+    !blocked_by_ccpa_1798_120(CCPA_ARGS, _),
+    !blocked_sensitive_pi_no_consent(CCPA_ARGS, _),
+    !blocked_incompatible_purpose(CCPA_ARGS, _).
+
+// =============================================
+// Denial reporting
+// =============================================
+// A disclosure is denied if attempted but no permission pathway fires.
+// Closed-world assumption: absence of a permission means denial.
+.decl is_disclosure_denied_ccpa(CCPA_DECL_ARGS)
+
+is_disclosure_denied_ccpa(CCPA_ARGS) :-
+    disclosure_attempted(CCPA_ARGS),
+    !is_disclosure_allowed_ccpa(CCPA_ARGS, _).
+
+// =============================================
+// Blocking reason reporting
+// =============================================
+// Explicitly report WHICH blocking norm caused the denial (for auditability).
+.decl blocked_by_ccpa(CCPA_DECL_ARGS, e: Expl)
+
+blocked_by_ccpa(CCPA_ARGS, E) :- blocked_by_ccpa_1798_120(CCPA_ARGS, E).
+blocked_by_ccpa(CCPA_ARGS, E) :- blocked_sensitive_pi_no_consent(CCPA_ARGS, E).
+blocked_by_ccpa(CCPA_ARGS, E) :- blocked_incompatible_purpose(CCPA_ARGS, E).
+blocked_by_ccpa(CCPA_ARGS, E) :- blocked_minor_sale_no_authorization(CCPA_ARGS, E).
+
+// (No .input directives — facts are provided inline via #include in the main file)
+
+// =============================================
+// Engine output bridge (standard CSV names)
+// =============================================
+.decl is_disclosure_allowed(CCPA_DECL_ARGS, e: Expl)
+.decl is_disclosure_denied(CCPA_DECL_ARGS, e: Expl)
+is_disclosure_allowed(CCPA_ARGS, e) :- is_disclosure_allowed_ccpa(CCPA_ARGS, e).
+is_disclosure_denied(CCPA_ARGS, e)  :- blocked_by_ccpa(CCPA_ARGS, e).
+is_disclosure_denied(CCPA_ARGS, $Leaf("CCPA: disclosure not permitted")) :-
+    disclosure_attempted(CCPA_ARGS),
+    !is_disclosure_allowed_ccpa(CCPA_ARGS, _),
+    !blocked_by_ccpa(CCPA_ARGS, _).
+
+// =============================================
+// .output directives
+// =============================================
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output is_disclosure_allowed_ccpa
+.output is_disclosure_denied_ccpa
+.output blocked_by_ccpa
+
+// Diagnostic outputs for debugging section-level rules
+.output permitted_by_ccpa_1798_100
+.output permitted_by_ccpa_1798_120
+.output blocked_by_ccpa_1798_120
+.output blocked_sensitive_pi_no_consent
+.output blocked_minor_sale_no_authorization

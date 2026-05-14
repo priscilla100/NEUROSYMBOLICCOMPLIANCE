@@ -1,0 +1,62 @@
+// glba_hierarchies.dl
+// Role, NPI-category, and purpose hierarchies for GLBA (16 CFR Part 313).
+
+// ── Financial institution role hierarchy ──────────────────────────────────
+.decl fin_role_subtype(child_role: Role, parent_role: Role)
+fin_role_subtype("bank",                  "financial-institution").
+fin_role_subtype("insurance-company",     "financial-institution").
+fin_role_subtype("broker-dealer",         "financial-institution").
+fin_role_subtype("credit-union",          "financial-institution").
+fin_role_subtype("mortgage-company",      "financial-institution").
+fin_role_subtype("financial-institution", "glba-entity").
+fin_role_subtype("customer",              "consumer").   // ongoing relationship
+fin_role_subtype("consumer",              "glba-party").
+
+// Third-party types
+fin_role_subtype("service-provider",         "third-party").
+fin_role_subtype("joint-marketer",           "third-party").
+fin_role_subtype("affiliated-company",       "third-party").
+fin_role_subtype("unaffiliated-third-party", "third-party").
+fin_role_subtype("credit-reporting-agency",  "third-party").
+
+// Transitive closure
+.decl fin_role_subtype_tc(r1: Role, r2: Role)
+fin_role_subtype_tc(r1, r2) :- fin_role_subtype(r1, r2).
+fin_role_subtype_tc(r1, r3) :- fin_role_subtype_tc(r1, r2), fin_role_subtype(r2, r3).
+
+// Propagate activerole upward
+has_financial_role(p, r2) :- activerole(p, r1), fin_role_subtype_tc(r1, r2).
+has_financial_role(p, r)  :- activerole(p, r).
+
+// ── NPI category hierarchy ─────────────────────────────────────────────────
+.decl npi_cat_subtype(child_cat: NPICategory, parent_cat: NPICategory)
+npi_cat_subtype("account-numbers",    "financial-info").
+npi_cat_subtype("transaction-history","financial-info").
+npi_cat_subtype("credit-info",        "financial-info").
+npi_cat_subtype("income-data",        "financial-info").
+npi_cat_subtype("financial-info",     "npi").
+npi_cat_subtype("ssn",                "npi").
+npi_cat_subtype("investment-info",    "npi").
+npi_cat_subtype("insurance-info",     "npi").
+
+.decl npi_cat_subtype_tc(c1: NPICategory, c2: NPICategory)
+npi_cat_subtype_tc(c1, c2) :- npi_cat_subtype(c1, c2).
+npi_cat_subtype_tc(c1, c3) :- npi_cat_subtype_tc(c1, c2), npi_cat_subtype(c2, c3).
+
+.decl is_npi(t: NPICategory)
+is_npi(t) :- npi_cat_subtype_tc(t, "npi").
+is_npi("npi").
+
+// ── Helper predicates ──────────────────────────────────────────────────────
+.decl is_financial_institution(p: Principal)
+is_financial_institution(p) :- has_financial_role(p, "financial-institution").
+
+.decl is_consumer_glba(p: Principal)
+is_consumer_glba(p) :- has_financial_role(p, "consumer").
+is_consumer_glba(p) :- has_financial_role(p, "customer").
+
+.decl is_service_provider_glba(p: Principal)
+is_service_provider_glba(p) :- has_financial_role(p, "service-provider").
+
+.decl is_unaffiliated(p1: Principal, p2: Principal)
+is_unaffiliated(p1, p2) :- activerole(p1, _), has_financial_role(p2, "unaffiliated-third-party"), p1 != p2.

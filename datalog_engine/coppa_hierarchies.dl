@@ -1,0 +1,65 @@
+// coppa_hierarchies.dl
+// Role, data-category, and purpose hierarchies for COPPA (16 CFR Part 312).
+
+// ── Role subtype lattice ───────────────────────────────────────────────────
+.decl role_subtype(child_role: Role, parent_role: Role)
+role_subtype("school-operator", "operator").
+role_subtype("operator",        "coppa-entity").
+role_subtype("parent",          "coppa-party").
+role_subtype("child",           "coppa-party").
+
+// Transitive closure
+.decl role_subtype_tc(r1: Role, r2: Role)
+role_subtype_tc(r1, r2) :- role_subtype(r1, r2).
+role_subtype_tc(r1, r3) :- role_subtype_tc(r1, r2), role_subtype(r2, r3).
+
+// Propagate activerole upward through hierarchy
+has_coppa_role(p, r2) :- activerole(p, r1), role_subtype_tc(r1, r2).
+has_coppa_role(p, r)  :- activerole(p, r).
+
+// ── Data category hierarchy ────────────────────────────────────────────────
+// All leaf categories are child-data. Tracking data gets extra scrutiny.
+.decl data_cat_subtype(child_cat: ChildDataCategory, parent_cat: ChildDataCategory)
+data_cat_subtype("name",        "child-data").
+data_cat_subtype("address",     "child-data").
+data_cat_subtype("email",       "child-data").
+data_cat_subtype("phone",       "child-data").
+data_cat_subtype("ssn",         "child-data").
+data_cat_subtype("photo",       "child-data").
+data_cat_subtype("audio",       "child-data").
+data_cat_subtype("video",       "child-data").
+data_cat_subtype("geolocation", "tracking-data").
+data_cat_subtype("cookies",     "tracking-data").
+data_cat_subtype("tracking-data", "child-data").
+
+.decl data_cat_subtype_tc(c1: ChildDataCategory, c2: ChildDataCategory)
+data_cat_subtype_tc(c1, c2) :- data_cat_subtype(c1, c2).
+data_cat_subtype_tc(c1, c3) :- data_cat_subtype_tc(c1, c2), data_cat_subtype(c2, c3).
+
+// Helper: is this a recognized child-data category?
+.decl is_child_data(t: ChildDataCategory)
+is_child_data(t) :- data_cat_subtype_tc(t, "child-data").
+is_child_data("child-data").
+
+// Helper: is this tracking data (higher sensitivity)?
+.decl is_tracking_data(t: ChildDataCategory)
+is_tracking_data(t) :- data_cat_subtype_tc(t, "tracking-data").
+is_tracking_data("tracking-data").
+
+// ── Purpose hierarchy ──────────────────────────────────────────────────────
+// Purposes that are permitted for operators without full parental consent
+.decl purpose_subtype(child_purpose: Purpose, parent_purpose: Purpose)
+purpose_subtype("internal-operations",       "permitted-purpose").
+purpose_subtype("safety-purpose",            "permitted-purpose").
+purpose_subtype("completing-transaction",    "permitted-purpose").
+purpose_subtype("school-educational-purpose","permitted-purpose").
+purpose_subtype("legal-requirement",         "permitted-purpose").
+
+.decl is_permitted_coppa_purpose(u: Purpose)
+is_permitted_coppa_purpose(u) :- purpose_subtype(u, "permitted-purpose").
+is_permitted_coppa_purpose("permitted-purpose").
+
+// ── Helper predicates ──────────────────────────────────────────────────────
+.decl is_operator(p: Principal)
+is_operator(p) :- has_coppa_role(p, "operator").
+is_operator(p) :- has_coppa_role(p, "school-operator").

@@ -1,0 +1,3316 @@
+\documentclass[11pt,letterpaper]{article}
+
+% ============================================================================
+% Packages
+% ============================================================================
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{amsmath,amssymb}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{tikz}
+\usetikzlibrary{trees,arrows.meta,positioning,shapes.geometric}
+\usepackage{forest}
+\usepackage{fancyvrb}
+\usepackage{tcolorbox}
+\tcbuselibrary{listings,skins,breakable}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[title]{appendix}
+\usepackage{multicol}
+\usepackage{parskip}
+\usepackage{pdflscape}  % For landscape pages
+\usepackage{adjustbox}  % For fitting wide content
+
+% Global fix for overfull boxes
+\tolerance=1000
+\emergencystretch=3em
+\hfuzz=2pt
+
+% ============================================================================
+% Listings configuration for Souffle Datalog
+% ============================================================================
+\definecolor{codegreen}{rgb}{0,0.5,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{codeblue}{rgb}{0.0,0.0,0.7}
+\definecolor{backcolor}{rgb}{0.97,0.97,0.97}
+\definecolor{rulecolor}{rgb}{0.8,0.8,0.8}
+
+\lstdefinelanguage{Souffle}{
+  keywords={.decl,.type,.output,.input,.include,.functor,.init,.comp,.override,.pragma,nil},
+  keywordstyle=\color{codeblue}\bfseries,
+  morekeywords=[2]{number,symbol,float,unsigned},
+  keywordstyle=[2]\color{codepurple},
+  morekeywords=[3]{:-},
+  keywordstyle=[3]\color{red}\bfseries,
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  commentstyle=\color{codegreen}\itshape,
+  morestring=[b]",
+  stringstyle=\color{codepurple},
+  literate={!}{{{\color{red}\textbf{!}}}}{1}
+           {;}{{{\color{red}\textbf{;}}}}{1},
+}
+
+\lstdefinestyle{soufflestyle}{
+  language=Souffle,
+  backgroundcolor=\color{backcolor},
+  basicstyle=\ttfamily\footnotesize,
+  breakatwhitespace=false,
+  breaklines=true,
+  breakautoindent=true,
+  postbreak=\mbox{\textcolor{red}{$\hookrightarrow$}\space},
+  captionpos=b,
+  keepspaces=true,
+  numbers=left,
+  numbersep=8pt,
+  numberstyle=\tiny\color{codegray},
+  showspaces=false,
+  showstringspaces=false,
+  showtabs=false,
+  tabsize=4,
+  frame=single,
+  rulecolor=\color{rulecolor},
+  xleftmargin=2em,
+  framexleftmargin=1.5em,
+  columns=flexible,
+}
+
+\lstdefinestyle{bashstyle}{
+  language=bash,
+  backgroundcolor=\color{backcolor},
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  rulecolor=\color{rulecolor},
+  xleftmargin=2em,
+  framexleftmargin=1.5em,
+  numbers=none,
+  morekeywords={souffle,brew,pdflatex},
+}
+
+\lstset{style=soufflestyle}
+
+% ============================================================================
+% Custom tcolorbox environments
+% ============================================================================
+\newtcolorbox{hipaabox}[1][]{
+  colback=blue!5!white,
+  colframe=blue!50!black,
+  fonttitle=\bfseries,
+  title={HIPAA Regulation Text},
+  breakable,
+  #1
+}
+
+\newtcolorbox{pdfbox}[1][]{
+  colback=orange!5!white,
+  colframe=orange!50!black,
+  fonttitle=\bfseries,
+  title={PDF Formal Notation},
+  breakable,
+  #1
+}
+
+\newtcolorbox{designbox}[1][]{
+  colback=green!5!white,
+  colframe=green!50!black,
+  fonttitle=\bfseries,
+  title={Design Decision},
+  breakable,
+  #1
+}
+
+\newtcolorbox{warningbox}[1][]{
+  colback=red!5!white,
+  colframe=red!50!black,
+  fonttitle=\bfseries,
+  title={Warning},
+  breakable,
+  #1
+}
+
+% ============================================================================
+% Title
+% ============================================================================
+\title{%
+  \textbf{Formalizing the HIPAA Privacy Rule}\\
+  \textbf{in Souffl\'{e} Datalog}\\[0.5em]
+  \large A Comprehensive Guide to the ComplianceGPT Datalog Engine\\
+  \large Covering \S\S 164.502, 164.506, 164.508, 164.510, 164.512, 164.514, and 164.524\\[0.3em]
+  \normalsize Version 2 --- Verified against eCFR regulatory text
+}
+\author{%
+  Prepared for Priscilla\\
+  ComplianceGPT Project --- Stony Brook University
+}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This document provides a detailed, end-to-end explanation of how the HIPAA Privacy Rule was formalized in Souffl\'{e} Datalog. It covers \S 164.502 (General Rules), \S 164.506 (Treatment, Payment, and Health Care Operations), \S 164.508 (Authorization Required), \S 164.510 (Opportunity to Agree or Object), \S 164.512 (Uses and Disclosures Without Authorization), \S 164.514 (Other Requirements), and \S 164.524 (Individual Access). Starting from the source PDF formalization in first-order temporal logic, we describe every design decision, type declaration, hierarchy, helper predicate, and rule translation. The document covers the architecture of the compliance checker, the ADT-based explanation tree mechanism for provenance, the handling of stratified negation, oracle predicates, grounding issues, testing methodology, and a complete walkthrough of test scenarios. The intended audience is a student learning to understand and extend this formalization.
+\end{abstract}
+
+\tableofcontents
+\newpage
+
+% ============================================================================
+% SECTION 1: Introduction to Souffle Datalog
+% ============================================================================
+\section{Introduction to Souffl\'{e} Datalog}
+\label{sec:intro-souffle}
+
+\subsection{What is Datalog?}
+
+Datalog is a declarative logic programming language that is a subset of Prolog. Unlike Prolog, Datalog:
+\begin{itemize}
+  \item \textbf{Always terminates}: there are no function symbols (no infinite terms), so the set of derivable facts is always finite.
+  \item \textbf{Uses bottom-up evaluation}: the engine starts from known facts and derives all possible conclusions, rather than searching top-down from a query.
+  \item \textbf{Has set semantics}: duplicate tuples are automatically eliminated.
+  \item \textbf{Supports stratified negation}: negation is allowed under a structural discipline that prevents paradoxes.
+\end{itemize}
+
+A Datalog program consists of:
+\begin{enumerate}
+  \item \textbf{Facts} (the Extensional Database, or EDB): ground tuples that are asserted as true.
+  \item \textbf{Rules} (the Intensional Database, or IDB): implications of the form \texttt{head :- body.} that derive new tuples from existing ones.
+  \item \textbf{Queries / Output directives}: which relations to materialize and export.
+\end{enumerate}
+
+\subsection{What is Souffl\'{e}?}
+
+Souffl\'{e} (Systematic, Ontological, Underpinning Framework for Facts, Logic, and Evaluation) is a high-performance Datalog engine developed at Oracle Labs and the University of Sydney. Key features relevant to our project:
+
+\begin{itemize}
+  \item \textbf{Typed relations}: every relation has a declared schema with typed columns (\texttt{.type} and \texttt{.decl}).
+  \item \textbf{Algebraic Data Types (ADTs)}: tagged unions that allow building recursive data structures (like explanation trees) as first-class values.
+  \item \textbf{C preprocessor}: \texttt{\#define}, \texttt{\#include}, and \texttt{\#ifdef} directives are supported, enabling macros and modular file organization.
+  \item \textbf{Stratified negation}: the \texttt{!} operator for negation-as-failure, enforced at compile time.
+  \item \textbf{Provenance / Explain}: the \texttt{-t explain} flag provides an interactive proof-tree REPL for debugging derivations.
+  \item \textbf{Aggregation}: \texttt{count}, \texttt{sum}, \texttt{min}, \texttt{max} with grouping.
+  \item \textbf{Disjunction in rule bodies}: the \texttt{;} operator for logical OR within a rule body.
+\end{itemize}
+
+\subsection{Installing Souffl\'{e}}
+
+On macOS with Homebrew:
+\begin{lstlisting}[style=bashstyle]
+brew install souffle
+\end{lstlisting}
+
+On Ubuntu/Debian:
+\begin{lstlisting}[style=bashstyle]
+sudo apt-get install souffle
+\end{lstlisting}
+
+Verify the installation:
+\begin{lstlisting}[style=bashstyle]
+souffle --version
+\end{lstlisting}
+
+\subsection{Running Souffl\'{e} Programs}
+
+Souffl\'{e} compiles and evaluates \texttt{.dl} files directly. There is no separate build step.
+
+\begin{lstlisting}[style=bashstyle]
+# Run a program, writing output CSVs to a directory
+souffle -D <output_dir> <program>.dl
+
+# Run the HIPAA compliance checker
+souffle -D output_hipaa hipaa_main.dl
+
+# Interactive provenance / proof-tree REPL
+souffle -t explain hipaa_main.dl
+
+# ncurses TUI for large proof trees
+souffle -t explore hipaa_main.dl
+
+# View the stratification (precedence) graph
+souffle --show=precedence-graph hipaa_main.dl
+
+# Generate an HTML debug report (requires Graphviz)
+souffle -r report.html hipaa_main.dl
+\end{lstlisting}
+
+\subsection{Core Syntax Summary}
+
+Here is a minimal Souffl\'{e} program to illustrate the key syntax:
+
+\begin{lstlisting}[style=soufflestyle,caption={Minimal Souffl\'{e} example}]
+// Type declarations
+.type Person <: symbol
+
+// Relation declaration
+.decl parent(child: Person, par: Person)
+.decl ancestor(descendant: Person, anc: Person)
+
+// Facts (EDB)
+parent("alice", "bob").
+parent("bob", "carol").
+
+// Rules (IDB)
+ancestor(X, Y) :- parent(X, Y).                  // base case
+ancestor(X, Z) :- parent(X, Y), ancestor(Y, Z).  // recursive case
+
+// Output directive
+.output ancestor
+\end{lstlisting}
+
+Key syntax elements:
+\begin{itemize}
+  \item \texttt{.type Name <: symbol} declares a named subtype of the built-in \texttt{symbol} type.
+  \item \texttt{.decl relation(col1: Type1, col2: Type2)} declares a relation with a typed schema.
+  \item \texttt{head :- body.} is a rule. The head is derived when all body literals are satisfied.
+  \item \texttt{,} in a rule body means conjunction (AND).
+  \item \texttt{;} in a rule body means disjunction (OR).
+  \item \texttt{!literal} is negation-as-failure (the literal must not hold).
+  \item \texttt{.output relation} writes the relation's contents to a CSV file.
+  \item \texttt{\#include "file.dl"} includes another Datalog file (C preprocessor).
+  \item \texttt{\#define MACRO value} defines a preprocessor macro.
+\end{itemize}
+
+\subsection{The Explain Feature}
+\label{sec:explain}
+
+The \texttt{-t explain} flag starts an interactive REPL after evaluation. You can ask for proof trees:
+
+\begin{lstlisting}[style=bashstyle]
+souffle -t explain hipaa_main.dl
+> explain is_disclosure_allowed("mercy_hospital", "dr_smith",
+    "patient_alice", "msg_001", "blood-test-results", "treatment", _)
+\end{lstlisting}
+
+This displays a tree showing exactly which rules and facts combined to derive the tuple. For non-existent tuples, \texttt{explainnegation} provides guided exploration of why no derivation exists.
+
+\subsection{Stratification Visualization}
+
+Souffl\'{e} partitions rules into \emph{strata} (layers) based on the dependency graph. To visualize this:
+
+\begin{lstlisting}[style=bashstyle]
+souffle --show=precedence-graph hipaa_main.dl
+\end{lstlisting}
+
+This outputs the dependency graph showing which relations depend on which others, with negative edges marked. The engine evaluates strata bottom-up: stratum 0 first (base facts), then stratum 1 (positive rules), then stratum 2 (rules that negate stratum-1 relations), and so on.
+
+
+% ============================================================================
+% SECTION 2: Project Overview
+% ============================================================================
+\section{Project Overview}
+\label{sec:project-overview}
+
+\subsection{What is HIPAA?}
+
+The Health Insurance Portability and Accountability Act (HIPAA) is a United States federal law enacted in 1996. Title II of HIPAA established national standards for the privacy and security of individually identifiable health information. The \textbf{HIPAA Privacy Rule} (45 CFR Part 160 and Subparts A and E of Part 164) regulates the use and disclosure of Protected Health Information (PHI) by covered entities and their business associates.
+
+\subsection{What is the Privacy Rule?}
+
+The Privacy Rule governs:
+\begin{itemize}
+  \item Who may access PHI (covered entities, business associates, individuals).
+  \item Under what conditions PHI may be used or disclosed (treatment, payment, healthcare operations, authorization, public interest, etc.).
+  \item What safeguards must be in place (minimum necessary standard, business associate agreements, notice of privacy practices).
+  \item Individual rights (access to records, accounting of disclosures, restriction requests).
+\end{itemize}
+
+\subsection{What are \S 164.502 and \S 164.506?}
+
+\begin{description}
+  \item[\S 164.502 --- General Rules:] The gatekeeper section. It specifies the general principle that a covered entity may not use or disclose PHI \emph{except} as permitted or required by the Privacy Rule. It enumerates all permitted and required disclosure pathways (subsections (a)(1)(i) through (a)(1)(vi) for permitted uses, (a)(2) for required disclosures), plus constraints and special cases (minimum necessary in (b), restriction agreements in (c), de-identified info in (d), business associates in (e), personal representatives in (g), whistleblower/crime victim in (j)).
+
+  \item[\S 164.506 --- Treatment, Payment, or Health Care Operations (TPO):] The implementation specification for TPO disclosures. When \S 164.502(a)(1)(ii) permits a disclosure ``for treatment, payment, or health care operations, as permitted by and in compliance with \S 164.506,'' control passes to this section. It has three main parts: (a) standard permitted uses (no authorization required), (b) consent for TPO, and (c) the implementation specification with five sub-rules (c)(1)--(c)(5) covering different TPO scenarios.
+\end{description}
+
+\subsection{The Goal: A Compliance Checker}
+
+The project aims to build an automated compliance checker that, given a proposed disclosure (sender, receiver, subject, message, attribute type, purpose), determines:
+\begin{enumerate}
+  \item Whether the disclosure is \textbf{allowed} under the HIPAA Privacy Rule.
+  \item \textbf{Why} it is allowed --- a structured explanation tree citing the specific sections and sub-sections that permit it.
+  \item If it is \textbf{denied}, the closed-world assumption provides the reason: no permission pathway matched.
+\end{enumerate}
+
+The source formalization lives in \texttt{HIPAA\_FORMALIZATION.pdf} (pages 30--122), written in first-order temporal logic. Our task is to translate this into Souffl\'{e} Datalog with ADT-based explanation trees.
+
+
+% ============================================================================
+% SECTION 3: Architecture and File Organization
+% ============================================================================
+\section{Architecture and File Organization}
+\label{sec:architecture}
+
+\subsection{File Overview}
+
+The compliance checker is organized into 10 files, included in dependency order by the entry point \texttt{hipaa\_main.dl}:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{hipaa\_types.dl}        & Type declarations (\texttt{Principal}, \texttt{Role}, \texttt{Attribute}, \texttt{Purpose}, \texttt{Message}, \texttt{TimePoint}, \texttt{Rel}), preprocessor macros (\texttt{ARGS}, \texttt{DECL\_ARGS}), and the \texttt{Expl} ADT for explanation trees. \\
+\texttt{hipaa\_hierarchies.dl}  & Role hierarchy (\texttt{role\_isa}, \texttt{role\_subtype}), attribute hierarchy (\texttt{attr\_isa}, \texttt{attr\_subtype}), purpose hierarchy (\texttt{purpose\_isa}, \texttt{purpose\_subtype}), transitive closures, \texttt{has\_role}, \texttt{belongs\_to}, and organizational/relationship predicates. \\
+\texttt{hipaa\_macros.dl}       & Helper predicates translating the PDF's macros: \texttt{is\_covered\_entity}, \texttt{is\_phi}, \texttt{is\_for\_tpo}, \texttt{is\_personal\_representative}, oracle predicates (\texttt{has\_authority\_to\_act}, \texttt{believes\_minimum\_necessary}, etc.). \\
+\texttt{hipaa\_stubs.dl}        & Empty \texttt{.decl} declarations for sections not yet formalized (\S 164.508, \S 164.510, \S 164.512, \S 164.514, \S 164.520, \S 164.522, \S 164.524, \S 164.528, \S 164.530, \S 164.504, \S 160.C). Conservative default: no tuples, no permissions. \\
+\texttt{hipaa\_164\_506.dl}     & \S 164.506 rules: TPO disclosure pathways (a), (b), (c)(1)--(c)(5). \\
+\texttt{hipaa\_164\_502.dl}     & \S 164.502 rules: general rules (a)(1)(i)--(vi), (a)(2)(i)--(ii), (b) minimum necessary, (c) restriction agreements, (d) de-identified info, (e) business associates, (h) provider/plan communication, (i) notice consistency, (j) whistleblower/crime victim. \\
+\texttt{hipaa\_top.dl}          & Top-level \texttt{is\_disclosure\_allowed}, denial tracking (\texttt{is\_disclosure\_denied}), and \texttt{.output} directives. \\
+\texttt{hipaa\_facts.dl}        & Test fact database: principals, roles, organizational relationships, messages, oracle predicates, and 10 disclosure attempt scenarios. \\
+\texttt{hipaa\_main.dl}         & Entry point: \texttt{\#include}s all files in dependency order. \\
+\texttt{run\_hipaa.sh}          & Shell script: cleans output, runs Souffl\'{e}, and pretty-prints results. \\
+\bottomrule
+\end{tabularx}
+\caption{File organization of the HIPAA compliance checker.}
+\label{tab:files}
+\end{table}
+
+\subsection{Dependency Order}
+
+The \texttt{\#include} order in \texttt{hipaa\_main.dl} is carefully chosen:
+
+\begin{lstlisting}[style=soufflestyle,caption={hipaa\_main.dl --- include order}]
+// 1. Type declarations and ADT explanation tree
+#include "hipaa_types.dl"
+// 2. Role, attribute, and purpose hierarchies with transitive closure
+#include "hipaa_hierarchies.dl"
+// 3. Helper predicates (macros from the PDF formalization)
+#include "hipaa_macros.dl"
+// 4. Stub declarations for sections not yet formalized
+#include "hipaa_stubs.dl"
+// 5. 164.506: Treatment, payment, healthcare operations
+#include "hipaa_164_506.dl"
+// 6. 164.502: General rules (references 164.506)
+#include "hipaa_164_502.dl"
+// 7. Top-level rule and output directives
+#include "hipaa_top.dl"
+// 8. Fact database (test scenarios)
+#include "hipaa_facts.dl"
+\end{lstlisting}
+
+The ordering ensures that:
+\begin{itemize}
+  \item Types are declared before they are used in relation declarations.
+  \item Hierarchies and helper predicates are defined before rules reference them.
+  \item Stubs for unformalized sections are declared before \S 164.506 and \S 164.502 reference them (in negation or delegation).
+  \item \S 164.506 is defined before \S 164.502 because \S 164.502(a)(1)(ii) delegates to \S 164.506.
+  \item The top-level rule aggregates all permission pathways from \S 164.502.
+  \item Facts come last so all relation declarations are in scope.
+\end{itemize}
+
+\begin{designbox}
+Although Souffl\'{e} does not strictly require declaration order (it does a two-pass analysis), we maintain a logical ordering for human readability and to match the structure of the HIPAA regulation itself.
+\end{designbox}
+
+
+% ============================================================================
+% SECTION 4: General Principles of Modeling
+% ============================================================================
+\section{General Principles of Modeling}
+\label{sec:modeling-principles}
+
+Before diving into the type system and individual rule translations, it is helpful to understand the recurring architectural patterns that appear throughout the HIPAA formalization. These principles apply uniformly to every section of the Privacy Rule and should guide the formalization of sections beyond \S 164.502 and \S 164.506.
+
+% ---------------------------------------------
+\subsection{High-Level Rule Organization Pattern}
+\label{sec:rule-organization}
+
+Every HIPAA section is modeled using a two-level pattern: a \textbf{top-level disjunction} that ORs together all sub-sections, and a \textbf{hierarchical decomposition} where each sub-section further decomposes into its own sub-rules.
+
+\paragraph{Top-level disjunction.} Each HIPAA section (e.g., \S 164.502) is modeled as a top-level OR of its subsections. In Souffl\'{e}, this means one rule per subsection, all with the same head predicate:
+
+\begin{lstlisting}[style=soufflestyle,caption={Top-level disjunction for \S 164.502 (from hipaa\_164\_502.dl)}]
+.decl permitted_by_164_502(DECL_ARGS, e: Expl)
+
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_a(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_c(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_d(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_e(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_h(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_i(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_j(ARGS, E).
+\end{lstlisting}
+
+Multiple rules with the same head predicate produce a union (logical OR) in Datalog. If \emph{any} subsection permits the disclosure, the top-level predicate holds.
+
+\paragraph{Hierarchical decomposition.} Each subsection further decomposes. For example, \S 502(a) splits into \S 502(a)(1) (permitted) and \S 502(a)(2) (required). Then \S 502(a)(1) splits into (i) through (vi):
+
+\begin{lstlisting}[style=soufflestyle,caption={Hierarchical decomposition (from hipaa\_164\_502.dl)}]
+// 502(a) -> (a)(1) permitted OR (a)(2) required
+permitted_by_164_502_a(ARGS, ...) :- permitted_by_164_502_a_1(ARGS, E).
+permitted_by_164_502_a(ARGS, ...) :- required_by_164_502_a_2(ARGS, E).
+
+// 502(a)(1) -> (i) through (vi)
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_i(ARGS, E).
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_ii(ARGS, E).
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_iii(ARGS, E).
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_iv(ARGS, E).
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_v(ARGS, E).
+permitted_by_164_502_a_1(ARGS, E) :- permitted_by_164_502_a_1_vi(ARGS, E).
+\end{lstlisting}
+
+\paragraph{Naming convention.} Predicate names follow the pattern \texttt{permitted\_by\_164\_XXX\_Y\_Z} where \texttt{XXX} is the section number, \texttt{Y} is the subsection letter, and \texttt{Z} is the paragraph number or Roman numeral. For required disclosures, the prefix is \texttt{required\_by\_} instead.
+
+\paragraph{Rule hierarchy visualization.} The following trees show the decomposition structure for the two formalized sections:
+
+\begin{figure}[H]
+\centering
+\begin{forest}
+  for tree={
+    grow=east,
+    draw,
+    rounded corners,
+    font=\ttfamily\scriptsize,
+    edge={->,>=stealth},
+    l sep=12mm,
+    s sep=2mm,
+    anchor=west,
+    parent anchor=east,
+    child anchor=west,
+  }
+  [permitted\_by\_164\_502
+    [502\_a
+      [502\_a\_1
+        [502\_a\_1\_i {(to individual)}]
+        [502\_a\_1\_ii {(TPO $\to$ 506)}]
+        [502\_a\_1\_iii {(incident to use)}]
+        [502\_a\_1\_iv {(authorization $\to$ 508)}]
+        [502\_a\_1\_v {(agreement $\to$ 510)}]
+        [502\_a\_1\_vi {(512/514)}]
+      ]
+      [502\_a\_2
+        [502\_a\_2\_i {(to individual per 524/528)}]
+        [502\_a\_2\_ii {(to Secretary)}]
+      ]
+    ]
+    [502\_c {(restriction agreements)}]
+    [502\_d
+      [502\_d\_1 {(create de-id info)}]
+      [502\_d\_2 {(dii is not PHI)}]
+    ]
+    [502\_e {(business associates)}]
+    [502\_h {(provider/plan comm.)}]
+    [502\_i {(notice consistency)}]
+    [502\_j
+      [502\_j\_1 {(whistleblower)}]
+      [502\_j\_2 {(crime victim)}]
+    ]
+  ]
+\end{forest}
+\caption{Rule hierarchy for \S 164.502.}
+\label{fig:hierarchy-502}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{forest}
+  for tree={
+    grow=east,
+    draw,
+    rounded corners,
+    font=\ttfamily\scriptsize,
+    edge={->,>=stealth},
+    l sep=12mm,
+    s sep=2mm,
+    anchor=west,
+    parent anchor=east,
+    child anchor=west,
+  }
+  [permitted\_by\_164\_506
+    [506\_a {(standard TPO, no auth)}]
+    [506\_b {(consent for TPO)}]
+    [506\_c
+      [506\_c\_1 {(own TPO)}]
+      [506\_c\_2 {(provider treatment)}]
+      [506\_c\_3 {(receiver payment)}]
+      [506\_c\_4 {(another CE's hc-ops)}]
+      [506\_c\_5 {(hc-ops limited)}]
+    ]
+  ]
+\end{forest}
+\caption{Rule hierarchy for \S 164.506.}
+\label{fig:hierarchy-506}
+\end{figure}
+
+% ---------------------------------------------
+\subsection{Three Types of Norms}
+\label{sec:norm-types}
+
+The source PDF formalization (DeYoung et al.) classifies HIPAA norms into three categories. Recognizing which category a norm belongs to determines how it is translated into Souffl\'{e}.
+
+\begin{description}
+  \item[Positive norms ($\varphi^+$):] Rules that \textbf{permit} a disclosure. Each positive norm becomes a Souffl\'{e} rule whose head is a \texttt{permitted\_by\_} or \texttt{required\_by\_} predicate, and whose explanation tree uses \texttt{\$Leaf} (for base permissions) or \texttt{\$Step1}/\texttt{\$Step2} (for delegated permissions).
+
+  Example --- \S 164.502(a)(1)(i) is a positive norm permitting disclosure to the individual:
+\begin{lstlisting}[style=soufflestyle]
+permitted_by_164_502_a_1_i(ARGS,
+    $Leaf("164.502(a)(1)(i): disclosure to the individual")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    known_purpose(u),
+    (p2 = q ; is_personal_representative(p2, q)).
+\end{lstlisting}
+
+  \item[Negative norms ($\varphi^-$):] Rules that \textbf{block} or \textbf{constrain} a disclosure. These appear in the PDF as negated conditions ($\neg$, written \texttt{\textbackslash+} in Prolog). In Souffl\'{e}, they are translated using stratified negation (\texttt{!predicate}).
+
+  Example --- \S 164.506(a) negates the authorization requirement from \S 164.508:
+\begin{lstlisting}[style=soufflestyle]
+permitted_by_164_506_a(ARGS, ...) :-
+    !require_authorization_by_164_508(ARGS),  // negative norm
+    is_covered_entity(p1),
+    is_for_tpo(u),
+    permitted_by_164_506_c(ARGS, E).
+\end{lstlisting}
+
+  \item[Constraints:] Rules that impose conditions but are \emph{not} independent permission paths. They are enforced as guards within other rules rather than standing alone. The most important example is the minimum necessary standard (\S 502(b)):
+\begin{lstlisting}[style=soufflestyle]
+// NOT a top-level permission path -- it's a guard:
+minimum_necessary_satisfied(ARGS) :-
+    believes_minimum_necessary(ARGS).
+minimum_necessary_satisfied(ARGS) :-
+    excluded_164_502_b_2(ARGS).
+\end{lstlisting}
+
+  The constraint is used \emph{inside} other rules (e.g., \S~502(a)(1)(iii) requires \texttt{minimum\_necessary\_satisfied\allowbreak{}(ARGS)} in its body) but does not appear as a clause of \texttt{permitted\_by\_\allowbreak{}164\_502}.
+\end{description}
+
+\begin{designbox}
+Distinguishing these three categories is critical when reading the PDF. A constraint that is mistakenly modeled as a positive norm would create a spurious permission path. A positive norm mistakenly modeled as a constraint would be invisible at the top level.
+\end{designbox}
+
+% ---------------------------------------------
+\subsection{Exception Handling Patterns}
+\label{sec:exception-patterns}
+
+HIPAA is full of exceptions --- ``except when,'' ``this does not apply to,'' ``notwithstanding.'' Three distinct patterns appear in the formalization:
+
+\paragraph{Pattern 1: Exception-as-negation.} A base rule includes \texttt{!excluded\_predicate(...)} in its body. The excluded predicate collects all exception conditions via separate rules. If any exception condition holds, the negation fails and the base rule does not fire.
+
+Example --- \S 502(e)(1)(i) permits disclosure to a business associate, \emph{except} in cases listed in (e)(1)(ii):
+
+\begin{lstlisting}[style=soufflestyle,caption={Exception-as-negation pattern (from hipaa\_164\_502.dl)}]
+// Base rule with negated exception
+permitted_by_164_502_e(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_business_associate_of(p2, p1),
+    is_phi(t), msg_contains(m, q, t),
+    is_for_ba_purpose(u),
+    satisfactory_assurances(p1, p2, q, t, u),
+    !excluded_164_502_e_1_ii(ARGS).       // exception check
+
+// The exclusion collects three cases:
+// (A) Provider treatment disclosures
+excluded_164_502_e_1_ii(ARGS) :-
+    is_covered_entity(p1), is_health_care_provider(p2),
+    is_for_treatment(u), is_phi(t), msg_contains(m, q, t).
+// (B) Group health plan disclosures per 164.504(f)
+excluded_164_502_e_1_ii(ARGS) :-
+    (is_health_plan(p1) ; has_role(p1, "health-insurance-issuer")),
+    permitted_by_164_504_f(ARGS), is_phi(t), msg_contains(m, q, t).
+// (C) Government program providing public benefits
+excluded_164_502_e_1_ii(ARGS) :-
+    has_role(p1, "government-entity"), is_health_plan(p2),
+    known_purpose(u), is_phi(t), msg_contains(m, q, t).
+\end{lstlisting}
+
+\paragraph{Pattern 2: Exception-as-separate-path.} An exception creates an entirely independent permission path rather than negating a base rule. This is used when the ``exception'' is really an alternative way to satisfy a requirement.
+
+Example --- the minimum necessary exceptions (\S 502(b)(2)) do not negate the base minimum necessary rule. Instead, they provide an alternative satisfaction via \texttt{excluded\_164\_502\_b\_2}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Exception-as-separate-path pattern (from hipaa\_164\_502.dl)}]
+// Minimum necessary is satisfied if EITHER:
+// (1) the entity believes it is minimum necessary, OR
+// (2) an exception applies
+minimum_necessary_satisfied(ARGS) :-
+    believes_minimum_necessary(ARGS).
+minimum_necessary_satisfied(ARGS) :-
+    excluded_164_502_b_2(ARGS).
+
+// Exception (b)(2)(i): treatment disclosures to providers
+excluded_164_502_b_2(ARGS) :-
+    is_covered_entity(p1), is_health_care_provider(p2),
+    is_for_treatment(u), is_phi(t), msg_contains(m, q, t).
+// Exception (b)(2)(ii): disclosures to the individual
+excluded_164_502_b_2(ARGS) :-
+    is_covered_entity(p1),
+    (p2 = q ; is_personal_representative(p2, q)),
+    known_purpose(u), is_phi(t), msg_contains(m, q, t).
+\end{lstlisting}
+
+\paragraph{Pattern 3: Exception-as-disjunction.} Multiple exception conditions are combined with \texttt{;} (OR) directly in the rule body. This is used for simple, inline alternatives that do not warrant separate predicates.
+
+Example --- the ``$p_2 \approx q$'' pattern from the PDF, meaning ``the receiver is either the individual or their personal representative'':
+
+\begin{lstlisting}[style=soufflestyle,caption={Exception-as-disjunction pattern (from hipaa\_164\_502.dl)}]
+permitted_by_164_502_a_1_i(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_phi(t), msg_contains(m, q, t),
+    known_purpose(u),
+    (p2 = q ; is_personal_representative(p2, q)).  // inline disjunction
+\end{lstlisting}
+
+\begin{designbox}
+Choosing the right exception pattern depends on complexity. Single-condition exceptions use Pattern~3 (inline disjunction). Multi-condition exceptions that collect several cases use Pattern~1 (negation with a collector predicate). Exceptions that provide alternative satisfaction of a requirement use Pattern~2 (separate path).
+\end{designbox}
+
+% ---------------------------------------------
+\subsection{Oracle Predicates vs.\ Derived Predicates}
+\label{sec:oracle-vs-derived}
+
+A fundamental distinction in the formalization is between facts that must be asserted externally and facts that are computed from rules.
+
+\paragraph{Oracle predicates (EDB --- Extensional Database).} These are declared with \texttt{.decl} but populated only as ground facts, never derived by rules. They exist because HIPAA leaves certain determinations to human judgment, professional discretion, or external legal processes. Examples from \texttt{hipaa\_macros.dl}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Oracle predicates (from hipaa\_macros.dl and hipaa\_164\_502.dl)}]
+// Professional judgment: entity believes disclosure is minimum necessary
+.decl believes_minimum_necessary(DECL_ARGS)
+
+// Contract-based: business associate has provided safeguard assurances
+.decl satisfactory_assurances(p1:Principal, p2:Principal,
+    q:Principal, t:Attribute, u:Purpose)
+
+// Subjective belief: workforce member believes entity engaged in
+// unlawful conduct (for whistleblower protection, section 502(j)(1))
+.decl believes_unlawful_conduct(p1:Principal, ce:Principal)
+
+// Legal determination: P has authority to act on behalf of Q
+.decl has_authority_to_act(p:Principal, q:Principal)
+
+// External determination: abuse exception for personal representative
+.decl abuse_exception(p:Principal, q:Principal)
+\end{lstlisting}
+
+\paragraph{Derived predicates (IDB --- Intensional Database).} These are computed from rules using hierarchy traversals, role checks, and rule composition. They have both a \texttt{.decl} and one or more rules with \texttt{:-}. Examples:
+
+\begin{lstlisting}[style=soufflestyle,caption={Derived predicates (from hipaa\_macros.dl)}]
+// Role check: derived from hierarchy
+.decl is_covered_entity(p: Principal)
+is_covered_entity(P) :- has_role(P, "covered-entity").
+
+// Purpose check: derived from hierarchy
+.decl is_for_tpo(u: Purpose)
+is_for_tpo(U) :- is_for_treatment(U).
+is_for_tpo(U) :- is_for_payment(U).
+is_for_tpo(U) :- is_for_hc_ops(U).
+
+// Personal representative: derived from authority + group membership + negation
+is_personal_representative(P, Q) :-
+    has_authority_to_act(P, Q),
+    (belongs_to(Q, "adult") ; belongs_to(Q, "emancipated-minor")),
+    !abuse_exception(P, Q).
+\end{lstlisting}
+
+\paragraph{When to use which.} Use oracle predicates for:
+\begin{itemize}
+  \item Subjective judgments (``believes in good faith,'' ``reasonably believes'')
+  \item Professional discretion (``minimum necessary in the professional judgment of'')
+  \item External legal determinations (``has legal authority,'' ``is executor of estate'')
+  \item Contractual states (``obtained consent,'' ``satisfactory assurances provided'')
+\end{itemize}
+Use derived predicates for:
+\begin{itemize}
+  \item Role checking via hierarchy (\texttt{is\_covered\_entity}, \texttt{is\_health\_care\_provider})
+  \item Purpose classification (\texttt{is\_for\_tpo}, \texttt{is\_for\_treatment})
+  \item Attribute classification (\texttt{is\_phi}, \texttt{is\_dii})
+  \item Rule composition (any \texttt{permitted\_by\_} or \texttt{required\_by\_} predicate)
+\end{itemize}
+
+% ---------------------------------------------
+\subsection{The Action Parameter Translation}
+\label{sec:action-param}
+
+The PDF formalization bundles all disclosure parameters into a single action variable $A$ in Prolog style: \texttt{permitted\_by\_164\_502(A)}. This works in Prolog because $A$ can be a compound term (e.g., \texttt{action(p1, p2, q, m, t, u)}). Souffl\'{e} does not support compound terms as relation arguments, so we must \textbf{explicitly unpack} the action into six separate parameters:
+
+\begin{center}
+\begin{tabular}{lcl}
+\textbf{PDF (Prolog-style)} & $\longrightarrow$ & \textbf{Souffl\'{e}} \\
+\texttt{permitted\_by\_164\_502(A)} & & \texttt{permitted\_by\_164\_502(p1, p2, q, m, t, u, E)} \\
+\end{tabular}
+\end{center}
+
+To reduce verbosity, two C preprocessor macros are defined in \texttt{hipaa\_types.dl}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Action parameter macros (from hipaa\_types.dl)}]
+#define ARGS p1, p2, q, m, t, u
+#define DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:Attribute, u:Purpose
+\end{lstlisting}
+
+\texttt{DECL\_ARGS} is used in \texttt{.decl} declarations (where each variable needs a type annotation). \texttt{ARGS} is used in rule heads and bodies (where variables are already in scope). Every \texttt{predicate(A)} in the PDF becomes \texttt{predicate(ARGS)} in Souffl\'{e}, plus the explanation parameter \texttt{e: Expl} where applicable.
+
+\begin{warningbox}
+The macros expand to \emph{variable names}, not fresh symbols. All rules in the same clause share the same variable namespace: \texttt{p1} in the head is the same \texttt{p1} in the body. This is essential for correct join semantics --- the sender in the head must be the same sender checked by \texttt{is\_covered\_entity(p1)}.
+\end{warningbox}
+
+% ---------------------------------------------
+\subsection{Closed-World Assumption for Denial}
+\label{sec:closed-world}
+
+Souffl\'{e} uses the \textbf{closed-world assumption}: if a tuple cannot be derived from the rules and facts, it is considered false. This has a profound implication for HIPAA compliance checking --- \emph{denial does not require explicit denial rules}. The absence of any permission pathway \emph{is} the denial.
+
+The top-level denial rule exploits this directly:
+
+\begin{lstlisting}[style=soufflestyle,caption={Denial via closed-world assumption (from hipaa\_top.dl)}]
+.decl disclosure_attempted(DECL_ARGS)
+.decl is_disclosure_denied(DECL_ARGS)
+
+// A disclosure is denied if it was attempted but not allowed
+is_disclosure_denied(ARGS) :-
+    disclosure_attempted(ARGS),
+    !is_disclosure_allowed(ARGS, _).
+\end{lstlisting}
+
+The \texttt{disclosure\_attempted} relation serves as the \textbf{universe of queries} --- it defines the set of disclosures we want to check. For any attempted disclosure, if no rule chain can derive \texttt{is\_disclosure\_allowed} for that tuple, the negation succeeds and the disclosure is marked as denied. This mirrors the HIPAA Privacy Rule's fundamental principle: ``A covered entity may not use or disclose protected health information, \emph{except} as permitted or required.'' The default is prohibition.
+
+\begin{designbox}
+This design means we never need to write rules of the form ``deny if condition $X$ holds.'' Instead, we only write positive permission rules. Any disclosure that fails to match a permission pathway is automatically denied. This dramatically simplifies the formalization and eliminates the risk of conflicting allow/deny rules.
+\end{designbox}
+
+% ---------------------------------------------
+\subsection{Stub Pattern for Incremental Formalization}
+\label{sec:stub-pattern-principles}
+
+When building the formalization incrementally, not all referenced sections are formalized immediately. The \textbf{stub pattern} provides a safe default: declare the relation with \texttt{.decl} but provide no rules, yielding an empty relation.
+
+\begin{lstlisting}[style=soufflestyle,caption={Stub declarations (from hipaa\_stubs.dl)}]
+// Positive stub: no disclosures permitted through this path
+.decl permitted_by_164_512(DECL_ARGS, e: Expl)
+
+// Negative stub: used in negation by other rules
+.decl require_authorization_by_164_508(DECL_ARGS)
+\end{lstlisting}
+
+The safety properties of stubs differ depending on how they are referenced:
+
+\begin{description}
+  \item[Positive stubs] (e.g., \texttt{permitted\_by\_164\_512}): Being empty means no disclosures are permitted through that path. This is \textbf{conservative/safe} --- we err on the side of denying disclosures until the section is formalized. For example, \texttt{permitted\_by\_164\_502\_a\_1\_vi} requires \texttt{permitted\_by\_164\_512(ARGS, E)} in its body. Since the stub is empty, this rule never fires, blocking the \S 164.512 permission pathway.
+
+  \item[Negative stubs] (e.g., \texttt{require\_authorization\_by\_164\_508}): Being empty means the negation \texttt{!require\_authorization\_by\_164\_508(ARGS)} is always true. This is \textbf{permissive} --- it means the ``except when authorization is required'' guard never blocks. In the case of \S 164.506(a), this means TPO disclosures are permitted even when an authorization \emph{should} be required (e.g., for psychotherapy notes under \S 164.508(a)(2)).
+\end{description}
+
+\begin{warningbox}
+Negative stubs create a permissiveness tradeoff. Until \S 164.508 is formalized, the system may allow disclosures that should require explicit patient authorization. When formalizing a new section, audit all stubs that are referenced in negation to determine whether the empty default is acceptable. The file \texttt{hipaa\_stubs.dl} documents which sections reference each stub for exactly this purpose.
+\end{warningbox}
+
+
+% ============================================================================
+% SECTION 5: Type System and ADT Explanation Trees
+% ============================================================================
+\section{Type System and ADT Explanation Trees}
+\label{sec:types-adt}
+
+\subsection{The 6-Tuple Action Signature}
+
+The PDF formalization bundles a disclosure action as a single parameter $A$. We unpack it into a 6-tuple:
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cll}
+\toprule
+\textbf{Variable} & \textbf{Type} & \textbf{Meaning} \\
+\midrule
+\texttt{p1} & \texttt{Principal} & Sender (the covered entity or disclosing party) \\
+\texttt{p2} & \texttt{Principal} & Receiver (who receives the PHI) \\
+\texttt{q}  & \texttt{Principal} & Subject (the individual the PHI is about) \\
+\texttt{m}  & \texttt{Message}   & Message identifier (which message is being disclosed) \\
+\texttt{t}  & \texttt{Attribute} & Attribute type (what kind of information: diagnosis, phi, dii, etc.) \\
+\texttt{u}  & \texttt{Purpose}   & Purpose of the disclosure (treatment, payment, marketing, etc.) \\
+\bottomrule
+\end{tabular}
+\caption{The 6-tuple action signature.}
+\end{table}
+
+\subsection{Preprocessor Macros for the Signature}
+
+To avoid repeating the 6-tuple everywhere, we define two C preprocessor macros:
+
+\begin{lstlisting}[style=soufflestyle,caption={Preprocessor macros from hipaa\_types.dl}]
+#define ARGS p1, p2, q, m, t, u
+#define DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:Attribute, u:Purpose
+\end{lstlisting}
+
+\texttt{ARGS} is used in rule bodies and heads where the variables are already in scope. \texttt{DECL\_ARGS} is used in \texttt{.decl} declarations where each variable needs its type annotation.
+
+Example usage:
+\begin{lstlisting}[style=soufflestyle]
+// Declaration uses DECL_ARGS
+.decl permitted_by_164_506(DECL_ARGS, e: Expl)
+
+// Rule head and body use ARGS
+permitted_by_164_506(ARGS, E) :- permitted_by_164_506_a(ARGS, E).
+\end{lstlisting}
+
+After preprocessing, the declaration expands to:
+\begin{lstlisting}[style=soufflestyle]
+.decl permitted_by_164_506(p1:Principal, p2:Principal, q:Principal,
+    m:Message, t:Attribute, u:Purpose, e: Expl)
+\end{lstlisting}
+
+\subsection{Primitive Domain Types}
+
+All types are declared in \texttt{hipaa\_types.dl}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Type declarations from hipaa\_types.dl}]
+.type Principal <: symbol   // people, organizations, entities
+.type Role <: symbol        // covered-entity, provider, patient, etc.
+.type Attribute <: symbol   // phi, dii, psychotherapy-notes, etc.
+.type Purpose <: symbol     // treatment, payment, marketing, etc.
+.type Message <: symbol     // message identifiers
+.type TimePoint <: number   // discrete time points (for future use)
+.type Rel <: symbol         // relationship identifiers
+\end{lstlisting}
+
+All are subtypes of \texttt{symbol} (strings) except \texttt{TimePoint} which is a subtype of \texttt{number}. The \texttt{<:} operator in Souffl\'{e} creates a named subtype, giving us type safety: you cannot accidentally pass a \texttt{Principal} where a \texttt{Purpose} is expected.
+
+\subsection{The \texttt{Expl} ADT: Explanation Trees}
+\label{sec:expl-adt}
+
+The most important design decision is the use of an Algebraic Data Type (ADT) to carry structured explanations through every derivation. The \texttt{Expl} type is a tagged union with four variants:
+
+\begin{lstlisting}[style=soufflestyle,caption={The Expl ADT from hipaa\_types.dl}]
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+\end{lstlisting}
+
+\begin{description}
+  \item[\texttt{Leaf}:] A base fact or oracle predicate. No sub-explanations. The \texttt{reason} string identifies the HIPAA section.
+  \item[\texttt{Step1}:] A rule with one sub-explanation. Used when a rule delegates to one child section.
+  \item[\texttt{Step2}:] A rule combining two sub-explanations. Used when both a positive and negative norm contribute.
+  \item[\texttt{Step3}:] A rule combining three sub-explanations.
+\end{description}
+
+ADT values are constructed with the \texttt{\$} prefix:
+\begin{lstlisting}[style=soufflestyle]
+$Leaf("164.506(c)(1): covered entity's own TPO")
+$Step1("164.502(a)(1)(ii): TPO per 164.506", E)
+\end{lstlisting}
+
+\subsection{How Explanation Trees Compose}
+
+When a disclosure is allowed, the explanation tree shows the full chain of reasoning. For example, consider a hospital sending blood test results to a doctor for treatment. The explanation tree would be:
+
+\begin{verbatim}
+Step1("164.502(a): permitted use by covered entity",
+  Step1("164.502(a)(1)(ii): TPO per 164.506",
+    Step1("164.506(a): standard TPO use/disclosure",
+      Leaf("164.506(c)(2): treatment activities of health care provider")
+    )
+  )
+)
+\end{verbatim}
+
+Reading from the outside in:
+\begin{enumerate}
+  \item \S 164.502(a) permits the use because the sender is a covered entity and the info is PHI.
+  \item Within \S 164.502(a), sub-section (a)(1)(ii) applies: this is a TPO disclosure, delegated to \S 164.506.
+  \item Within \S 164.506, sub-section (a) applies: no authorization required, the entity is covered, the purpose is TPO, and (c) is satisfied.
+  \item Within \S 164.506(c), sub-section (c)(2) applies: the receiver is a health care provider and the purpose is treatment.
+\end{enumerate}
+
+This is far more informative than a simple ``allowed/denied'' answer. It provides a \emph{legal citation trail} that can be audited.
+
+
+% ============================================================================
+% SECTION 6: Hierarchy Design
+% ============================================================================
+\section{Hierarchy Design}
+\label{sec:hierarchies}
+
+HIPAA rules frequently refer to categories of entities, information, and purposes. Rather than enumerating every possible value, we define hierarchies with transitive closure. This means that if \texttt{doctor} is a subtype of \texttt{provider}, and a rule requires the receiver to be a \texttt{provider}, then a \texttt{doctor} automatically qualifies.
+
+\subsection{Role Hierarchy}
+
+The role hierarchy captures specialization relationships among HIPAA principals. It is defined with \texttt{role\_isa(child, parent)} facts:
+
+\begin{lstlisting}[style=soufflestyle,caption={Role hierarchy from hipaa\_hierarchies.dl}]
+// Health care providers
+role_isa("psychiatrist", "doctor").
+role_isa("doctor", "provider").
+role_isa("nurse", "provider").
+role_isa("pharmacist", "provider").
+role_isa("lab-technician", "provider").
+role_isa("provider", "covered-entity").
+
+// Health plans
+role_isa("health-insurance-issuer", "health-plan").
+role_isa("HMO", "health-plan").
+role_isa("group-health-plan", "health-plan").
+role_isa("health-plan", "covered-entity").
+
+// Health care clearinghouses
+role_isa("clearinghouse", "covered-entity").
+
+// Hospitals
+role_isa("hospital", "covered-entity").
+
+// Business associates
+role_isa("billing-company", "business-associate").
+role_isa("cloud-storage", "business-associate").
+role_isa("transcription-service", "business-associate").
+
+// Oversight and government
+role_isa("oversight-agency", "government-entity").
+role_isa("public-health-authority", "government-entity").
+role_isa("law-enforcement-official", "government-entity").
+
+// Guardian types (for 164.502(g))
+role_isa("parent", "guardian-type").
+role_isa("legal-guardian", "guardian-type").
+role_isa("loco-parentis", "guardian-type").
+\end{lstlisting}
+
+The full hierarchy tree:
+
+\begin{landscape}
+\begin{figure}[H]
+\centering
+\begin{forest}
+  for tree={
+    draw, rounded corners, align=center,
+    font=\ttfamily\footnotesize,
+    edge={-Stealth},
+    l sep=1.0cm,
+    s sep=0.15cm,
+    anchor=north,
+  }
+  [covered-entity
+    [provider
+      [doctor
+        [psychiatrist]
+      ]
+      [nurse]
+      [pharmacist]
+      [lab-technician]
+    ]
+    [health-plan
+      [health-insurance-issuer]
+      [HMO]
+      [group-health-plan]
+    ]
+    [clearinghouse]
+    [hospital]
+  ]
+\end{forest}
+
+\vspace{0.5cm}
+
+\resizebox{\linewidth}{!}{%
+\begin{forest}
+  for tree={
+    draw, rounded corners, align=center,
+    font=\ttfamily\footnotesize,
+    edge={-Stealth},
+    l sep=1.0cm,
+    s sep=0.12cm,
+    anchor=north,
+  }
+  [government-entity
+    [oversight-agency]
+    [public-health-authority]
+    [law-enforcement-official]
+    [coroner]
+    [medical-examiner]
+    [correctional-institution]
+    [authorized-federal-official]
+    [government-authority]
+    [DVA]
+    [component-of-DVA]
+    [DoS-official]
+    [component-of-DoS]
+  ]
+\end{forest}
+\hfill
+\begin{forest}
+  for tree={
+    draw, rounded corners, align=center,
+    font=\ttfamily\footnotesize,
+    edge={-Stealth},
+    l sep=1.0cm,
+    s sep=0.12cm,
+    anchor=north,
+  }
+  [business-associate
+    [billing-company]
+    [cloud-storage]
+    [transcription-service]
+  ]
+\end{forest}
+\hfill
+\begin{forest}
+  for tree={
+    draw, rounded corners, align=center,
+    font=\ttfamily\footnotesize,
+    edge={-Stealth},
+    l sep=1.0cm,
+    s sep=0.12cm,
+    anchor=north,
+  }
+  [individual
+    [clergy]
+    [funeral-director]
+    [organ-procurement-org]
+    [researcher]
+  ]
+\end{forest}
+\hfill
+\begin{forest}
+  for tree={
+    draw, rounded corners, align=center,
+    font=\ttfamily\footnotesize,
+    edge={-Stealth},
+    l sep=1.0cm,
+    s sep=0.12cm,
+    anchor=north,
+  }
+  [guardian-type
+    [parent]
+    [legal-guardian]
+    [loco-parentis]
+  ]
+\end{forest}
+}% end resizebox
+
+\caption{Complete role hierarchy. Arrows point from child to parent (specialization). The hierarchy now includes government entities, business associates, specialized individuals, and guardian types added for \S\S 508--524.}
+\label{fig:role-hierarchy}
+\end{figure}
+\end{landscape}
+
+\subsection{Transitive Closure}
+
+The transitive closure is computed recursively:
+
+\begin{lstlisting}[style=soufflestyle,caption={Transitive closure for roles}]
+.decl role_subtype(child: Role, ancestor: Role)
+role_subtype(C, P) :- role_isa(C, P).
+role_subtype(C, A) :- role_isa(C, P), role_subtype(P, A).
+\end{lstlisting}
+
+This means that \texttt{role\_subtype("psychiatrist", "covered-entity")} holds (via psychiatrist $<$ doctor $<$ provider $<$ covered-entity).
+
+The \texttt{has\_role} predicate checks both direct assignment and hierarchy:
+
+\begin{lstlisting}[style=soufflestyle,caption={has\_role uses both direct and inherited roles}]
+.decl activerole(p: Principal, r: Role)
+
+.decl has_role(p: Principal, r: Role)
+has_role(P, R) :- activerole(P, R).
+has_role(P, R) :- activerole(P, R2), role_subtype(R2, R).
+\end{lstlisting}
+
+So if \texttt{activerole("dr\_smith", "doctor")} is a fact, then \texttt{has\_role("dr\_smith", "provider")} and \texttt{has\_role("dr\_smith", "covered-entity")} are both derived.
+
+\subsection{Attribute Hierarchy}
+
+The attribute hierarchy classifies types of health information:
+
+\begin{lstlisting}[style=soufflestyle,caption={Attribute hierarchy (selected entries)}]
+// PHI subtypes
+attr_isa("psychotherapy-notes", "phi").
+attr_isa("genetic-info", "phi").
+attr_isa("diagnosis", "phi").
+attr_isa("prescription", "phi").
+attr_isa("medical-record", "phi").
+attr_isa("billing-record", "phi").
+attr_isa("blood-test-results", "phi").
+attr_isa("lab-results", "phi").
+attr_isa("treatment-plan", "phi").
+attr_isa("patient-name", "phi").
+attr_isa("patient-location", "phi").
+attr_isa("patient-condition", "phi").
+attr_isa("religious-affiliation", "phi").
+
+// De-identified information (NOT phi)
+attr_isa("statistical-data", "dii").
+attr_isa("anonymized-record", "dii").
+
+// Directory information (164.510)
+attr_isa("patient-name", "directory-information").
+attr_isa("patient-location", "directory-information").
+\end{lstlisting}
+
+Note that some attributes belong to multiple hierarchies: \texttt{patient-name} is both a subtype of \texttt{phi} and \texttt{directory-information}. This is intentional --- HIPAA treats directory information as a special category of PHI with its own rules (\S 164.510).
+
+The transitive closure follows the same pattern:
+\begin{lstlisting}[style=soufflestyle]
+.decl attr_subtype(child: Attribute, ancestor: Attribute)
+attr_subtype(C, P) :- attr_isa(C, P).
+attr_subtype(C, A) :- attr_isa(C, P), attr_subtype(P, A).
+\end{lstlisting}
+
+\subsection{Purpose Hierarchy}
+
+The purpose hierarchy classifies the reasons for disclosure:
+
+\begin{lstlisting}[style=soufflestyle,caption={Purpose hierarchy (selected entries)}]
+// Treatment sub-purposes
+purpose_isa("surgery", "treatment").
+purpose_isa("referral", "treatment").
+purpose_isa("consultation", "treatment").
+purpose_isa("emergency-treatment", "treatment").
+
+// Payment sub-purposes
+purpose_isa("billing", "payment").
+purpose_isa("claims-processing", "payment").
+purpose_isa("eligibility-determination", "payment").
+purpose_isa("reimbursement", "payment").
+
+// Healthcare operations sub-purposes
+purpose_isa("quality-assessment", "healthcare-operations").
+purpose_isa("quality-improvement", "healthcare-operations").
+purpose_isa("case-management", "healthcare-operations").
+purpose_isa("care-coordination", "healthcare-operations").
+purpose_isa("competency-assurance", "healthcare-operations").
+purpose_isa("fraud-detection", "healthcare-operations").
+purpose_isa("compliance-audit", "healthcare-operations").
+purpose_isa("business-planning", "healthcare-operations").
+purpose_isa("accreditation", "healthcare-operations").
+purpose_isa("training-programs", "healthcare-operations").
+\end{lstlisting}
+
+The purpose hierarchy also includes a \texttt{known\_purpose} relation that collects all purpose values. This is needed to ground unbound purpose variables (see Section~\ref{sec:grounding}).
+
+\begin{lstlisting}[style=soufflestyle,caption={known\_purpose for grounding}]
+.decl known_purpose(u: Purpose)
+known_purpose(U) :- purpose_isa(U, _).
+known_purpose(U) :- purpose_isa(_, U).
+known_purpose("treatment").
+known_purpose("payment").
+known_purpose("healthcare-operations").
+known_purpose("marketing").
+known_purpose("research").
+// ... and other top-level purposes
+\end{lstlisting}
+
+
+% ============================================================================
+% SECTION 7: Macro/Helper Predicates
+% ============================================================================
+\section{Macro/Helper Predicates}
+\label{sec:macros}
+
+The PDF formalization uses macros like \texttt{is\_from\_coveredEntity(A)}, \texttt{is\_phi(A)}, \texttt{is\_for\_treatment(A)}, and \texttt{is\_for\_eitherPurpose(A)}. These are translated to Souffl\'{e} helper predicates.
+
+\subsection{Entity Role Checks}
+
+The PDF macro \texttt{is\_from\_coveredEntity(A)} checks that the sender (p1) has the role ``covered-entity.'' In Souffl\'{e}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Entity role check predicates}]
+.decl is_covered_entity(p: Principal)
+is_covered_entity(P) :- has_role(P, "covered-entity").
+
+.decl is_health_care_provider(p: Principal)
+is_health_care_provider(P) :- has_role(P, "provider").
+
+.decl is_health_plan(p: Principal)
+is_health_plan(P) :- has_role(P, "health-plan").
+
+.decl is_business_associate(p: Principal)
+is_business_associate(P) :- has_role(P, "business-associate").
+
+.decl is_secretary(p: Principal)
+is_secretary(P) :- activerole(P, "secretary").
+\end{lstlisting}
+
+Note that \texttt{is\_secretary} uses \texttt{activerole} directly (not \texttt{has\_role}) because the HHS Secretary is a unique role with no subtypes.
+
+\subsection{Attribute and Purpose Checks}
+
+\begin{lstlisting}[style=soufflestyle,caption={Attribute and purpose check predicates}]
+// is_phi(T): T is protected health information (or a subtype)
+.decl is_phi(t: Attribute)
+is_phi("phi").
+is_phi(T) :- attr_subtype(T, "phi").
+
+// is_dii(T): T is de-identified information
+.decl is_dii(t: Attribute)
+is_dii("dii").
+is_dii(T) :- attr_subtype(T, "dii").
+
+// is_for_tpo(U): purpose is treatment, payment, or healthcare operations
+// This is the PDF's is_for_eitherPurpose macro
+.decl is_for_tpo(u: Purpose)
+is_for_tpo(U) :- is_for_treatment(U).
+is_for_tpo(U) :- is_for_payment(U).
+is_for_tpo(U) :- is_for_hc_ops(U).
+\end{lstlisting}
+
+\subsection{Personal Representative (\S 164.502(g))}
+\label{sec:personal-rep}
+
+The personal representative macro is one of the most complex translations. In HIPAA, a personal representative may act on behalf of an individual. The rules differ by the subject's status (adult, emancipated minor, unemancipated minor, deceased).
+
+\begin{lstlisting}[style=soufflestyle,caption={Personal representative rules from hipaa\_macros.dl}]
+// 502(g)(2): Adults and emancipated minors
+is_personal_representative(P, Q) :-
+    has_authority_to_act(P, Q),
+    (belongs_to(Q, "adult") ; belongs_to(Q, "emancipated-minor")),
+    !abuse_exception(P, Q).
+
+// 502(g)(3): Unemancipated minors with guardian
+is_personal_representative(P, Q) :-
+    is_guardian(P, Q),
+    belongs_to(Q, "unemancipated-minor"),
+    has_authority_to_act(P, Q),
+    !minor_acts_as_individual(P, Q),
+    !abuse_exception(P, Q).
+
+// 502(g)(4): Deceased individuals
+is_personal_representative(P, Q) :-
+    (activerole(P, "executor") ; activerole(P, "administrator")),
+    belongs_to(Q, "deceased"),
+    has_authority_to_act(P, Q),
+    !abuse_exception(P, Q).
+\end{lstlisting}
+
+Key design points:
+\begin{itemize}
+  \item \texttt{has\_authority\_to\_act(P, Q)} is an oracle predicate --- it must be asserted as a fact.
+  \item \texttt{abuse\_exception(P, Q)} is also an oracle. When asserted, it blocks personal representative status.
+  \item \texttt{minor\_acts\_as\_individual(G, M)} is an oracle for cases where the minor acts on their own behalf (e.g., minor consented to treatment independently).
+  \item The disjunction \texttt{(belongs\_to(Q, "adult") ; belongs\_to(Q, "emancipated-minor"))} mirrors the PDF's union of categories.
+\end{itemize}
+
+\subsection{Oracle Predicates}
+
+Oracle predicates represent conditions that cannot be determined from the fact database alone --- they require external judgment or real-world verification. Examples:
+
+\begin{lstlisting}[style=soufflestyle,caption={Oracle predicates from hipaa\_macros.dl}]
+// Does the CE believe the disclosure is minimum necessary?
+.decl believes_minimum_necessary(p1:Principal, p2:Principal,
+    q:Principal, m:Message, t:Attribute, u:Purpose)
+
+// Was consent obtained for TPO under 164.506(b)?
+.decl obtained_consent_506b(p1:Principal, p2:Principal,
+    q:Principal, t:Attribute, u:Purpose)
+
+// Has the BA provided satisfactory assurances?
+.decl satisfactory_assurances(p1:Principal, p2:Principal,
+    q:Principal, t:Attribute, u:Purpose)
+
+// Good-faith belief of unlawful conduct (whistleblower)
+.decl believes_unlawful_conduct(employee:Principal, employer:Principal)
+\end{lstlisting}
+
+These are declared with \texttt{.decl} but have no rules --- they must be populated as facts in the fact database.
+
+
+% ============================================================================
+% SECTION 8: Formalization of Section 164.506
+% ============================================================================
+\section{Formalization of \S 164.506}
+\label{sec:506}
+
+\S 164.506 governs uses and disclosures for Treatment, Payment, or Health Care Operations (TPO). It is structured as a disjunction of three sub-sections.
+
+\subsection{\S 164.506 --- Top-Level}
+
+\begin{hipaabox}
+\S 164.506 permits disclosures under sub-sections (a), (b), or (c).
+\end{hipaabox}
+
+\begin{pdfbox}
+\texttt{permitted\_by\_164\_506(A) :- permitted\_by\_164\_506\_a(A) ;}\\
+\texttt{\hspace{2em}permitted\_by\_164\_506\_b(A) ; permitted\_by\_164\_506\_c(A).}
+\end{pdfbox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506 top-level}]
+.decl permitted_by_164_506(DECL_ARGS, e: Expl)
+
+permitted_by_164_506(ARGS, E) :- permitted_by_164_506_a(ARGS, E).
+permitted_by_164_506(ARGS, E) :- permitted_by_164_506_b(ARGS, E).
+permitted_by_164_506(ARGS, E) :- permitted_by_164_506_c(ARGS, E).
+\end{lstlisting}
+
+The disjunction in the PDF (\texttt{;}) becomes three separate rules in Souffl\'{e}, each contributing to the same head relation. This is idiomatic Souffl\'{e}: multiple rules for the same relation are implicitly OR'd.
+
+\subsection{\S 164.506(a) --- Standard Permitted Uses}
+\label{sec:506a}
+
+\begin{hipaabox}
+``Except with respect to uses or disclosures that require an authorization under sections 164.508(a)(2) and (3), a covered entity may use or disclose protected health information for treatment, payment, or health care operations as set forth in paragraph (c) of this section, provided that such use or disclosure is consistent with other applicable requirements of this subpart.''
+\end{hipaabox}
+
+\begin{pdfbox}
+\texttt{permitted\_by\_164\_506\_a(A) :- }\\
+\texttt{\hspace{2em}\textbackslash+ require\_authorization\_by\_164\_508(A),}\\
+\texttt{\hspace{2em}is\_from\_coveredEntity(A), is\_for\_eitherPurpose(A),}\\
+\texttt{\hspace{2em}permitted\_by\_164\_506\_c(A),}\\
+\texttt{\hspace{2em}writeln('HIPAA rule 164\_506\_a;').}
+\end{pdfbox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(a) --- Souffl\'{e} translation}]
+.decl permitted_by_164_506_a(DECL_ARGS, e: Expl)
+
+permitted_by_164_506_a(ARGS,
+    $Step1("164.506(a): standard TPO use/disclosure
+            (no authorization required)", E)) :-
+    !require_authorization_by_164_508(ARGS),
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_tpo(u),
+    permitted_by_164_506_c(ARGS, E).
+\end{lstlisting}
+
+\begin{designbox}
+The PDF's \texttt{\textbackslash+ require\_authorization\_by\_164\_508(A)} (Prolog negation-as-failure) becomes \texttt{!require\_authorization\_by\_164\_508(ARGS)} in Souffl\'{e}. Since \S 164.508 is a stub (no rules, no tuples), this negation always succeeds --- effectively making the ``except'' clause vacuous until \S 164.508 is formalized. This is the correct behavior: we are saying ``the authorization exception does not apply'' because we have no evidence that it does.
+\end{designbox}
+
+Key observations:
+\begin{itemize}
+  \item The PDF's \texttt{is\_from\_coveredEntity(A)} is expanded to \texttt{is\_covered\_entity(p1)}.
+  \item The PDF's \texttt{is\_for\_eitherPurpose(A)} is expanded to \texttt{is\_for\_tpo(u)}.
+  \item We add \texttt{is\_phi(t)} and \texttt{msg\_contains(m, q, t)} to ensure the message actually contains PHI about the subject.
+  \item The PDF's \texttt{writeln} (debug output) is replaced by the ADT explanation string in the head.
+  \item The delegation to \texttt{permitted\_by\_164\_506\_c(ARGS, E)} threads the sub-explanation through.
+\end{itemize}
+
+\subsection{\S 164.506(b) --- Consent for TPO}
+\label{sec:506b}
+
+\begin{hipaabox}
+``A covered entity may obtain consent of the individual to use or disclose protected health information to carry out treatment, payment, or health care operations.''
+\end{hipaabox}
+
+\begin{pdfbox}
+\texttt{permitted\_by\_164\_506\_b(A) :- is\_for\_eitherPurpose(A), is\_consentedby\_about(A).}
+\end{pdfbox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(b) --- Consent for TPO}]
+.decl permitted_by_164_506_b(DECL_ARGS, e: Expl)
+
+permitted_by_164_506_b(ARGS,
+    $Leaf("164.506(b)(1): consent obtained for TPO")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_tpo(u),
+    obtained_consent_506b(p1, p2, q, t, u).
+\end{lstlisting}
+
+This uses a \texttt{\$Leaf} explanation because consent is a terminal fact --- it does not delegate further.
+
+\subsection{\S 164.506(c) --- Implementation Specification}
+
+\begin{hipaabox}
+The implementation specification is a disjunction of five sub-rules (c)(1) through (c)(5), each covering a different TPO scenario.
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c) --- disjunction of sub-rules}]
+.decl permitted_by_164_506_c(DECL_ARGS, e: Expl)
+
+permitted_by_164_506_c(ARGS, E) :- permitted_by_164_506_c_1(ARGS, E).
+permitted_by_164_506_c(ARGS, E) :- permitted_by_164_506_c_2(ARGS, E).
+permitted_by_164_506_c(ARGS, E) :- permitted_by_164_506_c_3(ARGS, E).
+permitted_by_164_506_c(ARGS, E) :- permitted_by_164_506_c_4(ARGS, E).
+permitted_by_164_506_c(ARGS, E) :- permitted_by_164_506_c_5(ARGS, E).
+\end{lstlisting}
+
+\subsubsection{\S 164.506(c)(1) --- Own TPO}
+
+\begin{hipaabox}
+``A covered entity may use or disclose protected health information for its own treatment, payment, or health care operations.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c)(1)}]
+permitted_by_164_506_c_1(ARGS,
+    $Leaf("164.506(c)(1): covered entity's own TPO")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_tpo(u),
+    // "its own" -- the message stays within the organization
+    (organization_member(p2, p1) ; p1 = p2).
+\end{lstlisting}
+
+\begin{designbox}
+``Its own'' TPO means the disclosure stays within the covered entity's organization. We model this with the disjunction: either \texttt{p2} is a member of \texttt{p1}'s organization, or \texttt{p1} is using it internally (\texttt{p1 = p2}).
+\end{designbox}
+
+\subsubsection{\S 164.506(c)(2) --- Treatment Activities of a Provider}
+
+\begin{hipaabox}
+``A covered entity may disclose protected health information for treatment activities of a health care provider.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c)(2)}]
+permitted_by_164_506_c_2(ARGS,
+    $Leaf("164.506(c)(2): treatment activities of
+           health care provider")) :-
+    is_covered_entity(p1),
+    is_health_care_provider(p2),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_treatment(u).
+\end{lstlisting}
+
+This is the rule that permits, for example, a hospital to send blood test results to a doctor for treatment purposes. The receiver must be a health care provider (doctor, nurse, pharmacist, etc.) and the purpose must be treatment.
+
+\subsubsection{\S 164.506(c)(3) --- Payment Activities of Receiving Entity}
+
+\begin{hipaabox}
+``A covered entity may disclose protected health information to another covered entity or a health care provider for the payment activities of the entity that receives the information.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c)(3)}]
+permitted_by_164_506_c_3(ARGS,
+    $Leaf("164.506(c)(3): payment activities of
+           receiving entity")) :-
+    is_covered_entity(p1),
+    (is_covered_entity(p2) ; is_health_care_provider(p2)),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_payment(u).
+\end{lstlisting}
+
+The receiver can be either a covered entity or a health care provider. The purpose must be payment (or a sub-purpose like billing, claims-processing, etc.).
+
+\subsubsection{\S 164.506(c)(4) --- Healthcare Operations Between Covered Entities}
+
+\begin{hipaabox}
+``A covered entity may disclose protected health information to another covered entity for health care operations activities of the entity that receives the information, if each entity either has or had a relationship with the individual who is the subject of the protected health information being requested, the protected health information pertains to such relationship, and the disclosure is [for quality assessment, fraud detection, or compliance].''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c)(4)}]
+permitted_by_164_506_c_4(ARGS,
+    $Leaf("164.506(c)(4): healthcare ops between
+           related covered entities")) :-
+    is_covered_entity(p1),
+    is_covered_entity(p2),
+    p1 != p2,
+    is_phi(t),
+    msg_contains(m, q, t),
+    // Both entities have/had relationship with subject
+    inrelationship(p1, R1, q),
+    pertains_to(t, R1),
+    inrelationship(p2, R2, q),
+    pertains_to(t, R2),
+    // Purpose limited to specific healthcare operations
+    (is_for_hc_ops_paras_1_2(u) ;
+     is_for_fraud_detection(u) ;
+     is_for_compliance(u)).
+\end{lstlisting}
+
+This is the most complex sub-rule. It requires:
+\begin{enumerate}
+  \item Both sender and receiver are covered entities (and different).
+  \item Both have (or had) a relationship with the subject individual.
+  \item The PHI pertains to those relationships.
+  \item The purpose is limited to specific healthcare operations (paragraphs (1) and (2) of the definition), fraud detection, or compliance.
+\end{enumerate}
+
+\begin{designbox}
+The PDF uses temporal logic (``has or had a relationship,'' written as $\Diamond \texttt{inrelationship}(p_1, r_1, q)$) to express that the relationship existed at some past time. Since we defer temporal translation for these sections (see Section~\ref{sec:temporal}), we use the atemporal \texttt{inrelationship} predicate directly.
+\end{designbox}
+
+\subsubsection{\S 164.506(c)(5) --- Organized Health Care Arrangement}
+
+\begin{hipaabox}
+``A covered entity that participates in an organized health care arrangement may disclose protected health information about an individual to another covered entity that participates in the organized health care arrangement for any health care operations activities of the organized health care arrangement.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.506(c)(5)}]
+permitted_by_164_506_c_5(ARGS,
+    $Leaf("164.506(c)(5): organized health care
+           arrangement")) :-
+    is_covered_entity(p1),
+    is_covered_entity(p2),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_hc_ops(u),
+    // Both participate in the same OHCA
+    participates_in_ohca(p1, Arr),
+    participates_in_ohca(p2, Arr).
+\end{lstlisting}
+
+Both entities must participate in the same organized health care arrangement (OHCA), and the purpose must be healthcare operations of that arrangement.
+
+
+% ============================================================================
+% SECTION 9: Formalization of Section 164.502
+% ============================================================================
+\section{Formalization of \S 164.502}
+\label{sec:502}
+
+\S 164.502 is the ``General Rules'' section --- the gatekeeper for all HIPAA disclosures. It is structured as a disjunction of sub-sections (a) through (j), though several are constraints or special cases rather than independent permission pathways.
+
+\subsection{\S 164.502 --- Top-Level}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502 top-level}]
+.decl permitted_by_164_502(DECL_ARGS, e: Expl)
+
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_a(ARGS, E).
+// (b): minimum necessary is a CONSTRAINT, not independent permission
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_c(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_d(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_e(ARGS, E).
+// (f): deceased treated same as living -- no rule
+// (g): personal representatives -- handled in macros
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_h(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_i(ARGS, E).
+permitted_by_164_502(ARGS, E) :- permitted_by_164_502_j(ARGS, E).
+\end{lstlisting}
+
+\begin{designbox}
+Sub-section (b) (minimum necessary) is deliberately \emph{not} an independent permission pathway. It is a constraint that modifies other pathways. Sub-section (f) (deceased individuals) requires no rule because deceased individuals are treated the same as living ones for PHI purposes. Sub-section (g) (personal representatives) is handled as a macro/helper predicate rather than a permission rule.
+\end{designbox}
+
+\subsection{\S 164.502(a) --- Permitted and Required Disclosures}
+
+\begin{hipaabox}
+``A covered entity may not use or disclose protected health information, except as permitted or required by [this subpart or subpart C of part 160].''
+\end{hipaabox}
+
+This is the gatekeeper: it requires \texttt{is\_covered\_entity(p1)}, \texttt{is\_phi(t)}, and \texttt{msg\_contains(m, q, t)}, then dispatches to either (a)(1) for permitted uses or (a)(2) for required disclosures.
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)}]
+.decl permitted_by_164_502_a(DECL_ARGS, e: Expl)
+
+// Permitted use
+permitted_by_164_502_a(ARGS,
+    $Step1("164.502(a): permitted use by covered entity", E)) :-
+    is_covered_entity(p1), is_phi(t), msg_contains(m, q, t),
+    permitted_by_164_502_a_1(ARGS, E).
+
+// Required disclosure
+permitted_by_164_502_a(ARGS,
+    $Step1("164.502(a): required disclosure by covered entity", E)) :-
+    is_covered_entity(p1), is_phi(t), msg_contains(m, q, t),
+    required_by_164_502_a_2(ARGS, E).
+
+// Permitted under subpart C of part 160
+permitted_by_164_502_a(ARGS,
+    $Leaf("164.502(a): permitted under 160.C")) :-
+    is_covered_entity(p1), is_phi(t), msg_contains(m, q, t),
+    permitted_by_160_C(ARGS).
+\end{lstlisting}
+
+\subsection{\S 164.502(a)(1) --- Permitted Uses (i through vi)}
+
+This is a disjunction of six permission pathways:
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1) --- six pathways}]
+.decl permitted_by_164_502_a_1(DECL_ARGS, e: Expl)
+
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_i(ARGS, E).    // to the individual
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_ii(ARGS, E).   // TPO per 164.506
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_iii(ARGS, E).  // incident to use
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_iv(ARGS, E).   // authorization per 164.508
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_v(ARGS, E).    // agreement per 164.510
+permitted_by_164_502_a_1(ARGS, E) :-
+    permitted_by_164_502_a_1_vi(ARGS, E).   // per 164.512/514
+\end{lstlisting}
+
+\subsubsection{\S 164.502(a)(1)(i) --- To the Individual}
+\label{sec:502a1i}
+
+\begin{hipaabox}
+``To the individual.''
+\end{hipaabox}
+
+\begin{pdfbox}
+$\varphi^+_{164.502a1i}$: \texttt{activerole}$(p_1, \text{covered-entity}) \wedge (p_2 \approx q) \wedge (t \in_T \text{phi})$\\
+where $(p_2 \approx q) \triangleq \texttt{activerole}(p_2, \text{personal-representative}(q)) \vee (p_2 = q)$
+\end{pdfbox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(i) --- disclosure to individual}]
+permitted_by_164_502_a_1_i(ARGS,
+    $Leaf("164.502(a)(1)(i): disclosure to the individual
+           or personal representative")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    known_purpose(u),
+    (p2 = q ; is_personal_representative(p2, q)).
+\end{lstlisting}
+
+\begin{designbox}
+The notation $p_2 \approx q$ from the PDF is translated as \texttt{(p2 = q ; is\_personal\_representative(p2, q))}. This captures the HIPAA principle that a personal representative stands in the shoes of the individual. The \texttt{known\_purpose(u)} literal is needed for grounding --- the purpose is unrestricted (any purpose is valid for disclosures to the individual), but every variable must be bound by some positive literal. See Section~\ref{sec:grounding}.
+\end{designbox}
+
+\subsubsection{\S 164.502(a)(1)(ii) --- TPO per \S 164.506}
+\label{sec:502a1ii}
+
+\begin{hipaabox}
+``For treatment, payment, or health care operations, as permitted by and in compliance with \S 164.506.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(ii) --- delegates to \S 164.506}]
+permitted_by_164_502_a_1_ii(ARGS,
+    $Step1("164.502(a)(1)(ii): TPO per 164.506", E)) :-
+    is_for_tpo(u),
+    permitted_by_164_506(ARGS, E).
+\end{lstlisting}
+
+This is the bridge between \S 164.502 and \S 164.506. The purpose must be TPO, and the actual permission check delegates to \S 164.506.
+
+\subsubsection{\S 164.502(a)(1)(iii) --- Incident to Use}
+
+\begin{hipaabox}
+``Incident to a use or disclosure otherwise permitted or required by this subpart, provided that the covered entity has complied with the applicable requirements of \S 164.502(b), \S 164.514(d), and \S 164.530(c).''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(iii) --- incident to use}]
+.decl is_incident_to_use(DECL_ARGS)
+
+permitted_by_164_502_a_1_iii(ARGS,
+    $Leaf("164.502(a)(1)(iii): incident to otherwise
+           permitted use/disclosure")) :-
+    is_incident_to_use(ARGS),
+    minimum_necessary_satisfied(ARGS),
+    permitted_by_164_514_d(ARGS),
+    permitted_by_164_530_c(ARGS).
+\end{lstlisting}
+
+``Incident to use'' is an oracle predicate --- it means the disclosure was incidental to a primary permitted use. The rule also requires compliance with minimum necessary (\S 502(b)), de-identification standards (\S 514(d)), and safeguards (\S 530(c)). Since \S 514(d) and \S 530(c) are stubs, this rule currently requires all three conditions but only \texttt{minimum\_necessary\_satisfied} can actually be satisfied.
+
+\subsubsection{\S 164.502(a)(1)(iv) --- Valid Authorization per \S 164.508}
+
+\begin{hipaabox}
+``Pursuant to and in compliance with a valid authorization under \S 164.508.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(iv) --- authorization}]
+permitted_by_164_502_a_1_iv(ARGS,
+    $Leaf("164.502(a)(1)(iv): valid authorization
+           per 164.508")) :-
+    obtained_authorization_164_508(p1, p2, q, t, u),
+    is_phi(t),
+    msg_contains(m, q, t).
+\end{lstlisting}
+
+\subsubsection{\S 164.502(a)(1)(v) --- Agreement per \S 164.510}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(v) --- agreement}]
+permitted_by_164_502_a_1_v(ARGS,
+    $Step1("164.502(a)(1)(v): agreement or permission
+            per 164.510", E)) :-
+    permitted_by_164_510(ARGS, E).
+\end{lstlisting}
+
+\subsubsection{\S 164.502(a)(1)(vi) --- Per \S 164.512, \S 164.514(e)(f)(g)}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(1)(vi) --- other sections}]
+permitted_by_164_502_a_1_vi(ARGS,
+    $Step1("164.502(a)(1)(vi): per 164.512", E)) :-
+    permitted_by_164_512(ARGS, E).
+permitted_by_164_502_a_1_vi(ARGS,
+    $Step1("164.502(a)(1)(vi): per 164.514(e)", E)) :-
+    permitted_by_164_514_e(ARGS, E).
+// ... similarly for 164.514(f) and 164.514(g)
+\end{lstlisting}
+
+\subsection{\S 164.502(a)(2) --- Required Disclosures}
+
+HIPAA has two cases where disclosure is \emph{required} (not merely permitted):
+
+\subsubsection{\S 164.502(a)(2)(i) --- To Individual Upon Request}
+
+\begin{hipaabox}
+``To an individual, when requested under \S 164.524 or \S 164.528.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(2)(i)}]
+required_by_164_502_a_2_i(ARGS,
+    $Leaf("164.502(a)(2)(i): required disclosure to
+           individual per 164.524/528")) :-
+    (p2 = q ; is_personal_representative(p2, q)),
+    is_reply_to_request(ARGS),
+    (required_by_164_524(ARGS) ; required_by_164_528(ARGS)),
+    is_phi(t),
+    msg_contains(m, q, t).
+\end{lstlisting}
+
+\subsubsection{\S 164.502(a)(2)(ii) --- To the Secretary for Investigation}
+
+\begin{hipaabox}
+``To the Secretary under subpart C of part 160 of this subchapter, when the Secretary is undertaking an investigation or determination.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(a)(2)(ii)}]
+.decl secretary_investigation_authorized(DECL_ARGS)
+
+required_by_164_502_a_2_ii(ARGS,
+    $Leaf("164.502(a)(2)(ii): required disclosure to
+           Secretary for investigation")) :-
+    is_covered_entity(p1),
+    is_secretary(p2),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_investigation(u),
+    secretary_investigation_authorized(ARGS).
+\end{lstlisting}
+
+\begin{designbox}
+The PDF requires \texttt{permitted\_by\_160\_C(A)}, but since that is a stub, including it would block this rule entirely. Instead, we use \texttt{secretary\_investigation\_authorized} as an oracle that substitutes until \S 160.C is formalized. The stubbed requirement is noted in a comment.
+\end{designbox}
+
+\subsection{\S 164.502(b) --- Minimum Necessary Standard}
+\label{sec:502b}
+
+\begin{hipaabox}
+``When using or disclosing protected health information or when requesting protected health information from another covered entity or business associate, a covered entity or business associate must make reasonable efforts to limit protected health information to the minimum necessary to accomplish the intended purpose of the use, disclosure, or request.''
+\end{hipaabox}
+
+\begin{warningbox}
+This is a \textbf{CONSTRAINT}, not an independent permission pathway. It is enforced as a guard within other rules, not as a standalone rule that permits disclosures.
+\end{warningbox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(b) --- minimum necessary}]
+.decl minimum_necessary_satisfied(DECL_ARGS)
+
+// (b)(1): entity believes minimum necessary
+minimum_necessary_satisfied(ARGS) :-
+    believes_minimum_necessary(ARGS).
+
+// (b)(2): exceptions -- minimum necessary does not apply to:
+minimum_necessary_satisfied(ARGS) :-
+    excluded_164_502_b_2(ARGS).
+\end{lstlisting}
+
+The minimum necessary standard is satisfied either if the entity believes it (oracle) or if one of the exceptions in (b)(2) applies.
+
+The exceptions under \S 164.502(b)(2):
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(b)(2) --- minimum necessary exceptions}]
+.decl excluded_164_502_b_2(DECL_ARGS)
+
+// (b)(2)(i): disclosures to provider for treatment
+excluded_164_502_b_2(ARGS) :-
+    is_covered_entity(p1), is_health_care_provider(p2),
+    is_for_treatment(u), is_phi(t), msg_contains(m, q, t).
+
+// (b)(2)(ii): disclosures to the individual
+excluded_164_502_b_2(ARGS) :-
+    is_covered_entity(p1),
+    (p2 = q ; is_personal_representative(p2, q)),
+    known_purpose(u), is_phi(t), msg_contains(m, q, t).
+
+// (b)(2)(iii): pursuant to authorization under 164.508
+excluded_164_502_b_2(ARGS) :-
+    obtained_authorization_164_508(p1, p2, q, t, u),
+    is_phi(t), msg_contains(m, q, t).
+
+// (b)(2)(iv): disclosures to Secretary per subpart C of 160
+excluded_164_502_b_2(ARGS) :-
+    is_secretary(p2), permitted_by_160_C(ARGS).
+
+// (b)(2)(v): disclosures required by law (164.512(a))
+excluded_164_502_b_2(ARGS) :-
+    required_by_164_512_a(ARGS).
+
+// (b)(2)(vi): required for compliance
+excluded_164_502_b_2(ARGS) :-
+    required_by_164_502_a_2(ARGS, _).
+\end{lstlisting}
+
+\subsection{\S 164.502(d) --- De-identified Information}
+\label{sec:502d}
+
+\begin{hipaabox}
+\S 164.502(d)(1): A covered entity may use PHI to create de-identified information or disclose PHI to a business associate for such purpose.\\
+\S 164.502(d)(2): De-identified information (meeting \S 164.514 standards) is not PHI and may be freely disclosed.
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(d) --- de-identified info}]
+// (d)(1): Disclose to BA to create de-identified info
+permitted_by_164_502_d(ARGS,
+    $Leaf("164.502(d)(1): disclose to BA to create
+           de-identified info")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_business_associate_of(p2, p1),
+    is_for_create_deidentified_info(u).
+
+// (d)(2): De-identified info bypasses PHI rules
+permitted_by_164_502_d(ARGS,
+    $Leaf("164.502(d)(2): de-identified information
+           is not PHI")) :-
+    is_covered_entity(p1),
+    is_dii(t),
+    msg_contains(m, q, t),
+    disclosure_attempted(ARGS).
+\end{lstlisting}
+
+\begin{designbox}
+Sub-section (d)(2) uses \texttt{is\_dii(t)} instead of \texttt{is\_phi(t)} because de-identified information is \emph{not} PHI. This is the only rule that checks for \texttt{dii} instead of \texttt{phi}. The \texttt{disclosure\_attempted(ARGS)} literal is needed to ground the purpose variable \texttt{u} (see Section~\ref{sec:grounding}).
+\end{designbox}
+
+\subsection{\S 164.502(e) --- Business Associates}
+\label{sec:502e}
+
+\begin{hipaabox}
+``A covered entity may disclose protected health information to a business associate and may allow a business associate to create or receive protected health information on its behalf, if the covered entity obtains satisfactory assurance that the business associate will appropriately safeguard the information.''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(e) --- business associates}]
+// CE -> BA disclosure
+permitted_by_164_502_e(ARGS,
+    $Leaf("164.502(e)(1)(i): disclosure to business associate
+           with safeguard assurances")) :-
+    is_covered_entity(p1),
+    is_business_associate_of(p2, p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_ba_purpose(u),
+    satisfactory_assurances(p1, p2, q, t, u),
+    !excluded_164_502_e_1_ii(ARGS).
+
+// BA -> CE disclosure
+permitted_by_164_502_e(ARGS,
+    $Leaf("164.502(e)(1)(i): disclosure from business associate
+           to covered entity")) :-
+    is_covered_entity(p2),
+    is_business_associate_of(p1, p2),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_ba_purpose(u),
+    satisfactory_assurances(p2, p1, q, t, u),
+    !excluded_164_502_e_1_ii(ARGS).
+\end{lstlisting}
+
+The exclusions under \S 164.502(e)(1)(ii) remove certain disclosures from the business associate requirement:
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(e)(1)(ii) --- exclusions}]
+.decl excluded_164_502_e_1_ii(DECL_ARGS)
+
+// (A) CE to provider for treatment
+excluded_164_502_e_1_ii(ARGS) :-
+    is_covered_entity(p1), is_health_care_provider(p2),
+    is_for_treatment(u), is_phi(t), msg_contains(m, q, t).
+
+// (B) Group health plan disclosures per 164.504(f)
+excluded_164_502_e_1_ii(ARGS) :-
+    (is_health_plan(p1) ; has_role(p1, "health-insurance-issuer")),
+    permitted_by_164_504_f(ARGS),
+    is_phi(t), msg_contains(m, q, t).
+
+// (C) Government program providing public benefits
+excluded_164_502_e_1_ii(ARGS) :-
+    has_role(p1, "government-entity"), is_health_plan(p2),
+    known_purpose(u), is_phi(t), msg_contains(m, q, t).
+\end{lstlisting}
+
+\subsection{\S 164.502(h) --- Provider/Plan Communication}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(h)}]
+permitted_by_164_502_h(ARGS,
+    $Leaf("164.502(h): provider/plan communication
+           per 164.522(b)")) :-
+    (is_health_care_provider(p1) ; is_health_plan(p1)),
+    is_phi(t), msg_contains(m, q, t),
+    permitted_by_164_522_b(ARGS).
+\end{lstlisting}
+
+This delegates to \S 164.522(b) (a stub).
+
+\subsection{\S 164.502(i) --- Notice Consistency}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(i)}]
+permitted_by_164_502_i(ARGS,
+    $Step1("164.502(i): consistent with notice
+            per 164.520", E)) :-
+    permitted_by_164_520(ARGS, E).
+\end{lstlisting}
+
+Delegates to \S 164.520 (a stub).
+
+\subsection{\S 164.502(j) --- Whistleblower and Crime Victim Protections}
+\label{sec:502j}
+
+\subsubsection{\S 164.502(j)(1) --- Whistleblower}
+
+\begin{hipaabox}
+``A covered entity is not considered to have violated the requirements of this subpart if a member of its workforce or a business associate discloses protected health information, provided that (i) The workforce member or business associate believes in good faith that the covered entity has engaged in conduct that is unlawful or otherwise violates professional or clinical standards\ldots{} and (ii) The disclosure is to [an oversight agency, public health authority, or attorney].''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(j)(1) --- whistleblower}]
+permitted_by_164_502_j_1(ARGS,
+    $Leaf("164.502(j)(1): whistleblower -- good faith belief
+           of unlawful conduct")) :-
+    // p1 is employee or BA of some covered entity CE
+    (is_employee_of(p1, CE) ; is_business_associate_of(p1, CE)),
+    is_covered_entity(CE),
+    // Good faith belief of unlawful/unethical conduct
+    believes_unlawful_conduct(p1, CE),
+    // Disclosure is to oversight agency, public health authority,
+    // or attorney
+    (is_oversight_agency(p2) ;
+     is_public_health_authority(p2) ;
+     activerole(p2, "healthcare-accreditation-org") ;
+     activerole(p2, "attorney")),
+    is_phi(t),
+    msg_contains(m, q, t),
+    known_purpose(u).
+\end{lstlisting}
+
+\begin{designbox}
+Note the existential variable \texttt{CE}: the rule says ``there exists some covered entity \texttt{CE} such that \texttt{p1} is an employee or BA of \texttt{CE} and \texttt{p1} believes \texttt{CE} engaged in unlawful conduct.'' In Souffl\'{e}, existentials are expressed naturally by having a variable appear in the body but not the head.
+\end{designbox}
+
+\subsubsection{\S 164.502(j)(2) --- Crime Victim}
+
+\begin{hipaabox}
+``A covered entity is not considered to have violated the requirements of this subpart if a member of its workforce who is the victim of a criminal act discloses protected health information to a law enforcement official, provided that (i) The PHI disclosed is about the suspected perpetrator; and (ii) The PHI is limited to the information listed in \S 164.512(f)(2)(i).''
+\end{hipaabox}
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 164.502(j)(2) --- crime victim}]
+permitted_by_164_502_j_2(ARGS,
+    $Leaf("164.502(j)(2): crime victim disclosure
+           to law enforcement")) :-
+    is_employee_of(p1, CE),
+    is_covered_entity(CE),
+    believes_victim_of_crime(p1, CE),
+    is_law_enforcement(p2),
+    is_about_suspected_perpetrator(m, q),
+    is_phi(t), msg_contains(m, q, t),
+    known_purpose(u).
+\end{lstlisting}
+
+
+% ============================================================================
+% SECTION 10: Handling Negation
+% ============================================================================
+\section{Handling Negation}
+\label{sec:negation}
+
+\subsection{Stratified Negation in Souffl\'{e}}
+
+Souffl\'{e} enforces \textbf{stratified negation}: the program's dependency graph must have no cycle that passes through a negative edge. This is checked at compile time --- unstratifiable programs are rejected.
+
+The key intuition is: \emph{negation-as-failure only makes sense when the thing you are failing on is done being derived}. If relation $A$ negates relation $B$, then $B$ must be in a strictly lower stratum (computed to a fixed point before $A$ begins).
+
+\subsection{Stratification Design in the HIPAA Checker}
+
+The compliance checker uses three effective strata:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{cX}
+\toprule
+\textbf{Stratum} & \textbf{Relations} \\
+\midrule
+0 & Base facts: \texttt{activerole}, \texttt{msg\_contains}, \texttt{disclosure\_attempted}, oracle predicates, hierarchy base facts \\
+1 & Positive rules: hierarchy closures (\texttt{role\_subtype}, \texttt{attr\_subtype}, \texttt{purpose\_subtype}), helper predicates (\texttt{has\_role}, \texttt{is\_covered\_entity}, \texttt{is\_phi}), and stub declarations \\
+2 & Negation rules: \texttt{permitted\_by\_164\_506\_a} (negates authorization), \texttt{permitted\_by\_164\_502\_e} (negates exclusions), \texttt{is\_personal\_representative} (negates abuse), \texttt{is\_disclosure\_denied} (negates allowed) \\
+\bottomrule
+\end{tabularx}
+\caption{Stratification design.}
+\end{table}
+
+\subsection{Examples of Negation in the Codebase}
+
+\begin{enumerate}
+  \item \textbf{\S 164.506(a)}: \texttt{!require\_authorization\_by\_164\_508(ARGS)} --- ``except when authorization is required.'' Since \S 164.508 is a stub, this always succeeds.
+
+  \item \textbf{\S 164.502(e)(1)(i)}: \texttt{!excluded\_164\_502\_e\_1\_ii(ARGS)} --- the business associate rule does not apply when one of the exceptions holds (e.g., disclosure to provider for treatment).
+
+  \item \textbf{Personal representative}: \texttt{!abuse\_exception(P,~Q)} and \texttt{!minor\_acts\_as\_\allowbreak{}individual(P,~Q)} --- representative status is blocked if abuse or minor exception applies.
+
+  \item \textbf{Denial tracking}: \texttt{!is\_disclosure\_allowed(ARGS, \_)} --- a disclosure is denied if it was attempted but no permission pathway matched. The underscore \texttt{\_} is a wildcard for the explanation argument.
+\end{enumerate}
+
+\subsection{Safety Rule for Negation}
+
+Every variable in a negated literal must be bound by a positive literal in the same rule body. This is the ``safety'' requirement:
+
+\begin{lstlisting}[style=soufflestyle]
+// UNSAFE -- X is not bound by a positive literal
+bad(X) :- !edge(X, _).
+
+// SAFE -- X is bound by node(X)
+good(X) :- node(X), !edge(X, _).
+\end{lstlisting}
+
+In our codebase, we ensure safety by always including positive grounding literals before negated ones (e.g., \texttt{is\_covered\_entity(p1)} grounds \texttt{p1} before \texttt{!excluded\_164\_502\_e\_1\_ii(ARGS)} is evaluated).
+
+
+% ============================================================================
+% SECTION 11: Handling Temporal Logic
+% ============================================================================
+\section{Handling Temporal Logic}
+\label{sec:temporal}
+
+\subsection{Why Temporal Logic Matters}
+
+The source PDF formalization (HIPAA\_FORMALIZATION.pdf) uses first-order temporal logic with operators like:
+\begin{itemize}
+  \item $\Box$ (always/globally): ``at all future time points''
+  \item $\Diamond$ (eventually/sometimes): ``at some past or future time point''
+  \item $G$ (globally, in LTL): used in the top-level formula $G \forall p_1, p_2 : \text{prin}.\ \forall m : \text{msg}.\ \text{send}(p_1, p_2, m) \supset (\bigvee_i \varphi^+_i \wedge \bigwedge_i \varphi^-_i)$
+\end{itemize}
+
+For example, \S 164.506(c)(4) uses $\Diamond\texttt{inrelationship}(p_1, r_1, q)$ to express ``entity has or had a relationship with the subject.''
+
+\subsection{Why Kamp-Style Translation Was Deferred}
+
+Kamp's theorem states that any formula in first-order temporal logic over linear time can be translated to a pure first-order formula using explicit time variables. For example:
+\[
+\Diamond\texttt{inrelationship}(p_1, r_1, q) \quad\Longrightarrow\quad \exists t'.\ t' \leq t \wedge \texttt{inrelationship\_at}(p_1, r_1, q, t')
+\]
+
+However, for \S 164.502 and \S 164.506:
+\begin{itemize}
+  \item Most rules are \textbf{time-free}: they state static conditions (``if the entity is covered and the info is PHI and the purpose is treatment, then the disclosure is permitted'').
+  \item The few temporal references (like ``has or had a relationship'') can be conservatively approximated by atemporal predicates.
+  \item Full temporal infrastructure would require a \texttt{TimePoint} domain, timestamped facts, and explicit time comparisons in every rule --- adding complexity without benefit for these two sections.
+\end{itemize}
+
+\subsection{Oracle Predicates as Temporal Substitutes}
+
+For the temporal operators in \S 164.502/506, we use oracle predicates:
+\begin{itemize}
+  \item \texttt{inrelationship(p1, r, q)}: asserted as a fact if the relationship exists (or ever existed).
+  \item \texttt{has\_authority\_to\_act(p, q)}: asserted if authority exists at the current time.
+\end{itemize}
+
+\subsection{Future Temporal Infrastructure}
+
+When formalizing sections with heavier temporal content (e.g., \S 164.508 authorization validity periods, \S 164.530 retention requirements), the following infrastructure would be needed:
+
+\begin{lstlisting}[style=soufflestyle,caption={Sketch of temporal infrastructure}]
+.type TimePoint <: number  // already declared in hipaa_types.dl
+
+// Timestamped facts
+.decl inrelationship_at(entity: Principal, rel: Rel,
+    subject: Principal, t: TimePoint)
+
+// Current time (single-fact relation)
+.decl current_time(t: TimePoint)
+
+// "Has or had" becomes existential over time
+.decl has_or_had_relationship(entity: Principal, rel: Rel,
+    subject: Principal)
+has_or_had_relationship(E, R, S) :-
+    inrelationship_at(E, R, S, T),
+    current_time(Now),
+    T <= Now.
+\end{lstlisting}
+
+
+% ============================================================================
+% SECTION 12: Stub Pattern
+% ============================================================================
+\section{Stub Pattern for Unformalized Sections}
+\label{sec:stubs}
+
+\subsection{The Problem}
+
+Sections \S 164.502 and \S 164.506 reference many other sections (\S 164.508, \S 164.510, \S 164.512, \S 164.514, \S 164.520, \S 164.522, \S 164.524, \S 164.528, \S 164.530, \S 164.504, \S 160.C). If these are left undeclared, Souffl\'{e} will produce a compile error when a rule references an undeclared relation.
+
+\subsection{The Solution: Empty Declarations}
+
+We declare each referenced relation but give it \emph{no rules}:
+
+\begin{lstlisting}[style=soufflestyle,caption={Examples from hipaa\_stubs.dl}]
+// 164.508: Authorization required
+.decl require_authorization_by_164_508(DECL_ARGS)
+.decl obtained_authorization_164_508(p1:Principal, p2:Principal,
+    q:Principal, t:Attribute, u:Purpose)
+
+// 164.510: Opportunity to agree/object
+.decl permitted_by_164_510(DECL_ARGS, e: Expl)
+
+// 164.512: No authorization or opportunity required
+.decl permitted_by_164_512(DECL_ARGS, e: Expl)
+.decl required_by_164_512_a(DECL_ARGS)
+
+// 164.514: De-identification standards
+.decl permitted_by_164_514_d(DECL_ARGS)
+
+// 164.520: Notice of privacy practices
+.decl permitted_by_164_520(DECL_ARGS, e: Expl)
+
+// 164.522: Rights to request restriction
+.decl permitted_by_164_522_a_1(DECL_ARGS)
+.decl permitted_by_164_522_a(DECL_ARGS)
+.decl permitted_by_164_522_b(DECL_ARGS)
+
+// 164.524: Access of individuals to PHI
+.decl required_by_164_524(DECL_ARGS)
+
+// 164.528: Accounting of disclosures
+.decl required_by_164_528(DECL_ARGS)
+
+// 160.C: Subpart C of Part 160
+.decl permitted_by_160_C(DECL_ARGS)
+\end{lstlisting}
+
+\subsection{Conservative Default}
+
+Because these relations have no rules and no facts, they are \textbf{empty}. Under the closed-world assumption, this means:
+\begin{itemize}
+  \item \textbf{Positive references fail}: any rule that requires a stub relation in its body will never fire. For example, \texttt{permitted\_by\_164\_502\_a\_1\_v} requires \texttt{permitted\_by\_164\_510(ARGS, E)}, which is always empty. So no disclosures are permitted via \S 164.510 until it is formalized.
+  \item \textbf{Negated references succeed}: any rule that negates a stub relation will always succeed on the negation. For example, \texttt{!require\_authorization\_by\_164\_508(ARGS)} always holds because the stub is empty.
+\end{itemize}
+
+This is a \textbf{conservative default}: we err on the side of not permitting disclosures through unformalized pathways. The one exception is negated stubs, which are permissive (the ``except'' clause does not block). This matches the regulatory intent: the default is prohibition, and specific sections provide exceptions.
+
+
+% ============================================================================
+% SECTION 13: Grounding Issues
+% ============================================================================
+\section{Grounding Issues}
+\label{sec:grounding}
+
+\subsection{The Grounding Requirement}
+
+Souffl\'{e} requires that every variable in a rule body must appear in at least one positive (non-negated) body literal. This is called the ``safety'' or ``grounding'' requirement. It ensures that the engine can enumerate all possible values of the variable.
+
+\subsection{Problem: Unrestricted Purpose Variable}
+
+Several HIPAA rules do not restrict the purpose of disclosure. For example, \S 164.502(a)(1)(i) says disclosures ``to the individual'' are permitted for \emph{any} purpose. But the rule head includes the purpose variable \texttt{u}, so it must be grounded:
+
+\begin{lstlisting}[style=soufflestyle]
+// This would be UNSAFE -- u is not grounded:
+// permitted_by_164_502_a_1_i(ARGS, ...) :-
+//     is_covered_entity(p1), is_phi(t), msg_contains(m, q, t),
+//     (p2 = q ; is_personal_representative(p2, q)).
+//     // ERROR: u is not bound by any positive literal!
+\end{lstlisting}
+
+\subsection{Solution: known\_purpose(u)}
+
+We define a \texttt{known\_purpose} relation that contains all purpose values:
+
+\begin{lstlisting}[style=soufflestyle]
+.decl known_purpose(u: Purpose)
+known_purpose(U) :- purpose_isa(U, _).
+known_purpose(U) :- purpose_isa(_, U).
+known_purpose("treatment").
+known_purpose("marketing").
+known_purpose("research").
+// ... all top-level purposes
+\end{lstlisting}
+
+Then use it to ground \texttt{u}:
+
+\begin{lstlisting}[style=soufflestyle]
+permitted_by_164_502_a_1_i(ARGS, ...) :-
+    is_covered_entity(p1), is_phi(t), msg_contains(m, q, t),
+    known_purpose(u),  // grounds u
+    (p2 = q ; is_personal_representative(p2, q)).
+\end{lstlisting}
+
+\subsection{Problem: Unrestricted Disclosure in (d)(2)}
+
+\S 164.502(d)(2) says de-identified information may be freely disclosed. But ``freely'' means the sender, receiver, purpose, and message are all unrestricted. We use \texttt{disclosure\_attempted(ARGS)} to ground all variables:
+
+\begin{lstlisting}[style=soufflestyle]
+permitted_by_164_502_d(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_dii(t),
+    msg_contains(m, q, t),
+    disclosure_attempted(ARGS).  // grounds p2 and u
+\end{lstlisting}
+
+This means de-identified info is ``freely disclosed'' only for attempted disclosures --- we do not generate phantom disclosures.
+
+
+% ============================================================================
+% SECTION 14: Prolog to Souffle Translation Table
+% ============================================================================
+\section{Prolog to Souffl\'{e} Translation}
+\label{sec:prolog-translation}
+
+The PDF formalization uses Prolog-like syntax. The following table maps Prolog constructs to their Souffl\'{e} equivalents:
+
+\begin{table}[H]
+\centering
+\footnotesize
+\begin{tabularx}{\textwidth}{>{\raggedright\scriptsize\ttfamily\hyphenpenalty=50\exhyphenpenalty=50}p{3.0cm} >{\raggedright\scriptsize\ttfamily\hyphenpenalty=50\exhyphenpenalty=50}p{3.8cm} >{\raggedright\arraybackslash\footnotesize}X}
+\toprule
+\textrm{\textbf{Prolog (PDF)}} & \textrm{\textbf{Souffl\'{e}}} & \textbf{Notes} \\
+\midrule
+fail & \textrm{Omit the rule} & A rule that always fails is simply not written. \\[3pt]
+writeln('...') & \$Leaf("...") & Debug output becomes ADT explanation reason string. \\[3pt]
+\textbackslash+ \textrm{(negation)} & ! & Prolog negation-as-failure becomes Souffl\'{e} stratified negation. \\[3pt]
+; \textrm{(disjunction)} & ; \textrm{or multiple rules} & Souffl\'{e} supports \texttt{;} in rule bodies, or use separate rules for the same head. \\[3pt]
+debug(...) & \textrm{Comment} & PDF debug calls become comments in the Souffl\'{e} code. \\[3pt]
+\textrm{Bundled} A & (p1, p2, q, m, t, u) & The single parameter is unpacked into 6 variables. \\[3pt]
+is\_from\_\allowbreak coveredEntity(A) & is\_covered\_\allowbreak entity(p1) & Macro expanded to check \texttt{p1}'s role. \\[3pt]
+is\_phi(A) & is\_phi(t) & Macro expanded to check attribute type. \\[3pt]
+is\_for\_either\-Purpose(A) & is\_for\_tpo(u) & Macro renamed and expanded. \\[3pt]
+is\_to\_health\-CareProvider(A) & is\_health\_care\_\allowbreak provider(p2) & Macro expanded to check \texttt{p2}'s role. \\[3pt]
+is\_to\_concerned\-Individual(A) & \textrm{(p2 = q ; is\_personal\_\allowbreak representative(p2, q))} & ``Concerned individual'' unpacked. \\[3pt]
+activerole(p, role) & activerole(P, "role") & Direct or hierarchy-aware lookup via \texttt{has\_role}. \\[3pt]
+contains(m, (q, t)) & msg\_contains(m, q, t) & Renamed (reserved word in Souffl\'{e}). \\
+\bottomrule
+\end{tabularx}
+\caption{Prolog to Souffl\'{e} translation reference.}
+\label{tab:prolog-translation}
+\end{table}
+
+
+% ============================================================================
+% SECTION 15: Test Scenarios
+% ============================================================================
+\section{Test Scenarios}
+\label{sec:tests}
+
+The fact database (\texttt{hipaa\_facts.dl}) defines 10 test scenarios. Each scenario is a \texttt{disclosure\_attempted} fact with an expected outcome.
+
+\subsection{Principals and Roles}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Principal} & \textbf{Role} & \textbf{Category} \\
+\midrule
+\texttt{mercy\_hospital} & hospital & Covered entity \\
+\texttt{blue\_cross} & health-insurance-issuer & Covered entity \\
+\texttt{dr\_smith} & doctor & Provider (member of mercy\_hospital) \\
+\texttt{dr\_jones} & psychiatrist & Provider (member of mercy\_hospital) \\
+\texttt{nurse\_adams} & nurse & Provider (employee of mercy\_hospital) \\
+\texttt{lab\_corp} & lab-technician & Provider \\
+\texttt{patient\_alice} & patient & Adult \\
+\texttt{patient\_bob} & patient & Adult \\
+\texttt{patient\_charlie} & patient & Unemancipated minor \\
+\texttt{secretary\_hhs} & secretary & HHS Secretary \\
+\texttt{state\_health\_dept} & oversight-agency & Government \\
+\texttt{fbi\_agent\_davis} & law-enforcement-official & Government \\
+\texttt{billing\_co} & billing-company & Business associate (of mercy\_hospital) \\
+\texttt{random\_person} & individual & No covered-entity role \\
+\texttt{attorney\_wilson} & attorney & Attorney \\
+\texttt{parent\_frank} & parent & Guardian of patient\_charlie \\
+\bottomrule
+\end{tabular}
+\caption{Test principals.}
+\end{table}
+
+\subsection{The 10 Scenarios}
+
+\begin{longtable}{cp{5.5cm}lp{3.5cm}}
+\toprule
+\textbf{\#} & \textbf{Scenario} & \textbf{Expected} & \textbf{HIPAA Section} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{\#} & \textbf{Scenario} & \textbf{Expected} & \textbf{HIPAA Section} \\
+\midrule
+\endhead
+1 & Hospital sends blood test results to doctor for treatment & ALLOW & \S 506(c)(2) \\
+2 & Hospital sends diagnosis directly to patient & ALLOW & \S 502(a)(1)(i) \\
+3 & Hospital sends billing record to insurer for payment & ALLOW & \S 506(c)(3) \\
+4 & Hospital sends diagnosis to random person for marketing & DENY & No pathway matches \\
+5 & Whistleblower nurse discloses to oversight agency & ALLOW & \S 502(j)(1) \\
+6 & Hospital sends PHI to Secretary for investigation & ALLOW & \S 502(a)(2)(ii) \\
+7 & Hospital discloses billing record to business associate & ALLOW & \S 502(e)(1)(i) \\
+8 & De-identified info (statistical data) to random person & ALLOW & \S 502(d)(2) \\
+9 & Parent requests PHI about minor child & ALLOW & \S 502(a)(1)(i) + personal rep \\
+10 & Hospital to insurer for healthcare operations (quality assessment) & ALLOW & \S 506(c)(4) \\
+\bottomrule
+\caption{Test scenarios with expected outcomes.}
+\label{tab:scenarios}
+\end{longtable}
+
+\subsection{Scenario Analysis}
+
+\subsubsection{Scenario 1: Hospital to Doctor for Treatment}
+
+\begin{lstlisting}[style=soufflestyle,caption={Scenario 1 facts}]
+disclosure_attempted("mercy_hospital", "dr_smith", "patient_alice",
+    "msg_001", "blood-test-results", "treatment").
+msg_contains("msg_001", "patient_alice", "blood-test-results").
+\end{lstlisting}
+
+Expected derivation path:
+\begin{enumerate}
+  \item \texttt{is\_covered\_entity("mercy\_hospital")} via \texttt{has\_role} (hospital $<$ covered-entity).
+  \item \texttt{is\_phi("blood-test-results")} via \texttt{attr\_subtype} (blood-test-results $<$ phi).
+  \item \texttt{is\_for\_treatment("treatment")} directly.
+  \item \texttt{is\_health\_care\_provider("dr\_smith")} via \texttt{has\_role} (doctor $<$ provider).
+  \item \texttt{permitted\_by\_164\_506\_c\_2} fires.
+  \item Propagates up through \texttt{permitted\_by\_164\_506\_c} $\to$ \texttt{permitted\_by\_164\_506\_a} $\to$ \texttt{permitted\_by\_164\_506} $\to$ \texttt{permitted\_by\_164\_502\_a\_1\_ii} $\to$ \texttt{permitted\_by\_164\_502\_a\_1} $\to$ \texttt{permitted\_by\_164\_502\_a} $\to$ \texttt{permitted\_by\_164\_502} $\to$ \texttt{is\_disclosure\_allowed}.
+\end{enumerate}
+
+\subsubsection{Scenario 4: Hospital to Random Person for Marketing (DENY)}
+
+\begin{lstlisting}[style=soufflestyle,caption={Scenario 4 facts}]
+disclosure_attempted("mercy_hospital", "random_person", "patient_alice",
+    "msg_004", "diagnosis", "marketing").
+\end{lstlisting}
+
+Why this is denied:
+\begin{itemize}
+  \item \S 502(a)(1)(i): \texttt{random\_person} $\neq$ \texttt{patient\_alice} and is not a personal representative.
+  \item \S 502(a)(1)(ii): purpose is ``marketing,'' not TPO.
+  \item \S 502(a)(1)(iii): no \texttt{is\_incident\_to\_use} fact.
+  \item \S 502(a)(1)(iv): no authorization obtained.
+  \item \S 502(a)(1)(v): \S 164.510 is a stub.
+  \item \S 502(a)(1)(vi): \S 164.512, 514(e/f/g) are stubs.
+  \item \S 502(c/d/e/h/i/j): none of the special pathways match.
+\end{itemize}
+
+No permission pathway fires, so \texttt{is\_disclosure\_denied} is derived via the closed-world assumption.
+
+\subsubsection{Scenario 9: Parent Requests PHI About Minor Child}
+
+\begin{lstlisting}[style=soufflestyle,caption={Scenario 9 facts}]
+disclosure_attempted("mercy_hospital", "parent_frank", "patient_charlie",
+    "msg_009", "diagnosis", "treatment").
+is_guardian("parent_frank", "patient_charlie").
+has_authority_to_act("parent_frank", "patient_charlie").
+belongstorole("patient_charlie", "unemancipated-minor").
+\end{lstlisting}
+
+Expected derivation:
+\begin{enumerate}
+  \item \texttt{is\_personal\_representative("parent\_frank", "patient\_charlie")} via \S 502(g)(3): parent\_frank is a guardian, patient\_charlie is an unemancipated minor, authority exists, no abuse or minor exception.
+  \item \texttt{permitted\_by\_164\_502\_a\_1\_i} fires because \texttt{is\_personal\_representative(p2, q)} holds.
+  \item The disclosure is allowed via \S 502(a)(1)(i).
+\end{enumerate}
+
+
+% ============================================================================
+% SECTION 16: How to Run Everything
+% ============================================================================
+\section{How to Run Everything}
+\label{sec:running}
+
+\subsection{Step 1: Install Souffl\'{e}}
+
+\begin{lstlisting}[style=bashstyle]
+brew install souffle
+souffle --version  # verify installation
+\end{lstlisting}
+
+\subsection{Step 2: Navigate to the Project Directory}
+
+\begin{lstlisting}[style=bashstyle]
+cd /path/to/ComplianceGPT/datalog_engine
+\end{lstlisting}
+
+\subsection{Step 3: Run the Compliance Checker}
+
+Option A --- use the wrapper script:
+\begin{lstlisting}[style=bashstyle]
+chmod +x run_hipaa.sh
+./run_hipaa.sh
+\end{lstlisting}
+
+Option B --- run Souffl\'{e} directly:
+\begin{lstlisting}[style=bashstyle]
+mkdir -p output_hipaa
+souffle -D output_hipaa hipaa_main.dl
+\end{lstlisting}
+
+\subsection{Step 4: Interpret the Output}
+
+The output directory \texttt{output\_hipaa/} contains CSV files:
+
+\begin{description}
+  \item[\texttt{is\_disclosure\_allowed.csv}:] Each row is a 7-tuple: sender, receiver, subject, message, attribute, purpose, and explanation tree. If a disclosure attempt appears here, it is allowed.
+  \item[\texttt{is\_disclosure\_denied.csv}:] Each row is a 6-tuple (no explanation). If a disclosure attempt appears here, it was denied.
+  \item[\texttt{disclosure\_attempted.csv}:] All attempted disclosures (for verification).
+  \item[\texttt{permitted\_by\_164\_502.csv}:] Intermediate results showing which \S 502 pathway matched.
+  \item[\texttt{permitted\_by\_164\_506.csv}:] Intermediate results showing which \S 506 pathway matched.
+  \item[\texttt{minimum\_necessary\_satisfied.csv}:] Which disclosures satisfy minimum necessary.
+  \item[\texttt{is\_personal\_representative.csv}:] Derived personal representative relationships.
+  \item[\texttt{excluded\_164\_502\_b\_2.csv}:] Minimum necessary exceptions.
+\end{description}
+
+\subsection{Step 5: Use Explain Mode for Debugging}
+
+\begin{lstlisting}[style=bashstyle]
+souffle -t explain hipaa_main.dl
+\end{lstlisting}
+
+At the prompt:
+\begin{lstlisting}[style=bashstyle]
+> explain is_disclosure_allowed("mercy_hospital", "dr_smith",
+    "patient_alice", "msg_001", "blood-test-results", "treatment", _)
+\end{lstlisting}
+
+This displays the full proof tree showing which rules and facts were used.
+
+For denied disclosures:
+\begin{lstlisting}[style=bashstyle]
+> explainnegation is_disclosure_allowed("mercy_hospital",
+    "random_person", "patient_alice", "msg_004",
+    "diagnosis", "marketing", _)
+\end{lstlisting}
+
+This interactively walks through the derivation attempt and shows where it fails.
+
+\subsection{Step 6: Add New Test Scenarios}
+
+To add a new scenario, edit \texttt{hipaa\_facts.dl} and add:
+\begin{enumerate}
+  \item Any new principal declarations (\texttt{activerole}).
+  \item Message contents (\texttt{msg\_contains}).
+  \item Oracle predicates if needed.
+  \item A \texttt{disclosure\_attempted} fact.
+\end{enumerate}
+
+Then re-run the checker.
+
+
+% ============================================================================
+% SECTION 17: Lessons Learned and Debugging Tips
+% ============================================================================
+\section{Lessons Learned and Debugging Tips}
+\label{sec:lessons}
+
+\subsection{Reserved Words}
+
+Souffl\'{e} has reserved words that cannot be used as relation names. We discovered that \texttt{contains} is reserved --- the PDF's \texttt{contains(m, (q, t))} had to be renamed to \texttt{msg\_contains(m, q, t)}.
+
+Other reserved words to watch for: \texttt{input}, \texttt{output}, \texttt{type}, \texttt{decl}, \texttt{number}, \texttt{symbol}, \texttt{float}, \texttt{unsigned}, \texttt{nil}, \texttt{count}, \texttt{sum}, \texttt{min}, \texttt{max}, \texttt{mean}, \texttt{cat}, \texttt{ord}, \texttt{strlen}, \texttt{substr}, \texttt{match}, \texttt{true}, \texttt{false}.
+
+\subsection{Grounding Errors}
+
+The most common compile error during development was ungrounded variables. The fix is always the same: find a positive relation that contains the variable and add it to the rule body. We used:
+\begin{itemize}
+  \item \texttt{known\_purpose(u)} for unrestricted purpose.
+  \item \texttt{disclosure\_attempted(ARGS)} for fully unrestricted disclosures.
+  \item \texttt{msg\_contains(m, q, t)} to ground message, subject, and attribute simultaneously.
+\end{itemize}
+
+\subsection{Stratification Errors}
+
+If you add a rule that creates a negation cycle, Souffl\'{e} will report a compile error like:
+\begin{verbatim}
+Error: Unable to stratify program
+  Negative recursion involving relation X
+\end{verbatim}
+
+To debug:
+\begin{enumerate}
+  \item Use \texttt{souffle --show=precedence-graph} to visualize the dependency graph.
+  \item Find the cycle involving a negative edge.
+  \item Refactor so the negated relation is in a lower stratum.
+\end{enumerate}
+
+\subsection{ADT Constructor Names Must Be Globally Unique}
+
+In Souffl\'{e}, ADT branch names must be unique across \emph{all} ADTs in the program. If you define another ADT with a branch named \texttt{Leaf}, it will conflict with the \texttt{Expl} ADT's \texttt{Leaf}. Always use distinctive names.
+
+\subsection{Disjunction Gotchas}
+
+Souffl\'{e}'s \texttt{;} (disjunction) in rule bodies requires careful use:
+\begin{itemize}
+  \item Parentheses are mandatory around disjunctions: \texttt{(A ; B)}.
+  \item Variables bound in one branch of a disjunction are \emph{not} bound in the other. Each branch must independently ground all its variables.
+  \item When in doubt, split into multiple rules instead of using \texttt{;}.
+\end{itemize}
+
+\subsection{Empty Stubs and Unintended Blocking}
+
+Remember that stub relations are empty, so:
+\begin{itemize}
+  \item A rule requiring a stub in its positive body \emph{will never fire}.
+  \item A rule negating a stub \emph{will always succeed on the negation}.
+\end{itemize}
+
+This can cause subtle bugs. For example, when we first wrote \S 164.502(a)(2)(ii), including \texttt{permitted\_by\_160\_C(ARGS)} in the body blocked the rule entirely (because \S 160.C is stubbed). The fix was to replace it with an oracle predicate \texttt{secretary\_investigation\_authorized(ARGS)}.
+
+\subsection{The Closed-World Assumption and Denial}
+
+Souffl\'{e} uses the \textbf{closed-world assumption}: any tuple not derivable is considered false. This is exactly what we need for HIPAA compliance: ``not explicitly allowed'' means ``denied.'' The \texttt{is\_disclosure\_denied} relation makes this explicit:
+
+\begin{lstlisting}[style=soufflestyle]
+is_disclosure_denied(ARGS) :-
+    disclosure_attempted(ARGS),
+    !is_disclosure_allowed(ARGS, _).
+\end{lstlisting}
+
+A disclosure is denied if and only if it was attempted and no permission pathway matched. There is no need to enumerate denial reasons --- the \emph{absence} of a permission is the denial.
+
+
+% ============================================================================
+% SECTION: Formalization of §164.508
+% ============================================================================
+\section{Formalization of \S 164.508 --- Authorization Required}
+\label{sec:508}
+
+\subsection{What is Authorization?}
+
+In HIPAA, \textbf{authorization} is a detailed, written permission signed by the individual (patient) that allows a covered entity to use or disclose their PHI for a specific purpose. It is more formal than consent: an authorization must contain specific elements (a description of the information, who may use it, the purpose, an expiration date, the individual's signature, and more). Think of it as a signed contract granting permission for a specific disclosure.
+
+Most disclosures under HIPAA do \emph{not} require authorization --- TPO disclosures (\S 164.506), public health disclosures (\S 164.512(b)), and many others are permitted without one. Section 164.508 identifies the specific categories where authorization \emph{is} required, and blocks disclosures in those categories unless the authorization has been obtained.
+
+\subsection{The Negative Norm Concept}
+
+Section 164.508 is modeled as a \textbf{negative norm} --- it does not independently permit disclosures. Instead, it \textbf{blocks} disclosures that would otherwise be permitted by \S 164.506 (TPO). Specifically:
+
+\begin{itemize}
+  \item \textbf{Psychotherapy notes} (\S 508(a)(2)): Even though a disclosure might qualify as TPO under \S 506, if the information is psychotherapy notes, an authorization is required.
+  \item \textbf{Marketing} (\S 508(a)(3)): If PHI is being used for marketing purposes, an authorization is required.
+\end{itemize}
+
+In the Datalog formalization, this blocking is implemented through the predicate \texttt{require\_authorization\_by\_164\_508}. When this predicate holds for a given disclosure, it means ``this disclosure needs an authorization that has not been obtained.'' The \S 506(a) rule checks for the \emph{absence} of this predicate using negation:
+
+\begin{lstlisting}[style=soufflestyle,caption={How \S 508 blocks \S 506(a) via negation}]
+// In hipaa_164_506.dl:
+permitted_by_164_506_a(ARGS, ...) :-
+    !require_authorization_by_164_508(ARGS),  // 508 does NOT block
+    is_covered_entity(p1),
+    is_for_tpo(u),
+    permitted_by_164_506_c(ARGS, E).
+\end{lstlisting}
+
+The \texttt{!} (exclamation mark) means ``NOT.'' So this rule says: ``TPO disclosure is permitted if \S 508 does \emph{not} require authorization for it, AND it meets the \S 506(c) implementation specification.''
+
+\subsection{Structure of the Negative Norm}
+
+The \texttt{require\_authorization\_by\_164\_508} predicate fires when authorization is required but has \emph{not} been obtained, and no exception applies:
+
+\begin{lstlisting}[style=soufflestyle,caption={The negative norm --- require\_authorization (from hipaa\_164\_508.dl)}]
+// Psychotherapy notes require authorization (unless exception)
+require_authorization_by_164_508(ARGS) :-
+    is_covered_entity(p1),
+    is_psychotherapy_notes(t),
+    msg_contains(m, q, t),
+    known_purpose(u),
+    disclosure_attempted(ARGS),
+    !exception_508a2(ARGS),
+    !obtained_authorization_164_508(p1, p2, q, t, u).
+
+// Marketing requires authorization (unless exception)
+require_authorization_by_164_508(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_for_marketing(u),
+    disclosure_attempted(ARGS),
+    !exception_508a3(ARGS),
+    !obtained_authorization_164_508(p1, p2, q, t, u).
+\end{lstlisting}
+
+Read this rule carefully: the predicate fires (``authorization is required'') when:
+\begin{enumerate}
+  \item The sender is a covered entity.
+  \item The information is psychotherapy notes (or the purpose is marketing).
+  \item No exception from \S 508(a)(2) or (a)(3) applies.
+  \item The individual has \emph{not} provided authorization.
+\end{enumerate}
+
+If the individual \emph{has} provided authorization, \texttt{obtained\_authorization\_164\_508} holds, its negation fails, and the \texttt{require\_authorization} predicate does \emph{not} fire --- meaning \S 506(a) is not blocked.
+
+\subsection{Exception Predicates}
+
+Several exceptions can bypass the authorization requirement:
+
+\begin{description}
+  \item[\S 508(a)(2)(i)(B) --- CE training:] A covered entity may use psychotherapy notes for its own counseling training programs without authorization.
+  \item[\S 508(a)(2)(i)(C) --- Legal defense:] A covered entity may use psychotherapy notes to defend itself in a legal proceeding brought by the individual.
+  \item[\S 508(a)(2)(ii) --- Cross-references:] Psychotherapy notes may be disclosed without authorization if permitted by \S 512(a) (required by law), \S 512(d) (health oversight), \S 512(g)(1) (coroners), or \S 512(j)(1)(i) (serious threat).
+  \item[\S 508(a)(3)(i)(A) --- Face-to-face:] Marketing via face-to-face communication does not require authorization.
+  \item[\S 508(a)(3)(i)(B) --- Nominal gifts:] Marketing involving a promotional gift of nominal value does not require authorization.
+\end{description}
+
+\subsection{Example: Psychotherapy Notes for Payment}
+
+Consider this scenario: a hospital wants to disclose a patient's psychotherapy notes to an insurer for payment. Under \S 506(c)(3), a covered entity may disclose PHI to another covered entity for the receiver's payment activities. Payment is a TPO purpose, so \S 506 would normally permit this.
+
+However, psychotherapy notes trigger \S 508(a)(2). The authorization requirement fires because:
+\begin{itemize}
+  \item The information is psychotherapy notes.
+  \item None of the exceptions (training, legal defense, cross-references) apply to payment.
+  \item No authorization was obtained.
+\end{itemize}
+
+So \texttt{require\_authorization\_by\_164\_508} holds, its negation in \S 506(a) fails, and the disclosure is blocked. This is the correct result --- HIPAA gives psychotherapy notes extra protection, even for payment.
+
+\begin{designbox}
+There is a design subtlety here. The \S 506 rules are structured so that \S 506(a) is the ``standard'' pathway that checks the \S 508 negative norm, while \S 506(c)(3) provides the implementation specification. Because \S 506(a) is the gatekeeper that checks \texttt{!require\_authorization\_by\_164\_508}, and \S 506(c)(3) is only reachable through \S 506(a), the authorization check applies to all TPO disclosures --- including payment for psychotherapy notes.
+\end{designbox}
+
+
+% ============================================================================
+% SECTION: Formalization of §164.510
+% ============================================================================
+\section{Formalization of \S 164.510 --- Opportunity to Agree or Object}
+\label{sec:510}
+
+\subsection{Overview}
+
+Section 164.510 covers two situations where a covered entity may disclose PHI if the individual is given an opportunity to agree or object (or, in emergencies, if certain conditions are met):
+
+\begin{description}
+  \item[\S 510(a) --- Facility directories:] Hospitals and similar facilities may maintain a directory of patients (name, location in facility, general condition, religious affiliation) and share it under specific rules.
+  \item[\S 510(b) --- Care involvement and notification:] A covered entity may disclose PHI to family members, close friends, or others involved in the individual's care, or for notification purposes (e.g., notifying a family member about a patient's location).
+\end{description}
+
+The top-level rule simply combines these two sub-sections:
+
+\begin{lstlisting}[style=soufflestyle,caption={Top-level \S 510 (from hipaa\_164\_510.dl)}]
+permitted_by_164_510(ARGS, ...) :-
+    is_phi(t), msg_contains(m, q, t),
+    permitted_by_164_510_a(ARGS, E).   // facility directory
+
+permitted_by_164_510(ARGS, ...) :-
+    is_phi(t), msg_contains(m, q, t),
+    permitted_by_164_510_b(ARGS, E).   // care involvement
+\end{lstlisting}
+
+\subsection{Facility Directories (\S 510(a))}
+
+A hospital facility directory typically contains: the patient's name, location in the facility (e.g., ``Room 302''), condition in general terms (e.g., ``stable''), and religious affiliation. The rules for who can access this directory depend on who is asking:
+
+\begin{description}
+  \item[Clergy:] Members of the clergy may receive \emph{all} directory information, including religious affiliation. This allows chaplains and religious leaders to visit patients of their faith.
+  \item[Others asking by name:] Anyone who asks for a patient by name may receive directory information \emph{except} religious affiliation. The idea is that if someone already knows the patient's name, they can find out the room number and general condition, but religious affiliation is more sensitive.
+\end{description}
+
+\begin{lstlisting}[style=soufflestyle,caption={Clergy vs.\ by-name directory lookup (from hipaa\_164\_510.dl)}]
+// Clergy: all directory info (including religious affiliation)
+permitted_by_164_510_a(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_directory_info(t),
+    msg_contains(m, q, t),
+    is_for_directory(u),
+    is_clergy(p2),
+    has_not_objected_to_directory(p1, p2, q, t, u).
+
+// Others asking by name: directory info MINUS religious affiliation
+permitted_by_164_510_a(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_directory_info(t),
+    t != "religious-affiliation",       // <-- key difference
+    msg_contains(m, q, t),
+    is_for_directory(u),
+    is_directory_request_by_name(p2, p1, q, t, u),
+    has_not_objected_to_directory(p1, p2, q, t, u).
+\end{lstlisting}
+
+Notice the \texttt{t != "religious-affiliation"} guard in the second rule. This is a simple but effective way to exclude one attribute type from an otherwise-broad permission.
+
+Both rules also require \texttt{has\_not\_objected\_to\_directory} --- an oracle predicate meaning the patient was given an opportunity to object and did not. If the patient objects, their information is removed from the directory.
+
+\subsection{Incapacity and Emergency Exceptions (\S 510(a)(3))}
+
+What if the patient is unconscious or in emergency treatment and cannot be asked whether they object? The formalization handles this with a separate rule:
+
+\begin{lstlisting}[style=soufflestyle,caption={Emergency exception for directory (\S 510(a)(3))}]
+permitted_by_164_510_a(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_directory_info(t),
+    msg_contains(m, q, t),
+    is_for_directory(u),
+    (belongs_to(q, "incapacitated") ; belongs_to(q, "emergency-treatment")),
+    consistent_with_prior_preference(p1, p2, q, t, u),
+    believes_in_best_interest_directory(p1, p2, q, t, u).
+\end{lstlisting}
+
+This rule permits directory disclosure when the patient is incapacitated or in emergency treatment, provided the disclosure is consistent with any previously expressed preference and the covered entity believes it is in the patient's best interest. Both of these conditions are oracle predicates --- they represent professional judgment calls that cannot be derived from the data alone.
+
+\subsection{Care Involvement (\S 510(b))}
+
+Section 510(b) allows disclosure to people involved in the patient's care. The key question is: who counts as a valid recipient?
+
+\begin{lstlisting}[style=soufflestyle,caption={Who can receive care involvement disclosures}]
+// Care involvement recipient check
+is_care_involvement_recipient(P2, Q) :- is_family_member(P2, Q).
+is_care_involvement_recipient(P2, Q) :- is_close_personal_friend(P2, Q).
+is_care_involvement_recipient(P2, Q) :- is_identified_by_individual(P2, Q).
+is_care_involvement_recipient(P2, Q) :- is_personal_representative(P2, Q).
+\end{lstlisting}
+
+A disclosure to a care involvement recipient is permitted if:
+\begin{enumerate}
+  \item The information is \textbf{directly relevant} to that person's involvement in the patient's care (\texttt{relevant\_to\_involvement}).
+  \item The patient has agreed or not objected (\S 510(b)(2)), OR the patient is not present/incapacitated and the CE exercises professional judgment (\S 510(b)(3)).
+\end{enumerate}
+
+\paragraph{Example.} A doctor tells a patient's spouse about the patient's medication schedule so the spouse can help manage the patient's care at home. The spouse is a family member (\texttt{is\_family\_member}), the medication information is relevant to care involvement (\texttt{relevant\_to\_involvement}), and the patient was informed and did not object. This satisfies \S 510(b)(1)(i) and \S 510(b)(2).
+
+\paragraph{Notification (\S 510(b)(1)(ii)).} A special sub-rule allows disclosure of \emph{location, condition, or death} information for notification purposes. This is how hospitals can call a family member to say ``your relative is in the ER'' without violating HIPAA.
+
+\subsection{Disaster Relief (\S 510(b)(4))}
+
+A covered entity may disclose PHI to entities authorized for disaster relief (like the Red Cross) to coordinate family notification during disasters, subject to the same agree/object framework or professional judgment.
+
+
+% ============================================================================
+% SECTION: Formalization of §164.512
+% ============================================================================
+\section{Formalization of \S 164.512 --- Uses and Disclosures Without Authorization or Agreement}
+\label{sec:512}
+
+\subsection{Overview}
+
+Section 164.512 is the largest section of the Privacy Rule. It enumerates twelve categories of disclosures that require \emph{neither} patient authorization (\S 508) \emph{nor} an opportunity to agree or object (\S 510). These are generally public-interest or legally-mandated disclosures.
+
+The top-level structure is a simple disjunction --- if \emph{any} sub-section permits the disclosure, then \S 512 permits it:
+
+\begin{lstlisting}[style=soufflestyle,caption={Top-level \S 512 disjunction (from hipaa\_164\_512.dl)}]
+permitted_by_164_512(ARGS, E) :- permitted_by_164_512_a(ARGS, E).
+permitted_by_164_512(ARGS, E) :- permitted_by_164_512_b(ARGS, E).
+permitted_by_164_512(ARGS, E) :- permitted_by_164_512_c(ARGS, E).
+// ... through (l)
+permitted_by_164_512(ARGS, E) :- permitted_by_164_512_l(ARGS, E).
+\end{lstlisting}
+
+\subsection{Sub-section (a): Required by Law}
+
+If a disclosure is required by another law (federal, state, or local), HIPAA permits it. This is the simplest sub-section --- a single oracle predicate determines whether a legal requirement exists:
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 512(a): Required by law}]
+permitted_by_164_512_a(ARGS, $Leaf("164.512(a): required by law")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_required_by_law(p1, p2, q, t, u).  // oracle predicate
+\end{lstlisting}
+
+The predicate \texttt{is\_required\_by\_law} is an oracle: the system cannot derive from its internal data whether some external law mandates the disclosure. This must be asserted as a fact in the test scenario.
+
+\subsection{Sub-section (b): Public Health Activities}
+
+Permits disclosures to public health authorities and related entities. Five sub-rules cover:
+
+\begin{description}
+  \item[(b)(1)(i)] To a public health authority for disease prevention/control.
+  \item[(b)(1)(ii)] Child abuse reports to authorized authorities.
+  \item[(b)(1)(iii)] FDA-regulated product quality, safety, and effectiveness activities.
+  \item[(b)(1)(iv)] Notification to a person at risk of contracting or spreading a disease.
+  \item[(b)(1)(v)] Workplace medical surveillance to employers (with prior notice to the individual).
+\end{description}
+
+Each sub-rule follows the same pattern: check that the sender is a covered entity, the information is PHI, the recipient has the appropriate role, and the purpose matches. Most conditions involve oracle predicates (e.g., \texttt{is\_authorized\_by\_law\_for\_purpose}, \texttt{has\_given\_notice\_of\_workplace\_disclosure}).
+
+\subsection{Sub-section (c): Abuse, Neglect, or Domestic Violence}
+
+Permits reporting abuse victims to government authorities. The disclosure is allowed when: (1) it is required by law, (2) the individual agrees, or (3) the CE is authorized by statute and believes disclosure is necessary to prevent harm. These three alternatives are combined with disjunction:
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 512(c): Three alternative conditions combined with ;\ (OR)}]
+permitted_by_164_512_c(ARGS, ...) :-
+    is_covered_entity(p1),
+    has_role(p2, "government-authority"),
+    believes_victim_of_abuse(p1, q),
+    u = "reports-of-abuse",
+    (is_required_by_law(p1, p2, q, t, u) ;
+     individual_has_agreed_to_disclosure(p1, p2, q, t, u) ;
+     (authorized_by_statute_regulation(p1, p2, q, t, u),
+      believes_disclosure_necessary_to_prevent_harm(p1, p2, q, t, u))).
+\end{lstlisting}
+
+\subsection{Sub-section (d): Health Oversight Activities}
+
+Permits disclosures to health oversight agencies (e.g., HHS Office for Civil Rights, state licensing boards) for audits, investigations, and inspections authorized by law.
+
+\subsection{Sub-section (e): Judicial and Administrative Proceedings}
+
+Permits disclosures in response to: (i) court orders, (ii) subpoenas with satisfactory assurances of notice to the individual, or (vi) reasonable efforts to notify. Each has its own oracle predicate (e.g., \texttt{has\_court\_order}, \texttt{has\_lawful\_process\_with\_assurance}).
+
+\subsection{Sub-section (f): Law Enforcement}
+
+The most complex sub-section, with six sub-rules:
+
+\begin{description}
+  \item[(f)(1)] Required by law or court order/warrant/subpoena to law enforcement.
+  \item[(f)(2)] Limited identifying information (name, address, SSN, blood type, injury type, etc.) to identify or locate a suspect.
+  \item[(f)(3)] Crime victim disclosure --- with the individual's agreement, or in emergencies when agreement cannot be obtained.
+  \item[(f)(4)] Suspicious death notification.
+  \item[(f)(5)] Evidence of crime on the CE's premises.
+  \item[(f)(6)] Medical emergency --- alerting law enforcement about a crime, but \emph{not} if the emergency is believed to result from abuse (a negative norm within a positive norm).
+\end{description}
+
+The (f)(6) rule illustrates a negative norm nested inside a positive norm:
+
+\begin{lstlisting}[style=soufflestyle,caption={\S 512(f)(6): Nested negative norm}]
+permitted_by_164_512_f_6(ARGS, ...) :-
+    is_health_care_provider(p1),
+    is_law_enforcement(p2),
+    providing_emergency_healthcare(p1, q),
+    appears_necessary_to_alert_crime(p1, p2, q, t, u),
+    !believes_emergency_result_of_abuse(p1, q).  // blocks if abuse
+\end{lstlisting}
+
+\subsection{Sub-section (g): Decedents}
+
+Permits disclosures about deceased individuals to: (g)(1) coroners and medical examiners for identification or cause-of-death determination, and (g)(2) funeral directors for carrying out their duties. For funeral directors, the rule also covers individuals whose death is ``reasonably anticipated.''
+
+\subsection{Sub-section (h): Organ, Eye, or Tissue Donation}
+
+Permits disclosures to organ procurement organizations to facilitate transplantation. This is a straightforward single rule with the recipient role check \texttt{is\_organ\_procurement\_entity(p2)}.
+
+\subsection{Sub-section (i): Research}
+
+Permits research disclosures under three conditions:
+
+\begin{description}
+  \item[(i)(1)(i)] An IRB or privacy board has approved a waiver of authorization.
+  \item[(i)(1)(ii)] The researcher represents the PHI is needed only for preparatory research activities (no PHI leaves the CE).
+  \item[(i)(1)(iii)] Research on a decedent's information, with the researcher representing that the PHI is needed for research on the deceased.
+\end{description}
+
+Each uses an oracle predicate to represent the researcher's representations or board approval.
+
+\subsection{Sub-section (j): Serious Threat to Health or Safety}
+
+Permits disclosures to prevent or lessen a serious and imminent threat. Two main pathways:
+
+\begin{description}
+  \item[(j)(1)(i)] Disclosure to someone the CE believes can prevent or lessen the threat, consistent with applicable law and professional judgment.
+  \item[(j)(1)(ii)] Disclosure to law enforcement to identify or apprehend an individual who has: (A) admitted to a violent crime (but not information learned through treating propensity for crime), or (B) escaped lawful custody.
+\end{description}
+
+\subsection{Sub-section (k): Specialized Government Functions}
+
+Six sub-rules covering military/veterans, national security, protective services for the President, State Department medical suitability, correctional institutions, and government programs providing public benefits. These are heavily oracle-dependent, as they involve classified or specialized government determinations.
+
+\subsection{Sub-section (l): Workers' Compensation}
+
+Permits disclosures authorized by workers' compensation laws. A single oracle predicate \texttt{authorized\_for\_workers\_comp} determines whether the disclosure is authorized.
+
+\subsection{The Oracle Predicate Pattern in \S 512}
+
+A recurring theme throughout \S 512 is the heavy use of oracle predicates. Nearly every sub-section requires at least one contextual determination that cannot be derived from the data alone:
+
+\begin{itemize}
+  \item \texttt{is\_required\_by\_law} --- whether another law mandates disclosure.
+  \item \texttt{is\_authorized\_by\_law\_for\_purpose} --- whether a recipient is legally authorized.
+  \item \texttt{believes\_victim\_of\_abuse} --- a subjective professional determination.
+  \item \texttt{has\_irb\_or\_privacy\_board\_waiver} --- an external approval process.
+  \item \texttt{consistent\_with\_applicable\_law} --- a legal compliance determination.
+\end{itemize}
+
+These oracle predicates are the interface between the formal Datalog rules and the real-world context. When testing, you assert them as facts to represent the circumstances of the scenario. When deploying the compliance checker, they would be populated by an external system (e.g., a case management system, a legal database, or a human compliance officer).
+
+
+% ============================================================================
+% SECTION: Formalization of §164.514
+% ============================================================================
+\section{Formalization of \S 164.514 --- Other Requirements}
+\label{sec:514}
+
+\subsection{Overview}
+
+Section 164.514 collects several cross-cutting requirements that apply across the Privacy Rule. Unlike the previous sections, which each describe a specific permission pathway, \S 514 describes \textbf{conditions and constraints} that other permission pathways may reference.
+
+\subsection{De-identification Standards (\S 514(a)--(c))}
+
+HIPAA defines ``de-identified'' health information as information that does not identify an individual and for which there is no reasonable basis to believe it can identify an individual. De-identified information is \emph{not} PHI and therefore not subject to the Privacy Rule.
+
+Section 514(b) specifies two methods for de-identification:
+
+\begin{description}
+  \item[Expert determination (\S 514(b)(1)):] A qualified statistical expert determines that the risk of identification is very small. Modeled as the oracle predicate \texttt{expert\_determination\_deidentified(t)}.
+  \item[Safe harbor (\S 514(b)(2)):] Eighteen specific types of identifiers are removed (names, geographic data smaller than a state, dates more specific than year, phone numbers, SSNs, etc.). Modeled as the oracle predicate \texttt{safe\_harbor\_deidentified(t)}.
+\end{description}
+
+Section 514(c) addresses re-identification codes: a CE may assign a code to de-identified data for re-identification purposes, provided the code is not derived from PHI and the mechanism is not disclosed.
+
+In practice, these are pre-classification constraints --- our model classifies attributes as de-identified information (\texttt{dii}) at the type level, and these predicates serve as validation oracles.
+
+\subsection{Minimum Necessary Implementation (\S 514(d))}
+
+The ``minimum necessary'' standard requires covered entities to make reasonable efforts to limit PHI disclosures to the minimum necessary to accomplish the purpose. Section 514(d) specifies \emph{how} to implement this:
+
+\begin{lstlisting}[style=soufflestyle,caption={Minimum necessary implementation (\S 514(d))}]
+permitted_by_164_514_d(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    identifies_workforce_needing_phi(p1),      // oracle
+    reasonably_limits_phi_access(p1),           // oracle
+    implements_policies_for_routine_disclosures(p1),  // oracle
+    implements_criteria_for_limiting_phi(p1),   // oracle
+    meets_policies_and_criteria(p1, p2, q, t, u).    // oracle
+\end{lstlisting}
+
+All five conditions are oracle predicates because they represent organizational policies and practices that the Datalog engine cannot inspect. The predicate \texttt{permitted\_by\_164\_514\_d} is used as a guard in \S 502(b) --- it represents the CE's compliance with the minimum necessary standard for this specific disclosure.
+
+\subsection{Limited Data Sets (\S 514(e))}
+
+A \textbf{limited data set} is PHI with 16 types of direct identifiers removed (but more than de-identified data --- it can still contain dates, city, state, zip code, and age). A CE may disclose a limited data set for research, public health, or healthcare operations, provided:
+
+\begin{enumerate}
+  \item The data qualifies as a limited data set (\texttt{is\_limited\_data\_set(t)}).
+  \item The purpose is research, public health, or healthcare operations.
+  \item A \textbf{data use agreement} is in place with the recipient (\texttt{has\_limited\_data\_use\_agreement}).
+\end{enumerate}
+
+\begin{lstlisting}[style=soufflestyle,caption={Limited data set disclosure (\S 514(e))}]
+permitted_by_164_514_e(ARGS, ...) :-
+    is_covered_entity(p1),
+    is_phi(t), msg_contains(m, q, t),
+    is_limited_data_set(t),
+    is_for_limited_data_set_purpose(u),  // research, public health, or hc-ops
+    has_limited_data_use_agreement(p1, p2, q, t, u).
+\end{lstlisting}
+
+\subsection{Fundraising (\S 514(f))}
+
+A covered entity may disclose \emph{limited types} of PHI (demographic information and dates of healthcare) to a business associate or an institutionally related foundation for fundraising purposes, provided the CE has included a fundraising statement in its notice of privacy practices.
+
+\begin{lstlisting}[style=soufflestyle,caption={Fundraising disclosure (\S 514(f))}]
+permitted_by_164_514_f(ARGS, ...) :-
+    is_covered_entity(p1),
+    (is_business_associate_of(p2, p1) ; is_related_foundation(p2, p1)),
+    is_phi(t), msg_contains(m, q, t),
+    (is_demographic_info(t) ; is_healthcare_dates(t)),  // limited types
+    is_for_fundraising(u),
+    has_given_fundraising_notice(p1, p2, q, t, u).
+\end{lstlisting}
+
+\subsection{Health Plan Underwriting (\S 514(g))}
+
+Section 514(g) is a \textbf{negative norm}: it restricts health plans that receive PHI for underwriting from using it for other purposes, unless required by law. Since our system defaults to denial (closed-world assumption), this restriction is naturally enforced --- a disclosure for a non-underwriting purpose would need to find a \emph{different} positive pathway to be permitted.
+
+
+% ============================================================================
+% SECTION: Formalization of §164.524
+% ============================================================================
+\section{Formalization of \S 164.524 --- Individual Access}
+\label{sec:524}
+
+\subsection{Overview}
+
+Section 164.524 establishes the individual's \textbf{right of access} to their own PHI. When a patient requests access to their medical records, the covered entity \emph{must} provide it --- this is a \textbf{required} disclosure, not merely a permitted one. The key output predicate, \texttt{required\_by\_164\_524}, feeds into \S 502(a)(2)(i), which covers disclosures required to the individual.
+
+\subsection{The Right of Access}
+
+The core rule is:
+
+\begin{lstlisting}[style=soufflestyle,caption={Right of access (\S 524) --- from hipaa\_164\_524.dl}]
+required_by_164_524(ARGS) :-
+    is_covered_entity(p1),
+    (p2 = q ; is_personal_representative(p2, q)),  // self or rep
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_access_request(p2, p1, q, t),                // oracle
+    is_in_designated_record_set(p1, q, t),           // oracle
+    !may_deny_without_review_524a2(p2, p1, t),      // no unreviewable denial
+    !may_deny_with_review_524a3(p2, p1, t),          // no reviewable denial
+    known_purpose(u).
+\end{lstlisting}
+
+The rule says: access is required when the requester is the individual (or their personal representative), the information is in a designated record set, an access request has been made, and no denial ground applies. The two negated predicates check for grounds to deny access.
+
+\subsection{Denial Grounds Without Review (\S 524(a)(2))}
+
+A covered entity may deny access \emph{without} providing an opportunity for review in five situations:
+
+\begin{description}
+  \item[(a)(2)(i)] The information is: psychotherapy notes, compiled for a legal proceeding, subject to CLIA lab restrictions, or exempt under 42 CFR 493.
+  \item[(a)(2)(ii)] The requester is an inmate and access would jeopardize health, safety, or custody.
+  \item[(a)(2)(iii)] The information was created for research that includes treatment, the individual agreed to denial of access during the research, and was informed access would be reinstated.
+  \item[(a)(2)(iv)] The information is subject to the Privacy Act (5 U.S.C.\ 552a) and may be denied under that Act.
+  \item[(a)(2)(v)] The information was obtained under a promise of confidentiality and disclosure would reveal the source.
+\end{description}
+
+\subsection{Denial Grounds With Review (\S 524(a)(3))}
+
+Three additional denial grounds exist, but the individual must be offered a \textbf{review} by an independent licensed health care professional:
+
+\begin{description}
+  \item[(a)(3)(i)] A licensed professional determines access would endanger the life or safety of the individual or another person.
+  \item[(a)(3)(ii)] The information references another person, and a licensed professional determines access would cause substantial harm to that person.
+  \item[(a)(3)(iii)] A personal representative requests access, and a licensed professional determines providing it would cause substantial harm to the individual.
+\end{description}
+
+All denial grounds use oracle predicates (e.g., \texttt{determines\_access\_would\_endanger}, \texttt{determines\_likely\_to\_cause\_harm\_to\_other}), because they involve professional judgment that the Datalog engine cannot compute.
+
+\subsection{How \S 524 Connects to \S 502}
+
+When \texttt{required\_by\_164\_524} holds, it feeds into \S 502(a)(2)(i):
+
+\begin{lstlisting}[style=soufflestyle,caption={How \S 524 feeds into the main permission framework}]
+// In hipaa_164_502.dl:
+required_by_164_502_a_2_i(ARGS, ...) :-
+    required_by_164_524(ARGS).  // individual access required
+\end{lstlisting}
+
+This makes individual access a \texttt{required\_by\_} pathway (not merely permitted), which means the CE has an affirmative obligation to provide the disclosure.
+
+
+% ============================================================================
+% SECTION: Testing Methodology
+% ============================================================================
+\section{Testing Methodology}
+\label{sec:testing}
+
+\subsection{Test Case Structure}
+
+Every test case follows a four-file structure within its own directory:
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{File} & \textbf{Purpose} \\
+\midrule
+\texttt{scenario\_NNN.md}    & Human-readable description of the situation, the question, and the expected verdict. \\
+\texttt{fact\_NNN.dl}        & Datalog facts for the scenario: principals, roles, messages, oracle predicates, and \texttt{disclosure\_attempted}. \\
+\texttt{query\_NNN.dl}       & Entry point that \texttt{\#include}s the main formalization files and the fact file. \\
+\texttt{run\_test\_case\_NNN.sh} & Shell script that runs Souffl\'{e} and checks the result. \\
+\bottomrule
+\end{tabularx}
+\caption{Test case file structure.}
+\end{table}
+
+\subsection{The Run Script Pattern}
+
+Each test case has a shell script that runs Souffl\'{e} and interprets the output:
+
+\begin{lstlisting}[style=bashstyle,caption={Typical test case run script}]
+#!/bin/bash
+cd "$(dirname "$0")"
+mkdir -p output
+souffle -D output query_NNN.dl 2>&1
+if [ -s output/is_disclosure_allowed.csv ]; then
+    echo "RESULT: ALLOWED"
+    head -5 output/is_disclosure_allowed.csv
+elif [ -s output/is_disclosure_denied.csv ]; then
+    echo "RESULT: DENIED"
+    cat output/is_disclosure_denied.csv
+else
+    echo "RESULT: NO DISCLOSURE ATTEMPTED"
+fi
+\end{lstlisting}
+
+The key insight: a test case passes if the Souffl\'{e} output matches the expected verdict in the scenario file. If the scenario says ``DENY'' and \texttt{is\_disclosure\_denied.csv} is non-empty (while \texttt{is\_disclosure\_allowed.csv} is empty), the test passes.
+
+\subsection{Test Coverage}
+
+The formalization includes three sets of test cases:
+
+\begin{description}
+  \item[Systematic test cases (124 cases):] Generated to cover every clause of every formalized section. Each test targets a specific rule or exception, ensuring that the rule fires (or correctly does not fire) under the right conditions.
+  \item[Realistic test cases (25 cases):] More complex scenarios that combine multiple HIPAA sections and test edge cases, such as disclosures that traverse multiple permission pathways or trigger multiple exception checks.
+  \item[GoldCoin test cases (28 cases):] Based on real court cases involving HIPAA disputes. These test whether the formalization reaches the same conclusion as the courts. For example, \emph{Michelson v.\ City of Plainfield} (a citizen requesting employee health insurance details) should be denied because no HIPAA permission pathway applies.
+\end{description}
+
+\begin{designbox}
+The GoldCoin test cases are particularly valuable because they validate the formalization against real-world legal outcomes, not just our interpretation of the regulation text. When a GoldCoin test case fails, it often reveals a subtle gap in the formalization that synthetic test cases miss.
+\end{designbox}
+
+
+% ============================================================================
+% SECTION: Oracle Predicates — A Complete Reference
+% ============================================================================
+\section{Oracle Predicates --- A Complete Reference}
+\label{sec:oracle-reference}
+
+\subsection{What are Oracle Predicates?}
+
+Throughout this document, we have used the term ``oracle predicate'' to describe predicates that are declared (\texttt{.decl}) but never derived by rules. They are populated only by asserting ground facts. The term ``oracle'' comes from complexity theory --- just as a Turing machine with an oracle can query an external source for answers, our Datalog program queries these predicates for contextual information that cannot be derived from the formalization itself.
+
+Oracle predicates are necessary because HIPAA frequently conditions disclosures on:
+\begin{itemize}
+  \item \textbf{Subjective beliefs}: ``the covered entity believes in good faith...''
+  \item \textbf{Professional judgment}: ``in the professional judgment of the provider...''
+  \item \textbf{External legal facts}: ``required by law,'' ``authorized by statute...''
+  \item \textbf{Contractual states}: ``a data use agreement is in place...''
+  \item \textbf{Document contents}: ``the authorization contains a description of...''
+\end{itemize}
+
+None of these can be computed from the structure of the HIPAA rules alone. They must be provided as input to the compliance checker.
+
+\subsection{How Oracle Predicates are Used}
+
+An oracle predicate appears in a rule body just like any derived predicate. The difference is purely in how it gets its data:
+
+\begin{lstlisting}[style=soufflestyle,caption={Oracle predicate used in a rule}]
+// is_required_by_law is an oracle -- asserted as a fact in the test scenario
+.decl is_required_by_law(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// The rule uses it like any other predicate
+permitted_by_164_512_a(ARGS,
+    $Leaf("164.512(a): required by law")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_required_by_law(p1, p2, q, t, u).  // <- oracle in body
+\end{lstlisting}
+
+In a test case fact file, you would assert:
+
+\begin{lstlisting}[style=soufflestyle,caption={Asserting an oracle predicate as a fact}]
+// In fact_NNN.dl:
+is_required_by_law("hospital_A", "state_health_dept",
+    "patient_X", "communicable-disease-report", "disease-reporting").
+\end{lstlisting}
+
+If this fact is present, the \S 512(a) rule fires. If it is absent, the rule does not fire (closed-world assumption).
+
+\subsection{Oracle Predicates by Section}
+
+The following table groups all oracle predicates by the HIPAA section that introduces them. This is a reference for test case authors --- when writing a test scenario, consult this list to determine which oracle predicates need to be asserted.
+
+\paragraph{\S 164.502/506 (General Rules and TPO):}
+\begin{itemize}[nosep]
+  \item \texttt{believes\_minimum\_necessary} --- CE believes disclosure is minimum necessary
+  \item \texttt{satisfactory\_assurances} --- BA has provided adequate safeguards
+  \item \texttt{has\_authority\_to\_act} --- personal representative authority
+  \item \texttt{abuse\_exception} --- personal representative abuse exception
+  \item \texttt{believes\_unlawful\_conduct} --- whistleblower belief
+  \item \texttt{secretary\_investigation\_authorized} --- HHS Secretary investigation
+  \item \texttt{has\_obtained\_consent\_506b} --- TPO consent obtained
+  \item \texttt{known\_purpose} --- grounding helper for unrestricted purpose variables
+\end{itemize}
+
+\paragraph{\S 164.508 (Authorization):}
+\begin{itemize}[nosep]
+  \item \texttt{obtained\_authorization\_164\_508} --- valid authorization obtained
+  \item \texttt{is\_valid\_authorization} --- authorization document is valid
+  \item \texttt{is\_defective\_authorization} --- authorization has defects
+  \item \texttt{face\_to\_face} --- marketing via face-to-face communication
+  \item \texttt{promotional\_gift\_of\_nominal\_value} --- marketing with nominal gift
+  \item \texttt{legal\_defense\_purpose} --- CE defending itself in legal proceeding
+\end{itemize}
+
+\paragraph{\S 164.510 (Agree/Object):}
+\begin{itemize}[nosep]
+  \item \texttt{has\_not\_objected\_to\_directory} --- individual did not object to directory
+  \item \texttt{is\_directory\_request\_by\_name} --- someone asked for individual by name
+  \item \texttt{consistent\_with\_prior\_preference} --- consistent with prior expressed preference
+  \item \texttt{believes\_in\_best\_interest\_directory} --- CE believes directory disclosure is in best interest
+  \item \texttt{is\_family\_member}, \texttt{is\_close\_personal\_friend}, \texttt{is\_identified\_by\_individual} --- relationship oracles
+  \item \texttt{relevant\_to\_involvement} --- info relevant to care involvement
+  \item \texttt{has\_obtained\_agreement\_510b2} --- individual has agreed
+  \item \texttt{professional\_judgment\_best\_interest\_510b3} --- professional judgment for incapacitated individual
+\end{itemize}
+
+\paragraph{\S 164.512 (Without Authorization):}
+\begin{itemize}[nosep]
+  \item \texttt{is\_required\_by\_law} --- disclosure required by another law
+  \item \texttt{is\_authorized\_by\_law\_for\_purpose} --- recipient authorized by law
+  \item \texttt{believes\_victim\_of\_abuse} --- CE believes individual is abuse victim
+  \item \texttt{has\_court\_order} --- court order received
+  \item \texttt{has\_lawful\_process\_with\_assurance} --- subpoena with satisfactory assurance
+  \item \texttt{has\_irb\_or\_privacy\_board\_waiver} --- research waiver approved
+  \item \texttt{believes\_necessary\_to\_lessen\_threat} --- serious threat determination
+  \item \texttt{deemed\_necessary\_for\_mission} --- military necessity determination
+  \item \texttt{authorized\_for\_workers\_comp} --- workers' compensation authorization
+\end{itemize}
+
+\paragraph{\S 164.514 (Other Requirements):}
+\begin{itemize}[nosep]
+  \item \texttt{expert\_determination\_deidentified} --- expert de-identification determination
+  \item \texttt{safe\_harbor\_deidentified} --- safe harbor de-identification
+  \item \texttt{identifies\_workforce\_needing\_phi}, \texttt{reasonably\_limits\_phi\_access}, etc.\ --- minimum necessary implementation oracles
+  \item \texttt{has\_limited\_data\_use\_agreement} --- data use agreement in place
+  \item \texttt{has\_given\_fundraising\_notice} --- fundraising notice provided
+\end{itemize}
+
+\paragraph{\S 164.524 (Individual Access):}
+\begin{itemize}[nosep]
+  \item \texttt{is\_access\_request} --- individual has requested access
+  \item \texttt{is\_in\_designated\_record\_set} --- PHI is in a designated record set
+  \item \texttt{compiled\_for\_legal\_proceeding} --- information compiled for litigation
+  \item \texttt{determines\_access\_would\_endanger} --- professional determination of endangerment
+  \item \texttt{agreed\_to\_denial\_of\_access} --- research participant agreed to access denial
+\end{itemize}
+
+
+% ============================================================================
+% Conclusion
+% ============================================================================
+\section{Conclusion}
+
+This document has provided a comprehensive walkthrough of the HIPAA Privacy Rule formalization in Souffl\'{e} Datalog, covering seven sections: \S 164.502, \S 164.506, \S 164.508, \S 164.510, \S 164.512, \S 164.514, and \S 164.524. The key takeaways are:
+
+\begin{enumerate}
+  \item \textbf{Architecture}: The checker is modularly organized into types, hierarchies, macros, section-specific rules, a top-level aggregator, and test fact databases.
+
+  \item \textbf{Explanation trees}: The \texttt{Expl} ADT provides structured, auditable provenance for every compliance decision.
+
+  \item \textbf{Hierarchies}: Role, attribute, and purpose hierarchies with transitive closure enable subsumption (a doctor is a provider is a covered entity).
+
+  \item \textbf{Stratified negation}: Used for negative norms (\S 508 blocking \S 506), exceptions, exclusions, denial grounds (\S 524), and denial tracking.
+
+  \item \textbf{Oracle predicates}: Contextual conditions --- professional judgment, legal determinations, contractual states --- are modeled as oracle predicates, providing a clean interface between the formal rules and real-world context.
+
+  \item \textbf{Grounding}: Helper relations (\texttt{known\_purpose}, \texttt{disclosure\_attempted}) solve the grounding requirement for unrestricted variables.
+
+  \item \textbf{Testing}: 158 test cases (105 systematic, 25 realistic, 28 GoldCoin court cases) validate the formalization against expected outcomes and real legal decisions.
+
+  \item \textbf{Verification}: The v2 formalization was verified clause-by-clause against the actual eCFR regulatory text through three iterative rounds. The maximal revelation principle was checked across all 120+ rules, ensuring that conjunctions, disjunctions, and negations are properly decomposed. 26 fixes were applied including: \S 502(a)(5) prohibitions on genetic underwriting and sale of PHI, \S 508(a)(4) sale authorization, authorization validity checks, correctional release guards, DNA/dental prohibition on law enforcement identification, and 5 disjunction splits for better provenance.
+\end{enumerate}
+
+To extend the formalization to additional HIPAA sections (e.g., \S 164.520, \S 164.522, \S 164.528, \S 164.530), follow the same pattern:
+\begin{enumerate}
+  \item Read the HIPAA regulation text and the PDF formal notation.
+  \item Remove any stub declarations for the section from \texttt{hipaa\_stubs.dl}.
+  \item Write Souffl\'{e} rules following the translation patterns described here.
+  \item Create test cases with scenario, fact, query, and run script files.
+  \item Run the checker and verify expected outcomes.
+\end{enumerate}
+
+
+% ============================================================================
+% Appendices
+% ============================================================================
+\begin{appendices}
+
+\section{Complete File: hipaa\_types.dl}
+\label{app:types}
+
+\begin{lstlisting}[style=soufflestyle]
+// Preprocessor macros for the 6-tuple action signature
+#define ARGS p1, p2, q, m, t, u
+#define DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:Attribute, u:Purpose
+
+// Primitive domain subtypes
+.type Principal <: symbol
+.type Role <: symbol
+.type Attribute <: symbol
+.type Purpose <: symbol
+.type Message <: symbol
+.type TimePoint <: number
+.type Rel <: symbol
+
+// ADT: Explanation tree
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+\end{lstlisting}
+
+\section{Complete File: hipaa\_top.dl}
+\label{app:top}
+
+\begin{lstlisting}[style=soufflestyle]
+// Top-level: Is this disclosure allowed?
+.decl is_disclosure_allowed(DECL_ARGS, e: Expl)
+is_disclosure_allowed(ARGS, E) :-
+    permitted_by_164_502(ARGS, E).
+
+// Denial reporting
+.decl disclosure_attempted(DECL_ARGS)
+.decl is_disclosure_denied(DECL_ARGS)
+is_disclosure_denied(ARGS) :-
+    disclosure_attempted(ARGS),
+    !is_disclosure_allowed(ARGS, _).
+
+// Output directives
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output disclosure_attempted
+.output permitted_by_164_502
+.output permitted_by_164_506
+.output minimum_necessary_satisfied
+.output is_personal_representative
+.output excluded_164_502_b_2
+\end{lstlisting}
+
+\end{appendices}
+
+\end{document}

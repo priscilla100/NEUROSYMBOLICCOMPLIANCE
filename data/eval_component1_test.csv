@@ -1,0 +1,32 @@
+row_id,gold_label,verdict,match,citations,scenario_json,generated_facts,explanation_tree,artifact_dir,latency_s,error
+1,DENIED,DENIED,Y,,"{""sender_role"": ""government-entity"", ""receiver_role"": ""individual"", ""attribute"": ""phi"", ""purpose"": ""legal-defense"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_1 → receiver_1 [phi / marketing]
+
+// --- Principals ---
+activerole(""sender_1"", ""government-entity"").
+activerole(""receiver_1"", ""individual"").
+activerole(""patient_1"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_1"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0001"", ""patient_1"", ""phi"").
+
+// --- Disclosure query ---
+disclosure_attempted(""sender_1"",""receiver_1"",""patient_1"",""msg_0001"",""phi"",""marketing"").
+",,/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_test/row_1,4.48,
+2,PERMITTED,PERMITTED,Y,"164.502(a), 164.502(a)(1)(vi), 164.512, 164.512(f)(1)(ii)","{""sender_role"": ""covered-entity"", ""receiver_role"": ""law-enforcement-official"", ""attribute"": ""blood-test-results"", ""purpose"": ""law-enforcement"", ""subject_category"": ""adult"", ""same_org"": false, ""is_business_associate"": false, ""is_guardian_of_subject"": false, ""obtained_authorization_164_508"": false}","// Auto-generated facts: sender_2 → receiver_2 [blood-test-results / law-enforcement]
+
+// --- Principals ---
+activerole(""sender_2"", ""hospital"").
+activerole(""receiver_2"", ""law-enforcement-official"").
+activerole(""patient_2"", ""patient"").
+
+// --- Subject category ---
+belongstorole(""patient_2"", ""adult"").
+
+// --- Message ---
+msg_contains(""msg_0002"", ""patient_2"", ""blood-test-results"").
+
+// --- Extra facts ---
+in_compliance_with_court_order(""sender_2"",""receiver_2"",""patient_2"",""blood-test-results"",""law-e","$Step1(164.502(a): permitted use by covered entity, $Step1(164.502(a)(1)(vi): per 164.512, $Leaf(164.512(f)(1)(ii): court order/warrant/subpoena to law enforcement)))",/Users/priscilladanso/Documents/GitHub/COMPLIANCEGPT/data/eval_component1_artifacts_test/row_2,2.27,

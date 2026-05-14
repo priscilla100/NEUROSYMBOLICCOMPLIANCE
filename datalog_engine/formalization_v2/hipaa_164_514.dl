@@ -1,0 +1,236 @@
+// ============================================================================
+// hipaa_164_514.dl — §164.514: Other requirements relating to uses and
+//                    disclosures of protected health information
+// ============================================================================
+// Reference: HIPAA_FORMALIZATION.pdf, Section 4.7 (pages 98–108)
+//
+// Structure:
+//   164.514(a)  — De-identification intent (no formalization needed)
+//   164.514(b)  — De-identification standards
+//   164.514(c)  — Re-identification codes
+//   164.514(d)  — Minimum necessary implementation
+//   164.514(e)  — Limited data sets
+//   164.514(f)  — Fundraising
+//   164.514(g)  — Health plan underwriting restrictions
+// ============================================================================
+
+// =============================================
+// §164.514(a) — De-identification intent
+// =============================================
+// PDF (page 98): "This paragraph appears to state an intent and so
+// requires no formalization."
+// No rules needed.
+
+// =============================================
+// §164.514(b) — De-identification standards
+// =============================================
+// PDF (pages 99–101)
+// A covered entity may determine that health information is not individually
+// identifiable only if: (1) expert determination, or (2) safe harbor (18 identifiers).
+// These are constraints on what counts as de-identified info (dii).
+// In our model, dii attributes are pre-classified; these constraints
+// are checked operationally. We declare oracle predicates for completeness.
+
+// expert_determination_deidentified(T): expert has determined T is de-identified
+// PDF (page 99): phi_514b1
+.decl expert_determination_deidentified(t: Attribute)
+
+// safe_harbor_deidentified(T): T meets safe harbor standard (18 identifiers removed)
+// PDF (page 100): phi_514b2
+.decl safe_harbor_deidentified(t: Attribute)
+
+// =============================================
+// §164.514(c) — Re-identification codes
+// =============================================
+// PDF (page 101): Covered entity may assign a code for re-identification
+// provided: (1) code not derived from PHI, (2) CE doesn't disclose mechanism
+// All oracle predicates — operational constraints.
+
+// =============================================
+// §164.514(d) — Minimum necessary implementation
+// =============================================
+// PDF (pages 101–103)
+// permitted_by_164_514_d is declared in hipaa_stubs.dl
+// This section specifies HOW to implement the minimum necessary standard.
+// Most are organizational policies (oracle predicates).
+
+// identifies_workforce_needing_phi: oracle — CE has identified workforce members
+.decl identifies_workforce_needing_phi(p1: Principal)
+
+// reasonably_limits_phi_access: oracle — CE limits access appropriately
+.decl reasonably_limits_phi_access(p1: Principal)
+
+// implements_policies_for_routine_disclosures: oracle
+.decl implements_policies_for_routine_disclosures(p1: Principal)
+
+// implements_criteria_for_limiting_phi: oracle
+.decl implements_criteria_for_limiting_phi(p1: Principal)
+
+// meets_policies_and_criteria: oracle — specific disclosure meets criteria
+.decl meets_policies_and_criteria(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// full_record_specifically_justified: oracle — entire medical record justified
+.decl full_record_specifically_justified(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// §164.514(d)(1)-(5): Minimum necessary is satisfied when policies are in place
+// and the specific disclosure meets those policies
+permitted_by_164_514_d(ARGS) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    identifies_workforce_needing_phi(p1),
+    reasonably_limits_phi_access(p1),
+    implements_policies_for_routine_disclosures(p1),
+    implements_criteria_for_limiting_phi(p1),
+    meets_policies_and_criteria(p1, p2, q, t, u).
+
+// =============================================
+// §164.514(e) — Limited data sets
+// =============================================
+// PDF (pages 103–106)
+// permitted_by_164_514_e is declared in hipaa_stubs.dl
+
+// is_limited_data_set(T): attribute T qualifies as a limited data set
+// (PHI with 16 direct identifiers removed per §514(e)(2))
+.decl is_limited_data_set(t: Attribute)
+
+// has_limited_data_use_agreement: oracle — CE has data use agreement with recipient
+.decl has_limited_data_use_agreement(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+// is_for_limited_data_set_purpose(U): research, public health, or healthcare ops
+.decl is_for_limited_data_set_purpose(u: Purpose)
+is_for_limited_data_set_purpose(U) :- is_for_research(U).
+is_for_limited_data_set_purpose(U) :- is_for_public_health(U).
+is_for_limited_data_set_purpose(U) :- is_for_hc_ops(U).
+
+permitted_by_164_514_e(ARGS,
+    $Leaf("164.514(e)(1): limited data set with data use agreement")) :-
+    is_covered_entity(p1),
+    is_phi(t),
+    msg_contains(m, q, t),
+    is_limited_data_set(t),
+    is_for_limited_data_set_purpose(u),
+    has_limited_data_use_agreement(p1, p2, q, t, u).
+
+// =============================================
+// §164.514(f) — Fundraising
+// =============================================
+// PDF (pages 107)
+// permitted_by_164_514_f is declared in hipaa_stubs.dl
+
+// is_for_fundraising(U): purpose is fundraising
+.decl is_for_fundraising(u: Purpose)
+is_for_fundraising("fundraising").
+
+// is_demographic_info(T): demographic information
+.decl is_demographic_info(t: Attribute)
+is_demographic_info("demographic-info").
+is_demographic_info(T) :- attr_subtype(T, "demographic-info").
+
+// is_healthcare_dates(T): dates of health care
+.decl is_healthcare_dates(t: Attribute)
+is_healthcare_dates("healthcare-dates").
+is_healthcare_dates(T) :- attr_subtype(T, "healthcare-dates").
+
+// is_related_foundation(P2, P1): P2 is institutionally related foundation of P1
+.decl is_related_foundation(p2: Principal, p1: Principal)
+
+// has_given_fundraising_notice: oracle — CE included fundraising statement in notice
+.decl has_given_fundraising_notice(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+permitted_by_164_514_f(ARGS,
+    $Leaf("164.514(f)(1): fundraising with limited PHI types")) :-
+    is_covered_entity(p1),
+    (is_business_associate_of(p2, p1) ; is_related_foundation(p2, p1)),
+    is_phi(t),
+    msg_contains(m, q, t),
+    (is_demographic_info(t) ; is_healthcare_dates(t) ;
+     is_department_of_service(t) ; is_treating_physician_info(t) ;
+     is_outcome_info(t) ; is_insurance_status_info(t)),
+    is_for_fundraising(u),
+    has_given_fundraising_notice(p1, p2, q, t, u).
+
+// =============================================
+// §164.514(g) — Health plan underwriting restrictions
+// =============================================
+// PDF (pages 107–108)
+// permitted_by_164_514_g is declared in hipaa_stubs.dl
+// Negative norm: health plan receiving PHI for underwriting may not use
+// it for other purposes except as required by law.
+// This is a constraint (negative norm), not an independent permission path.
+// The stub remains empty — it restricts rather than permits.
+
+// For completeness, we declare the oracle predicates
+// health_insurance_placed_with: oracle — insurance was placed with the health plan
+.decl health_insurance_placed_with(entity: Principal, plan: Principal)
+
+// The negative norm phi-_514g blocks disclosures by health plans that received
+// PHI for underwriting when insurance was NOT placed with them, UNLESS
+// the disclosure is required by law. Since this is a negative constraint,
+// it is enforced via the existing framework (disclosure denied by default
+// unless some positive pathway permits it).
+
+// =============================================
+// §164.514(h) — Verification requirements
+// =============================================
+// CFR: "A covered entity must verify the identity of a person requesting
+//  PHI and the authority of any such person to have access to PHI,
+//  if the identity or authority of such person is not known to the CE."
+// This is a constraint (negative guard) on disclosures to external parties.
+
+// identity_verified: oracle — CE has verified the requester's identity
+.decl identity_verified(p1: Principal, p2: Principal)
+
+// authority_verified: oracle — CE has verified the requester's authority
+.decl authority_verified(p1: Principal, p2: Principal, q: Principal, t: Attribute, u: Purpose)
+
+// identity_known_to_ce: oracle — requester's identity is already known
+.decl identity_known_to_ce(p1: Principal, p2: Principal)
+
+// verification_satisfied: combined check
+verification_satisfied_514h(ARGS) :-
+    is_covered_entity(p1),
+    (identity_known_to_ce(p1, p2) ; identity_verified(p1, p2)),
+    is_phi(t), msg_contains(m, q, t), known_purpose(u).
+
+verification_satisfied_514h(ARGS) :-
+    is_covered_entity(p1),
+    // Verification not required for disclosures to the individual
+    (p2 = q ; is_personal_representative(p2, q)),
+    is_phi(t), msg_contains(m, q, t), known_purpose(u).
+
+// Additional fundraising PHI types per §514(f)(1)(iii)-(vi)
+// CFR lists: (i) demographic info, (ii) dates of health care,
+// (iii) department of service, (iv) treating physician,
+// (v) outcome information, (vi) health insurance status
+.decl is_department_of_service(t: Attribute)
+is_department_of_service("department-of-service").
+
+.decl is_treating_physician_info(t: Attribute)
+is_treating_physician_info("treating-physician-info").
+
+.decl is_outcome_info(t: Attribute)
+is_outcome_info("outcome-info").
+
+.decl is_insurance_status_info(t: Attribute)
+is_insurance_status_info("insurance-status").
+
+// §514(f)(2)(ii)-(iv): Fundraising opt-out constraints
+// CFR: CE must provide opt-out opportunity with each communication,
+//  may not condition treatment on fundraising choice,
+//  may not send fundraising to individuals who have opted out.
+.decl individual_opted_out_of_fundraising(q: Principal, p1: Principal)
+
+// Negative guard: blocks fundraising if individual opted out
+.decl blocked_fundraising_opt_out(p1: Principal, p2: Principal,
+    q: Principal, t: Attribute, u: Purpose)
+
+blocked_fundraising_opt_out(P1, P2, Q, T, U) :-
+    individual_opted_out_of_fundraising(Q, P1),
+    is_for_fundraising(U),
+    disclosure_attempted(P1, P2, Q, _, T, U),
+    msg_contains(_, Q, T).

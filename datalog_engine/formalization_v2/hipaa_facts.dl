@@ -1,0 +1,176 @@
+// ============================================================================
+// hipaa_facts.dl — Fictitious test scenarios (fact database)
+// ============================================================================
+// This file contains test data for verifying the HIPAA compliance checker.
+// Each scenario is labeled with its expected outcome and the HIPAA section
+// that should permit or deny the disclosure.
+// ============================================================================
+
+// =============================================
+// Principals
+// =============================================
+// Covered entities
+activerole("mercy_hospital", "hospital").
+activerole("blue_cross", "health-insurance-issuer").
+
+// Health care providers
+activerole("dr_smith", "doctor").
+activerole("dr_jones", "psychiatrist").
+activerole("nurse_adams", "nurse").
+activerole("lab_corp", "lab-technician").
+
+// Patients (subjects)
+activerole("patient_alice", "patient").
+activerole("patient_bob", "patient").
+activerole("patient_charlie", "patient").
+
+// Government / oversight
+activerole("secretary_hhs", "secretary").
+activerole("state_health_dept", "oversight-agency").
+activerole("fbi_agent_davis", "law-enforcement-official").
+
+// Business associates
+activerole("billing_co", "billing-company").
+
+// Other
+activerole("random_person", "individual").
+activerole("attorney_wilson", "attorney").
+activerole("parent_frank", "parent").
+
+// =============================================
+// Subject categories (belongstorole)
+// =============================================
+belongstorole("patient_alice", "adult").
+belongstorole("patient_bob", "adult").
+belongstorole("patient_charlie", "unemancipated-minor").
+
+// =============================================
+// Organizational relationships
+// =============================================
+organization_member("dr_smith", "mercy_hospital").
+organization_member("nurse_adams", "mercy_hospital").
+organization_member("dr_jones", "mercy_hospital").
+
+// Employee relationships (for whistleblower)
+is_employee_of("nurse_adams", "mercy_hospital").
+
+// Business associate relationships
+is_business_associate_of("billing_co", "mercy_hospital").
+
+// Guardian relationships (for personal representative)
+is_guardian("parent_frank", "patient_charlie").
+
+// Authority to act (oracle)
+has_authority_to_act("parent_frank", "patient_charlie").
+
+// Provider-patient relationships
+provider_of("dr_smith", "patient_alice").
+provider_of("dr_jones", "patient_bob").
+provider_of("lab_corp", "patient_alice").
+
+// Relationships for §164.506(c)(4)
+inrelationship("mercy_hospital", "care-rel-1", "patient_alice").
+inrelationship("blue_cross", "insurance-rel-1", "patient_alice").
+
+// Attribute pertains to relationship (for §164.506(c)(4))
+pertains_to("medical-record", "care-rel-1").
+pertains_to("medical-record", "insurance-rel-1").
+pertains_to("diagnosis", "care-rel-1").
+pertains_to("diagnosis", "insurance-rel-1").
+pertains_to("billing-record", "insurance-rel-1").
+
+// =============================================
+// Messages and their contents
+// =============================================
+// Scenario 1: Hospital sends blood test results to doctor for treatment
+msg_contains("msg_001", "patient_alice", "blood-test-results").
+
+// Scenario 2: Hospital sends diagnosis directly to patient
+msg_contains("msg_002", "patient_alice", "diagnosis").
+
+// Scenario 3: Hospital sends billing record to insurer for payment
+msg_contains("msg_003", "patient_alice", "billing-record").
+
+// Scenario 4: Hospital sends PHI to random person for marketing (should DENY)
+msg_contains("msg_004", "patient_alice", "diagnosis").
+
+// Scenario 5: Whistleblower nurse discloses to oversight agency
+msg_contains("msg_005", "patient_bob", "medical-record").
+
+// Scenario 6: Hospital sends PHI to Secretary for investigation
+msg_contains("msg_006", "patient_alice", "medical-record").
+
+// Scenario 7: Hospital discloses to business associate with assurances
+msg_contains("msg_007", "patient_alice", "billing-record").
+
+// Scenario 8: De-identified information (should always be allowed)
+msg_contains("msg_008", "patient_alice", "statistical-data").
+
+// Scenario 9: Parent requests PHI about minor child
+msg_contains("msg_009", "patient_charlie", "diagnosis").
+
+// Scenario 10: Hospital to hospital for healthcare operations
+msg_contains("msg_010", "patient_alice", "medical-record").
+
+// =============================================
+// Oracle predicates (scenario-specific facts)
+// =============================================
+
+// Scenario 1: minimum necessary is satisfied for treatment
+believes_minimum_necessary("mercy_hospital", "dr_smith", "patient_alice",
+    "msg_001", "blood-test-results", "treatment").
+
+// Scenario 5: nurse believes hospital engaged in unlawful conduct
+believes_unlawful_conduct("nurse_adams", "mercy_hospital").
+
+// Scenario 6: Secretary investigation is authorized under subpart C
+secretary_investigation_authorized("mercy_hospital", "secretary_hhs", "patient_alice",
+    "msg_006", "medical-record", "compliance-investigation").
+
+// Scenario 7: business associate has provided satisfactory assurances
+satisfactory_assurances("mercy_hospital", "billing_co", "patient_alice",
+    "billing-record", "billing").
+
+// =============================================
+// Disclosure attempts (for denial tracking)
+// =============================================
+
+// Scenario 1: Hospital → Doctor for treatment (EXPECT: ALLOW via 506(c)(2))
+disclosure_attempted("mercy_hospital", "dr_smith", "patient_alice",
+    "msg_001", "blood-test-results", "treatment").
+
+// Scenario 2: Hospital → Patient directly (EXPECT: ALLOW via 502(a)(1)(i))
+disclosure_attempted("mercy_hospital", "patient_alice", "patient_alice",
+    "msg_002", "diagnosis", "treatment").
+
+// Scenario 3: Hospital → Insurer for payment (EXPECT: ALLOW via 506(c)(3))
+disclosure_attempted("mercy_hospital", "blue_cross", "patient_alice",
+    "msg_003", "billing-record", "billing").
+
+// Scenario 4: Hospital → Random person for marketing (EXPECT: DENY)
+disclosure_attempted("mercy_hospital", "random_person", "patient_alice",
+    "msg_004", "diagnosis", "marketing").
+
+// Scenario 5: Whistleblower → Oversight agency (EXPECT: ALLOW via 502(j)(1))
+disclosure_attempted("nurse_adams", "state_health_dept", "patient_bob",
+    "msg_005", "medical-record", "report-unlawful-conduct").
+
+// Scenario 6: Hospital → Secretary for investigation (EXPECT: ALLOW via 502(a)(2)(ii))
+disclosure_attempted("mercy_hospital", "secretary_hhs", "patient_alice",
+    "msg_006", "medical-record", "compliance-investigation").
+
+// Scenario 7: Hospital → Business associate (EXPECT: ALLOW via 502(e))
+disclosure_attempted("mercy_hospital", "billing_co", "patient_alice",
+    "msg_007", "billing-record", "billing").
+
+// Scenario 8: De-identified info (EXPECT: ALLOW via 502(d)(2))
+disclosure_attempted("mercy_hospital", "random_person", "patient_alice",
+    "msg_008", "statistical-data", "research").
+
+// Scenario 9: Parent for minor (EXPECT: ALLOW via 502(a)(1)(i) + personal rep)
+disclosure_attempted("mercy_hospital", "parent_frank", "patient_charlie",
+    "msg_009", "diagnosis", "treatment").
+
+// Scenario 10: Hospital to insurer for healthcare ops (EXPECT: ALLOW via 506(c)(4))
+disclosure_attempted("mercy_hospital", "blue_cross", "patient_alice",
+    "msg_010", "medical-record", "quality-assessment").

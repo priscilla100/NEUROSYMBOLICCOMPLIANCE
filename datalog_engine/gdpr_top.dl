@@ -1,0 +1,90 @@
+// ============================================================================
+// gdpr_top.dl — Top-level processing rule and output directives for GDPR
+// ============================================================================
+// This file defines the top-level predicate permitted_by_gdpr which combines
+// all permission pathways and applies the Art.9 special-category guard.
+//
+// Reference: GDPR 2016/679, Articles 5, 6, 9, 17
+// Top-level principle (Art.5(1)(a)): processing must be lawful, fair and
+// transparent. Lawfulness requires at least one Art.6(1) basis; for
+// special-category data Art.9(2) must ALSO be satisfied.
+//
+// Include order (types/macros must precede all rule files):
+#include "gdpr_types.dl"
+#include "gdpr_hierarchies.dl"
+#include "gdpr_art6.dl"
+#include "gdpr_art17.dl"
+// ============================================================================
+
+// =============================================
+// Top-level: Is this processing permitted?
+// =============================================
+// Processing is permitted if:
+//   (a) it satisfies a lawful basis under Art.6 (or Art.6 + Art.9), AND
+//   (b) no erasure obligation under Art.17 currently blocks it.
+//
+// The explanation tree E captures the full chain of reasoning.
+.decl permitted_by_gdpr(GDPR_DECL_ARGS, e: Expl)
+
+// Case 1: Non-special-category personal data — Art.6 alone is sufficient
+permitted_by_gdpr(GDPR_ARGS,
+    $Step1("GDPR: processing permitted under Art.6 (non-special-category data)", E)) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    !is_special_category(dc),
+    permitted_by_gdpr_art6(GDPR_ARGS, E),
+    // No pending erasure obligation for this subject and category
+    !erasure_required_by_gdpr_art17(p1, q, dc, _).
+
+// Case 2: Special-category data — Art.6 + Art.9(2) both required
+permitted_by_gdpr(GDPR_ARGS,
+    $Step2("GDPR: processing permitted under Art.6 + Art.9 (special-category data)", E6, E9)) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_special_category(dc),
+    permitted_by_gdpr_art6(GDPR_ARGS, E6),
+    permitted_by_gdpr_art9(GDPR_ARGS, E9),
+    !erasure_required_by_gdpr_art17(p1, q, dc, _).
+
+// =============================================
+// Denial reporting (informational)
+// =============================================
+// A processing attempt that has no matching permitted_by_gdpr tuple is
+// implicitly denied (closed-world assumption). For debugging we also
+// track explicit scenarios where processing was attempted but not permitted.
+.decl processing_denied_by_gdpr(GDPR_DECL_ARGS)
+
+processing_denied_by_gdpr(GDPR_ARGS) :-
+    processing_attempted(GDPR_ARGS),
+    !permitted_by_gdpr(GDPR_ARGS, _).
+
+// =============================================
+// Engine compatibility bridge
+// =============================================
+// The formal strategy engine generates disclosure_attempted(...) facts and
+// reads is_disclosure_allowed.csv / is_disclosure_denied.csv.
+// These bridge rules map the engine's standard format to GDPR semantics.
+
+.decl disclosure_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, t: DataCategory, u: LegalBasis)
+processing_attempted(GDPR_ARGS) :- disclosure_attempted(GDPR_ARGS).
+
+// Map to engine-standard output CSV names
+.decl is_disclosure_allowed(GDPR_DECL_ARGS, e: Expl)
+.decl is_disclosure_denied(GDPR_DECL_ARGS, e: Expl)
+
+is_disclosure_allowed(GDPR_ARGS, e) :- permitted_by_gdpr(GDPR_ARGS, e).
+is_disclosure_denied(GDPR_ARGS, $Leaf("GDPR: processing not permitted under any Art.6 lawful basis")) :-
+    disclosure_attempted(GDPR_ARGS),
+    !permitted_by_gdpr(GDPR_ARGS, _).
+
+// =============================================
+// Output directives
+// =============================================
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output permitted_by_gdpr
+.output processing_denied_by_gdpr
+
+// Diagnostic outputs for debugging individual rule layers
+.output permitted_by_gdpr_art6
+.output erasure_required_by_gdpr_art17
+.output erasure_exempt_by_gdpr_art17_3

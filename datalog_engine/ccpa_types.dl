@@ -1,0 +1,109 @@
+// ============================================================================
+// ccpa_types.dl — Type declarations for CCPA formalization
+// ============================================================================
+// CCPA governs businesses collecting, selling, or sharing California
+// consumers' personal information.
+//
+// Reference: California Consumer Privacy Act, Cal. Civ. Code §1798.100 et seq.
+//            (as amended by CPRA, effective Jan. 1, 2023)
+//
+// Action signature: (business, third_party_or_service_provider, consumer,
+//                    message, personal_info_category, purpose)
+//   p1 = business (the entity collecting/selling PI)
+//   p2 = third_party or service_provider (recipient)
+//   q  = consumer (the California resident whose PI is involved)
+//   m  = message identifier (the disclosure/transfer event)
+//   t  = personal_info_category (what kind of PI is being disclosed)
+//   u  = purpose of the disclosure or use
+// ============================================================================
+
+// === Preprocessor macros for the 6-tuple action signature ===
+#define CCPA_ARGS p1, p2, q, m, t, u
+#define CCPA_DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:PersonalInfoCategory, u:Purpose
+
+// === Primitive domain subtypes ===
+
+// Principals: businesses, consumers, third parties, service providers
+.type Principal <: symbol
+
+// Personal information categories (§1798.140(o) and §1798.140(ae) for sensitive PI)
+.type PersonalInfoCategory <: symbol
+
+// Purposes: business_purpose, commercial_purpose, sale, sharing, etc.
+.type Purpose <: symbol
+
+// Message identifiers (the disclosure or transfer event)
+.type Message <: symbol
+
+// Consent types
+.type ConsentType <: symbol
+
+// Age categories for minor-related rules (§1798.120(d))
+.type AgeCategory <: symbol
+
+// === ADT: Explanation tree ===
+// Every permission/denial rule carries an Expl value recording WHY the rule
+// fired. Branch names must be globally unique across all ADTs in Soufflé.
+//   Leaf   — base fact or oracle predicate (no sub-explanations)
+//   Step1  — rule with one sub-explanation
+//   Step2  — rule combining two sub-explanations
+//   Step3  — rule combining three sub-explanations
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+
+// =============================================
+// Core action predicate
+// =============================================
+
+// disclosure_attempted(p1, p2, q, m, t, u):
+//   Business p1 attempts to disclose/sell/share message m (containing PI category t
+//   about consumer q) to recipient p2 for purpose u.
+.decl disclosure_attempted(CCPA_DECL_ARGS)
+
+// =============================================
+// Oracle predicates
+// =============================================
+// These are populated as EDB facts; they represent conditions that cannot be
+// derived from the regulation text alone and must be asserted from context.
+
+// has_opted_out(q, p1): consumer q has submitted a valid opt-out of sale/sharing
+// to business p1 under §1798.120(a).
+.decl has_opted_out(q: Principal, p1: Principal)
+
+// has_given_consent(q, p1): consumer q has provided explicit consent to business p1
+// (used for sensitive PI processing and certain sharing after opt-out reversal).
+.decl has_given_consent(q: Principal, p1: Principal)
+
+// is_service_provider(p2, p1): p2 is a service provider or contractor of business p1,
+// meaning disclosure to p2 is NOT a "sale" (§1798.140(ag) / §1798.145(a)(1)).
+.decl is_service_provider(p2: Principal, p1: Principal)
+
+// is_california_consumer(q): q is a California resident to whom CCPA applies.
+.decl is_california_consumer(q: Principal)
+
+// is_ccpa_business(p1): p1 meets the threshold to be a "business" under §1798.140(d).
+.decl is_ccpa_business(p1: Principal)
+
+// required_by_law(p1, p2, q, m, t, u): disclosure is required by applicable law.
+.decl required_by_law(CCPA_DECL_ARGS)
+
+// is_minor_under_13(q): consumer q is under 13 years of age (§1798.120(d)).
+.decl is_minor_under_13(q: Principal)
+
+// is_minor_13_to_16(q): consumer q is between 13 and 16 years of age (§1798.120(d)).
+.decl is_minor_13_to_16(q: Principal)
+
+// minor_opted_in(q, p1): minor aged 13–16 has affirmatively authorized sale (§1798.120(d)).
+.decl minor_opted_in(q: Principal, p1: Principal)
+
+// parent_opted_in(q, p1): parent/guardian of minor under 13 has opted in (§1798.120(d)).
+.decl parent_opted_in(q: Principal, p1: Principal)
+
+// has_agreement_with_recipient(p1, p2): business p1 has a compliant data-sharing
+// agreement with p2 as required by §1798.100(d).
+.decl has_agreement_with_recipient(p1: Principal, p2: Principal)
+
+// msg_contains(m, q, t): message m contains PI category t about consumer q.
+.decl msg_contains(m: Message, q: Principal, t: PersonalInfoCategory)

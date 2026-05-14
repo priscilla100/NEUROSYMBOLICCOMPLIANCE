@@ -1,0 +1,50 @@
+// ============================================================================
+// hipaa_top.dl — Top-level disclosure rule and output directives
+// ============================================================================
+// This file defines the top-level predicate is_disclosure_allowed which
+// combines all permission pathways from §164.502 and §164.506.
+//
+// Reference: HIPAA_FORMALIZATION.pdf, Section 4.1 (page 28)
+// Top-level formula: G ∀p1,p2:prin. ∀m:msg.
+//   send(p1,p2,m) ⊃ (∨_i φ+_i ∧ ∧_i φ-_i)
+// ============================================================================
+
+// =============================================
+// Top-level: Is this disclosure allowed?
+// =============================================
+// A disclosure is allowed if it is permitted by §164.502 (which internally
+// delegates to §164.506 and other sections as appropriate).
+//
+// The explanation tree E captures the full chain of reasoning.
+.decl is_disclosure_allowed(DECL_ARGS, e: Expl)
+
+is_disclosure_allowed(ARGS, E) :-
+    permitted_by_164_502(ARGS, E).
+
+// =============================================
+// Denial reporting (informational)
+// =============================================
+// A disclosure attempt that has no matching is_disclosure_allowed tuple
+// is implicitly denied (closed-world assumption). For debugging, we also
+// track explicit scenarios where a disclosure was attempted.
+.decl disclosure_attempted(DECL_ARGS)
+.decl is_disclosure_denied(DECL_ARGS)
+
+// A disclosure is denied if it was attempted but not allowed
+is_disclosure_denied(ARGS) :-
+    disclosure_attempted(ARGS),
+    !is_disclosure_allowed(ARGS, _).
+
+// =============================================
+// Output directives
+// =============================================
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output disclosure_attempted
+
+// Diagnostic outputs for debugging
+.output permitted_by_164_502
+.output permitted_by_164_506
+.output minimum_necessary_satisfied
+.output is_personal_representative
+.output excluded_164_502_b_2

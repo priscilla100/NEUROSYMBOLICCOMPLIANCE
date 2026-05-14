@@ -1,0 +1,22 @@
+#include "hipaa_types.dl"
+#include "hipaa_hierarchies.dl"
+#include "hipaa_macros.dl"
+#include "hipaa_stubs.dl"
+#include "hipaa_164_506.dl"
+#include "hipaa_164_508.dl"
+#include "hipaa_164_502.dl"
+#include "hipaa_top.dl"
+
+// FACTS
+activerole("hospital_a", "hospital").
+activerole("marketing_company_a", "individual").
+activerole("patient_a", "patient").
+
+belongstorole("patient_a", "adult").
+
+msg_contains("msg_001", "patient_a", "medical-record").
+
+disclosure_attempted(
+  "hospital_a","marketing_company_a","patient_a",
+  "msg_001","medical-record","marketing"
+).

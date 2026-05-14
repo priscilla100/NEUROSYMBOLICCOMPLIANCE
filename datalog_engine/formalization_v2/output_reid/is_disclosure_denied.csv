@@ -1,0 +1,4 @@
+research_hospital	academic_journal	research_subject	ct_scan_A2	medical-record	research
+research_hospital	academic_journal	research_subject	ct_scan_B1	medical-record	research
+research_hospital	academic_journal	research_subject	ct_scan_B2	medical-record	research
+other_university_hospital	academic_journal	research_subject	reidentified_face	medical-record	research

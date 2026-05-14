@@ -1,0 +1,11 @@
+question,answer
+Can a bank share customer account information with an affiliated insurance company for cross-selling when the customer has not opted out?,Permitted
+Can a financial institution share NPI with a third-party servicer under a written agreement to process mortgage payments?,Permitted
+Can a bank share customer data with a credit reporting agency pursuant to the Fair Credit Reporting Act?,Permitted
+Can a financial institution disclose NPI to a law enforcement agency responding to a subpoena?,Permitted
+Can a bank share customer transaction data with a nonaffiliated marketer when the consumer has not opted out and no opt-out notice has been provided?,Permitted
+Can a financial institution share a customer's NPI with a nonaffiliated third party for marketing after the consumer has opted out?,Denied
+Can a bank sell customer contact information to a data broker without providing an opt-out notice?,Denied
+Can a financial institution share NPI with a nonaffiliated company for joint marketing without a written agreement?,Denied
+Can a credit union disclose member loan data to a nonaffiliated telemarketer after the member has exercised opt-out?,Denied
+Can a bank share customer financial data with a nonaffiliated company for purposes unrelated to financial products after opt-out?,Denied

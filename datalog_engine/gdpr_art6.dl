@@ -1,0 +1,260 @@
+// ============================================================================
+// gdpr_art6.dl — Article 6: Lawfulness of Processing
+// ============================================================================
+// Reference: GDPR 2016/679, Article 6
+//
+// Art.6(1) lists six lawful bases. Processing is lawful only if AT LEAST ONE
+// applies. If the data is special-category data (Art.9), Art.6 alone is NOT
+// sufficient — the controller must ALSO satisfy Art.9 (checked in gdpr_top.dl
+// by requiring permitted_by_gdpr_art9 to co-fire).
+//
+// Structure:
+//   permitted_by_gdpr_art6       — top-level OR of (a)–(f)
+//   permitted_by_gdpr_art6_a     — Art.6(1)(a): consent
+//   permitted_by_gdpr_art6_b     — Art.6(1)(b): contract
+//   permitted_by_gdpr_art6_c     — Art.6(1)(c): legal obligation
+//   permitted_by_gdpr_art6_d     — Art.6(1)(d): vital interests
+//   permitted_by_gdpr_art6_e     — Art.6(1)(e): public task
+//   permitted_by_gdpr_art6_f     — Art.6(1)(f): legitimate interests
+// ============================================================================
+
+// =============================================
+// Top-level: permitted_by_gdpr_art6
+// =============================================
+// Processing is lawful under Art.6 if any one of (a)–(f) applies.
+// NOTE: For special-category data this is a necessary but NOT sufficient
+//       condition. gdpr_top.dl adds the Art.9 guard.
+.decl permitted_by_gdpr_art6(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_a(GDPR_ARGS, E).
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_b(GDPR_ARGS, E).
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_c(GDPR_ARGS, E).
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_d(GDPR_ARGS, E).
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_e(GDPR_ARGS, E).
+permitted_by_gdpr_art6(GDPR_ARGS, E) :- permitted_by_gdpr_art6_f(GDPR_ARGS, E).
+
+// =============================================
+// Art.6(1)(a) — Consent
+// =============================================
+// "the data subject has given consent to the processing of his or her
+//  personal data for one or more specific purposes"
+//
+// Reference: GDPR 2016/679, Art.6(1)(a)
+// Oracle: data_subject_consented(q, p1, purpose) — asserted as EDB fact
+// For children (Art.8), consent must be given/authorised by the holder of
+// parental responsibility; modelled by parental_consent_valid(q, p1).
+.decl permitted_by_gdpr_art6_a(GDPR_DECL_ARGS, e: Expl)
+
+// Standard adult consent
+permitted_by_gdpr_art6_a(GDPR_ARGS,
+    $Leaf("Art.6(1)(a) — 2016/679 GDPR: data subject consent")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    (lb = "consent" ; legal_basis_subtype(lb, "consent")),
+    data_subject_consented(q, p1, m),
+    !is_child_subject(q).
+
+// Child consent: requires parental/guardian authorisation (Art.8(1))
+permitted_by_gdpr_art6_a(GDPR_ARGS,
+    $Leaf("Art.6(1)(a) + Art.8(1) — 2016/679 GDPR: parental consent for child")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    (lb = "consent" ; lb = "parental-consent" ; legal_basis_subtype(lb, "consent")),
+    is_child_subject(q),
+    parental_consent_valid(q, p1).
+
+// =============================================
+// Art.6(1)(b) — Contract
+// =============================================
+// "processing is necessary for the performance of a contract to which the
+//  data subject is party or in order to take steps at the request of the
+//  data subject prior to entering into a contract"
+//
+// Reference: GDPR 2016/679, Art.6(1)(b)
+// Oracle: contract_exists(p1, q) — a contract (or pre-contractual steps)
+//         between controller p1 and data subject q
+.decl permitted_by_gdpr_art6_b(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6_b(GDPR_ARGS,
+    $Leaf("Art.6(1)(b) — 2016/679 GDPR: necessary for contract with data subject")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    (lb = "contract" ; lb = "pre-contractual" ; legal_basis_subtype(lb, "contract")),
+    contract_exists(p1, q),
+    processing_necessary_for_contract(p1, q, m, dc).
+
+// =============================================
+// Art.6(1)(c) — Legal Obligation
+// =============================================
+// "processing is necessary for compliance with a legal obligation to which
+//  the controller is subject"
+//
+// Reference: GDPR 2016/679, Art.6(1)(c)
+// Oracle: legal_obligation_applies(p1, lb) — a specific EU/member-state law
+//         requires or mandates this processing by controller p1
+.decl permitted_by_gdpr_art6_c(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6_c(GDPR_ARGS,
+    $Leaf("Art.6(1)(c) — 2016/679 GDPR: compliance with legal obligation")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    lb = "legal-obligation",
+    legal_obligation_applies(p1, lb).
+
+// =============================================
+// Art.6(1)(d) — Vital Interests
+// =============================================
+// "processing is necessary in order to protect the vital interests of the
+//  data subject or of another natural person"
+//
+// Reference: GDPR 2016/679, Art.6(1)(d)
+// This basis is narrow: Recital 46 limits it to situations where no other
+// legal basis can reasonably be relied on.
+// Oracle: vital_interests_at_stake(q) — factual claim that life is at risk
+.decl permitted_by_gdpr_art6_d(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6_d(GDPR_ARGS,
+    $Leaf("Art.6(1)(d) — 2016/679 GDPR: necessary to protect vital interests")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    lb = "vital-interests",
+    vital_interests_at_stake(q).
+
+// =============================================
+// Art.6(1)(e) — Public Task / Official Authority
+// =============================================
+// "processing is necessary for the performance of a task carried out in the
+//  public interest or in the exercise of official authority vested in the
+//  controller"
+//
+// Reference: GDPR 2016/679, Art.6(1)(e)
+// Oracle: public_task_authorized(p1) — controller holds an official mandate
+//         established by Union or Member State law (Art.6(3))
+.decl permitted_by_gdpr_art6_e(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6_e(GDPR_ARGS,
+    $Leaf("Art.6(1)(e) — 2016/679 GDPR: public task or official authority")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    (lb = "public-task" ; lb = "official-authority" ; lb = "public-interest"
+     ; legal_basis_subtype(lb, "public-task")),
+    public_task_authorized(p1).
+
+// =============================================
+// Art.6(1)(f) — Legitimate Interests
+// =============================================
+// "processing is necessary for the purposes of the legitimate interests
+//  pursued by the controller or by a third party, except where such interests
+//  are overridden by the interests or fundamental rights and freedoms of the
+//  data subject which require protection of personal data"
+//
+// Reference: GDPR 2016/679, Art.6(1)(f)
+// NOTE: Art.6(1)(f) does NOT apply to public authorities processing in
+//       performance of their tasks (Art.6(1)(f) last sentence).
+// Balancing test: if data_subject_interests_override(q, p1) holds (oracle),
+//                 then legitimate interests CANNOT be relied upon.
+// Oracle: legitimate_interest_asserted(p1) — controller has documented a
+//         legitimate interest assessment (LIA)
+.decl permitted_by_gdpr_art6_f(GDPR_DECL_ARGS, e: Expl)
+
+permitted_by_gdpr_art6_f(GDPR_ARGS,
+    $Leaf("Art.6(1)(f) — 2016/679 GDPR: legitimate interests (no override)")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    // Art.6(1)(f) is unavailable to public authorities acting in official capacity
+    !has_role(p1, "public-authority"),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    lb = "legitimate-interests",
+    legitimate_interest_asserted(p1),
+    // Balancing test: data subject's rights do not override the interest
+    !data_subject_interests_override(q, p1).
+
+// =============================================
+// Art.9(2)(h) combined rule — healthcare context
+// =============================================
+// In practice, healthcare providers processing patient data for medical purposes
+// satisfy Art.6(1)(c) via healthcare legislation AND Art.9(2)(h) simultaneously.
+// When lb = "health-care-purposes" and art9_basis_satisfied is asserted,
+// treat Art.6 as satisfied under the healthcare legal obligation implied by national law.
+//
+// Reference: GDPR 2016/679, Art.9(2)(h) + Recital 52 + Art.6(1)(c)
+
+permitted_by_gdpr_art6(GDPR_ARGS,
+    $Leaf("Art.6(1)(c) via Art.9(2)(h) — GDPR: healthcare legal obligation implied by national health law")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_data_controller(p1),
+    is_personal_data(dc),
+    msg_contains(m, q, dc),
+    lb = "health-care-purposes",
+    art9_basis_satisfied(p1, q, dc).
+
+// =============================================
+// Art.9 guard: special-category data requires additional basis
+// =============================================
+// This stub predicate is declared here so that gdpr_top.dl can reference it.
+// Full rules are in gdpr_art9.dl (future file). For now it is a stub that
+// requires an explicit art9_basis_satisfied fact to be asserted.
+.decl permitted_by_gdpr_art9(GDPR_DECL_ARGS, e: Expl)
+// Stub rule — fires only when an oracle fact explicitly asserts Art.9 is met
+permitted_by_gdpr_art9(GDPR_ARGS,
+    $Leaf("Art.9(2) — 2016/679 GDPR: additional basis for special-category data")) :-
+    processing_attempted(p1, p2, q, m, dc, lb),
+    is_special_category(dc),
+    art9_basis_satisfied(p1, q, dc).
+
+// =============================================
+// Oracle predicates (asserted as EDB facts)
+// =============================================
+
+// data_subject_consented(Q, P1, M): Q gave freely-given, specific, informed,
+//   unambiguous consent to controller P1 regarding message/processing M
+.decl data_subject_consented(q: Principal, p1: Principal, m: Message)
+
+// parental_consent_valid(Q, P1): parental/guardian consent is valid for child Q
+.decl parental_consent_valid(q: Principal, p1: Principal)
+
+// contract_exists(P1, Q): a contract (or pre-contractual steps) exists between
+//   controller P1 and data subject Q
+.decl contract_exists(p1: Principal, q: Principal)
+
+// processing_necessary_for_contract(P1, Q, M, CAT): this specific processing of
+//   CAT data in message M is objectively necessary to perform/prepare the contract
+.decl processing_necessary_for_contract(p1: Principal, q: Principal,
+                                         m: Message, dc: DataCategory)
+
+// legal_obligation_applies(P1, LB): EU or Member State law imposes an obligation
+//   on controller P1 that requires this processing
+.decl legal_obligation_applies(p1: Principal, lb: LegalBasis)
+
+// vital_interests_at_stake(Q): the vital (life-or-death) interests of Q (or
+//   another person) make this processing necessary — Recital 46
+.decl vital_interests_at_stake(q: Principal)
+
+// public_task_authorized(P1): controller P1 holds an official mandate established
+//   by Union or Member State law authorising this processing (Art.6(3))
+.decl public_task_authorized(p1: Principal)
+
+// legitimate_interest_asserted(P1): controller P1 has documented a legitimate
+//   interest assessment showing a genuine, proportionate interest
+.decl legitimate_interest_asserted(p1: Principal)
+
+// data_subject_interests_override(Q, P1): the data subject Q's fundamental rights
+//   and freedoms override P1's legitimate interests (balancing test failed)
+.decl data_subject_interests_override(q: Principal, p1: Principal)
+
+// art9_basis_satisfied(P1, Q, CAT): an Art.9(2) ground exists for controller P1
+//   processing CAT data about subject Q (oracle until gdpr_art9.dl is written)
+.decl art9_basis_satisfied(p1: Principal, q: Principal, dc: DataCategory)

@@ -1,0 +1,95 @@
+// comparisons.dl — Demonstrates all six comparison operators on numbers:
+//   >  >=  <  <=  =  !=
+// Also shows arithmetic in constraints and how constraints filter tuples.
+
+// --- Base data: a set of scored students ---
+.decl student(name:symbol, score:number)
+student("Alice",   92).
+student("Bob",     75).
+student("Carol",   88).
+student("Dave",    75).
+student("Eve",     60).
+student("Frank",   100).
+student("Grace",   45).
+
+// ============================================================
+// 1.  >  (strictly greater than)
+// ============================================================
+// Students who scored strictly above 80
+.decl above_80(name:symbol, score:number)
+above_80(n, s) :- student(n, s), s > 80.
+.output above_80    // Alice(92), Carol(88), Frank(100)
+
+// ============================================================
+// 2.  >=  (greater than or equal)
+// ============================================================
+// Students who scored 75 or above (passing threshold)
+.decl passing(name:symbol, score:number)
+passing(n, s) :- student(n, s), s >= 75.
+.output passing     // Alice, Bob, Carol, Dave, Frank
+
+// ============================================================
+// 3.  <  (strictly less than)
+// ============================================================
+// Students who scored strictly below 70 (at risk)
+.decl at_risk(name:symbol, score:number)
+at_risk(n, s) :- student(n, s), s < 70.
+.output at_risk     // Eve(60), Grace(45)
+
+// ============================================================
+// 4.  <=  (less than or equal)
+// ============================================================
+// Students who scored 75 or below
+.decl below_or_75(name:symbol, score:number)
+below_or_75(n, s) :- student(n, s), s <= 75.
+.output below_or_75 // Bob(75), Dave(75), Eve(60), Grace(45)
+
+// ============================================================
+// 5.  =  (equality)
+// ============================================================
+// Students who scored exactly 75
+.decl scored_75(name:symbol)
+scored_75(n) :- student(n, s), s = 75.
+.output scored_75   // Bob, Dave
+
+// ============================================================
+// 6.  !=  (inequality / not equal)
+// ============================================================
+// All pairs of students with different scores
+.decl different_scores(a:symbol, b:symbol, sa:number, sb:number)
+different_scores(a, b, sa, sb) :-
+    student(a, sa),
+    student(b, sb),
+    a != b,        // different people 
+    sa != sb.      // different scores
+.output different_scores
+
+// ============================================================
+// 7.  Combining comparisons: range filter
+// ============================================================
+// Students in the 70–90 range (inclusive)
+.decl mid_range(name:symbol, score:number)
+mid_range(n, s) :- student(n, s), s >= 70, s <= 90.
+.output mid_range   // Bob(75), Carol(88), Dave(75)
+
+// ============================================================
+// 8.  Comparisons with arithmetic expressions
+// ============================================================
+// Pairs where student A scored more than double student B
+.decl dominates(a:symbol, b:symbol, sa:number, sb:number)
+dominates(a, b, sa, sb) :-
+    student(a, sa),
+    student(b, sb),
+    a != b,
+    sa > 2 * sb.
+.output dominates   // Frank(100) > 2*Grace(45)
+
+// ============================================================
+// 9.  Ordered ranking: (a, b) where a scored strictly higher than b
+// ============================================================
+.decl outscored(better:symbol, worse:symbol, diff:number)
+outscored(a, b, sa - sb) :-
+    student(a, sa),
+    student(b, sb),
+    sa > sb.
+.output outscored

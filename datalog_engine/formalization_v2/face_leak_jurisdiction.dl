@@ -1,0 +1,15 @@
+// Jurisdictional test: Non-US publisher, US hospital
+// HIPAA regulates the COVERED ENTITY's disclosure, not the recipient's location.
+// The hospital (CE) is still bound by HIPAA regardless of where the publisher is.
+
+activerole("us_hospital_j", "hospital").
+activerole("foreign_journal", "individual").  // Foreign publisher, not a CE
+activerole("patient_j", "patient").
+belongstorole("patient_j", "adult").
+
+// Authorization obtained but defective (face visible)
+obtained_authorization_164_508("us_hospital_j", "foreign_journal", "patient_j", "medical-record", "research").
+is_defective_authorization("auth_j", "us_hospital_j", "foreign_journal", "patient_j", "medical-record", "research").
+
+msg_contains("leaked_image_j", "patient_j", "medical-record").
+disclosure_attempted("us_hospital_j", "foreign_journal", "patient_j", "leaked_image_j", "medical-record", "research").

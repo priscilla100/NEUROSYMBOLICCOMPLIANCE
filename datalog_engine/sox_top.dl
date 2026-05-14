@@ -1,0 +1,69 @@
+// sox_top.dl
+// SOX entry point — Sarbanes-Oxley Act of 2002
+//
+// Include order (types/macros must precede all rule files):
+#include "sox_types.dl"
+#include "sox_hierarchies.dl"
+#include "sox_302.dl"
+#include "sox_404.dl"
+#include "sox_802.dl"
+
+// ── Engine compatibility bridge ────────────────────────────────────────────
+// The formal strategy engine always generates disclosure_attempted(...) facts
+// and reads is_disclosure_allowed.csv / is_disclosure_denied.csv.
+// These bridge rules map the HIPAA engine format to SOX semantics.
+
+// Accept the standard 6-tuple input from the engine
+.decl disclosure_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, t: RecordType, u: ActionType)
+
+// Forward to the SOX action predicate
+filing_attempted(SOX_ARGS) :- disclosure_attempted(SOX_ARGS).
+
+// ── Top-level verdict: permitted_by_sox ───────────────────────────────────
+
+.decl permitted_by_sox(SOX_DECL_ARGS, e: Expl)
+
+// Filing is compliant if it satisfies §302 OR §404 (depending on record type).
+// §302 applies to quarterly and annual financial statements (certification).
+// §404 applies to annual reports and internal control assessments.
+permitted_by_sox(SOX_ARGS, $Step1("SOX §302 compliant", e)) :-
+    filing_attempted(SOX_ARGS), permitted_by_sox_302(SOX_ARGS, e).
+
+permitted_by_sox(SOX_ARGS, $Step1("SOX §404 compliant", e)) :-
+    filing_attempted(SOX_ARGS), permitted_by_sox_404(SOX_ARGS, e).
+
+// ── Top-level verdict: blocked_by_sox ────────────────────────────────────
+
+.decl blocked_by_sox(SOX_DECL_ARGS, e: Expl)
+
+blocked_by_sox(SOX_ARGS, $Step1("SOX §302 non-compliant", e)) :-
+    filing_attempted(SOX_ARGS), blocked_by_sox_302(SOX_ARGS, e),
+    !permitted_by_sox_302(SOX_ARGS, _).
+
+blocked_by_sox(SOX_ARGS, $Step1("SOX §404 non-compliant", e)) :-
+    filing_attempted(SOX_ARGS), blocked_by_sox_404(SOX_ARGS, e),
+    !permitted_by_sox_404(SOX_ARGS, _).
+
+blocked_by_sox(SOX_ARGS, $Step1("SOX §802 prohibited", e)) :-
+    filing_attempted(SOX_ARGS), prohibited_by_sox_802(SOX_ARGS, e).
+
+// ── Engine output bridge ───────────────────────────────────────────────────
+// Map to the CSV names the Python engine reads.
+
+.decl is_disclosure_allowed(SOX_DECL_ARGS, e: Expl)
+.decl is_disclosure_denied(SOX_DECL_ARGS, e: Expl)
+
+is_disclosure_allowed(SOX_ARGS, e) :- permitted_by_sox(SOX_ARGS, e).
+is_disclosure_denied(SOX_ARGS, e)  :- blocked_by_sox(SOX_ARGS, e).
+
+// ── Outputs ────────────────────────────────────────────────────────────────
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output permitted_by_sox
+.output blocked_by_sox
+.output permitted_by_sox_302
+.output blocked_by_sox_302
+.output permitted_by_sox_404
+.output blocked_by_sox_404
+.output prohibited_by_sox_802

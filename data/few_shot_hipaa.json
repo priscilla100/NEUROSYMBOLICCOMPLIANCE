@@ -1,0 +1,41 @@
+[
+  {
+    "id": "fs_001",
+    "verdict": "PERMITTED",
+    "key_section": "164.506(c)(2)",
+    "question": "A patient at City Hospital is referred to Dr. Osei at Riverside Cardiac Clinic for follow-up care after a heart procedure. The hospital sends Dr. Osei the patient's ECG results, surgical notes, and current medication list without obtaining a new authorization from the patient.",
+    "reasoning_steps": [
+      "Action: City Hospital (covered entity) discloses PHI — ECG results, surgical notes, medications — to Dr. Osei (health care provider at another facility) for cardiac follow-up (treatment).",
+      "Governing section: §164.506(c)(2) permits a covered entity to disclose PHI for the treatment activities of a health care provider.",
+      "Exception check: Dr. Osei is a health care provider; the purpose is treatment. §164.506(c)(2) applies directly. No authorization is required for treatment disclosures between providers.",
+      "A permissive exception applies — verdict is PERMITTED."
+    ],
+    "rag_context_snippet": "[164.506|164_506.txt|score:0.93]\nA covered entity may disclose protected health information for treatment activities of a health care provider."
+  },
+  {
+    "id": "fs_002",
+    "verdict": "PERMITTED",
+    "key_section": "164.512(b)(1)(i)",
+    "question": "A city hospital discovers that a patient has active tuberculosis, which is a mandatorily reportable disease under state law. The hospital's infection control officer notifies the county public health department, disclosing the patient's name, diagnosis, and list of known contacts.",
+    "reasoning_steps": [
+      "Action: Hospital (covered entity) discloses PHI — name, TB diagnosis, contact list — to the county public health department.",
+      "Governing section: §164.512(b)(1)(i) permits disclosure to a public health authority that is authorized by law to collect or receive information for preventing or controlling disease.",
+      "Exception check: State law mandates TB reporting. The county public health department is a public health authority authorized to collect this data. The disclosure is limited to what is required by law.",
+      "A permissive exception applies — verdict is PERMITTED."
+    ],
+    "rag_context_snippet": "[164.512|164_512.txt|score:0.91]\nA covered entity may disclose protected health information to a public health authority that is authorized by law to collect or receive such information for the purpose of preventing or controlling disease, injury, or disability."
+  },
+  {
+    "id": "fs_003",
+    "verdict": "DENIED",
+    "key_section": "164.502(a)",
+    "question": "A manufacturing company's HR department contacts the employee's primary care hospital and requests a complete copy of the employee's medical records and recent laboratory results to assess whether the employee is medically fit for a promotion involving overseas travel.",
+    "reasoning_steps": [
+      "Action: Hospital would disclose complete PHI — full medical records, lab results — to the employee's employer HR department.",
+      "Governing section: §164.502(a) requires a valid HIPAA exception for any disclosure. §164.506 (TPO) does not apply — the employer is not providing treatment, payment, or healthcare operations to the patient. §164.512 exceptions (law enforcement, public health, oversight, etc.) do not apply to employer fitness assessments.",
+      "Exception check: The patient has not provided written authorization. There is no court order, no public health mandate, and no law requiring this disclosure. The employer's business interest in evaluating a promotion candidate is not a recognized HIPAA exception.",
+      "No permissive exception applies — verdict is DENIED."
+    ],
+    "rag_context_snippet": "[164.502|164_502.txt|score:0.88]\nA covered entity may not use or disclose protected health information, except as permitted or required by this subpart."
+  }
+]

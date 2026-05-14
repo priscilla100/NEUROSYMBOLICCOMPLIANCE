@@ -1,0 +1,41 @@
+// coppa_312_4.dl
+// COPPA §312.4 — Notice Requirements (16 CFR §312.4)
+//
+// Operators must provide direct notice to parents AND maintain an online
+// privacy policy before collecting personal information from children under 13.
+// The school-authorization exception satisfies notice under §312.5(c)(3).
+
+// ── §312.4 Notice satisfied ────────────────────────────────────────────────
+
+.decl notice_satisfied_312_4(op: Principal, child: Principal,
+                              cdc: ChildDataCategory, e: Expl)
+
+// §312.4(a)/(b): operator has posted privacy policy AND sent direct notice to parent.
+// Modelled as: has_verifiable_parental_consent implies notice was given
+// (VPC cannot be obtained without first giving notice per §312.5(b)).
+notice_satisfied_312_4(p1, q, t, $Leaf("312.4(a-b): privacy policy posted and direct notice given to parent")) :-
+    collection_attempted(p1, _, q, _, t, _),
+    is_child_under_13(q),
+    is_operator(p1),
+    has_verifiable_parental_consent(p1, q, t).
+
+// §312.5(c)(3): school authorizes in place of parent for educational context —
+// satisfies both notice and consent requirements without direct parental notice.
+notice_satisfied_312_4(p1, q, t, $Leaf("312.4 via 312.5(c)(3): school authorization satisfies notice in educational context")) :-
+    collection_attempted(p1, _, q, _, t, _),
+    is_child_under_13(q),
+    is_operator(p1),
+    is_educational_context(p1, q).
+
+// ── §312.4 Collection blocked — no notice ─────────────────────────────────
+
+.decl collection_blocked_no_notice(COPPA_DECL_ARGS, e: Expl)
+
+// Blocked when child is under 13, no verifiable parental consent exists,
+// and no educational-context exception applies.
+collection_blocked_no_notice(COPPA_ARGS, $Leaf("312.4: collection blocked — operator failed to give required notice to parent before collecting child data")) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    is_operator(p1),
+    !has_verifiable_parental_consent(p1, q, t),
+    !is_educational_context(p1, q).

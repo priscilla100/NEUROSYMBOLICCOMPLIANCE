@@ -1,0 +1,44 @@
+// glba_types.dl
+// GLBA — Gramm-Leach-Bliley Act, 16 CFR Part 313 (Privacy of Consumer Financial Information)
+// Governs: financial institutions sharing nonpublic personal information (NPI) about consumers.
+//
+// Action signature:
+//   p1 = financial_institution (the covered entity sharing NPI)
+//   p2 = third_party (recipient of NPI)
+//   q  = consumer (subject of the NPI)
+//   m  = message (data transmission)
+//   t  = NPICategory (type of nonpublic personal information)
+//   u  = SharingPurpose
+
+#define GLBA_ARGS p1, p2, q, m, t, u
+#define GLBA_DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:NPICategory, u:SharingPurpose
+
+// ── Primitive types ────────────────────────────────────────────────────────
+.type Principal       <: symbol
+.type Role            <: symbol
+.type NPICategory     <: symbol
+.type SharingPurpose  <: symbol
+.type Message         <: symbol
+
+// ── Explanation ADT ────────────────────────────────────────────────────────
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+
+// ── Core relations ─────────────────────────────────────────────────────────
+.decl activerole(p: Principal, r: Role)
+.decl has_financial_role(p: Principal, r: Role)
+.decl msg_contains_npi(m: Message, subject: Principal, nc: NPICategory)
+
+// The regulated action: financial institution sharing NPI
+.decl sharing_attempted(p1: Principal, p2: Principal, q: Principal,
+                         m: Message, t: NPICategory, u: SharingPurpose)
+
+// ── Oracle predicates (declared only; injected at query time) ──────────────
+.decl has_opted_out(consumer: Principal, institution: Principal)
+.decl has_written_agreement(p1: Principal, p2: Principal)
+.decl is_affiliated(p1: Principal, p2: Principal)
+.decl required_by_law_glba(p1: Principal, p2: Principal, q: Principal)
+.decl is_credit_reporting_agency(p: Principal)
+.decl is_dispute_initiated_by_consumer(q: Principal, p1: Principal)

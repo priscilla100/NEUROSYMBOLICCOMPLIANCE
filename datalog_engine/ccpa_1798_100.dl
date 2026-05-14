@@ -1,0 +1,130 @@
+// ============================================================================
+// ccpa_1798_100.dl — §1798.100: Consumer's Right to Know and Right to
+//                    Non-Discrimination; General Disclosure Rules
+// ============================================================================
+// Reference: Cal. Civ. Code §1798.100 (as amended by CPRA)
+//
+// Structure:
+//   §1798.100(a)  — business must inform consumers at/before point of collection
+//   §1798.100(c)  — collection/use must be reasonably necessary & proportionate
+//   §1798.100(d)  — agreement required before sharing with third party / SP
+//   §1798.145(a)(1) — service provider exemption: disclosure to SP for business
+//                      purpose is NOT a "sale"
+//
+// Permitted scenarios:
+//   (1) Disclosure to service_provider for business_purpose with valid agreement
+//   (2) Disclosure required by law
+//   (3) Disclosure with consumer's explicit consent
+//
+// Blocked scenarios:
+//   (1) Disclosure of sensitive PI without consent, beyond permitted purposes
+//   (2) Disclosure incompatible with the purpose disclosed at collection
+// ============================================================================
+
+// =============================================
+// §1798.100 — Top-level: OR of sub-sections
+// =============================================
+.decl permitted_by_ccpa_1798_100(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_100(CCPA_ARGS, E) :- permitted_by_ccpa_1798_100_service_provider(CCPA_ARGS, E).
+permitted_by_ccpa_1798_100(CCPA_ARGS, E) :- permitted_by_ccpa_1798_100_required_by_law(CCPA_ARGS, E).
+permitted_by_ccpa_1798_100(CCPA_ARGS, E) :- permitted_by_ccpa_1798_100_with_consent(CCPA_ARGS, E).
+
+// =============================================
+// §1798.145(a)(1) / §1798.100(d) — Service provider / contractor exemption
+// =============================================
+// "A business' disclosure of personal information to a service provider or
+//  contractor for a business purpose does not constitute a sale or sharing."
+// Requirements: (i) recipient is a service provider or contractor of p1,
+//               (ii) purpose is a business purpose,
+//               (iii) a compliant agreement exists (§1798.100(d)).
+// §1798.100(a)(1): business must have informed consumer of the categories and
+// purposes at or before the point of collection.
+.decl permitted_by_ccpa_1798_100_service_provider(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_100_service_provider(CCPA_ARGS,
+    $Step1("§1798.145(a)(1): disclosure to service provider for business purpose (not a sale)", E)) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    is_service_provider(p2, p1),
+    is_for_business_purpose(u),
+    has_agreement_with_recipient(p1, p2),
+    E = $Leaf("§1798.100(d): compliant service-provider agreement in place").
+
+// =============================================
+// §1798.100 — Disclosure required by law
+// =============================================
+// Disclosures compelled by statute, regulation, court order, or legal process
+// are exempt from the general opt-out and consent requirements.
+.decl permitted_by_ccpa_1798_100_required_by_law(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_100_required_by_law(CCPA_ARGS,
+    $Leaf("§1798.100: disclosure required by applicable law")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    required_by_law(CCPA_ARGS).
+
+// =============================================
+// §1798.100 — Disclosure with consumer's explicit consent
+// =============================================
+// Where the consumer has affirmatively provided consent for the specific
+// disclosure (e.g., consent to sensitive PI use under §1798.121(a), or
+// general consent for any otherwise-blocked transfer).
+.decl permitted_by_ccpa_1798_100_with_consent(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_100_with_consent(CCPA_ARGS,
+    $Leaf("§1798.100: consumer has given explicit consent for this disclosure")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    has_given_consent(q, p1).
+
+// =============================================
+// §1798.121(a) — Sensitive PI: blocked without consent or beyond permitted use
+// =============================================
+// "A consumer shall have the right to direct a business that collects sensitive
+//  personal information about the consumer to limit its use and disclosure."
+// A business may only use/disclose sensitive PI for limited permitted purposes
+// (§1798.121(a)) UNLESS the consumer has given explicit consent.
+//
+// This is a NEGATIVE NORM: it blocks disclosures of sensitive PI that lack
+// consent AND are not within the enumerated permitted purposes.
+.decl blocked_sensitive_pi_no_consent(CCPA_DECL_ARGS, e: Expl)
+
+blocked_sensitive_pi_no_consent(CCPA_ARGS,
+    $Leaf("§1798.121(a): disclosure of sensitive PI without consumer consent is blocked")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_sensitive_pi(t),
+    msg_contains(m, q, t),
+    !has_given_consent(q, p1),
+    !is_for_business_purpose(u),
+    !required_by_law(CCPA_ARGS).
+
+// =============================================
+// §1798.100(c) — Purpose limitation: use must be reasonably necessary
+// =============================================
+// "A business' collection, use, retention, and sharing of a consumer's
+//  personal information shall be reasonably necessary and proportionate to
+//  achieve the purposes for which the personal information was collected."
+// This is checked as a precondition: the purpose must be a known, declared
+// purpose. Incompatible-purpose violations are flagged as blocked.
+.decl blocked_incompatible_purpose(CCPA_DECL_ARGS, e: Expl)
+
+blocked_incompatible_purpose(CCPA_ARGS,
+    $Leaf("§1798.100(c): purpose is incompatible with disclosed collection purpose")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    !known_purpose(u).

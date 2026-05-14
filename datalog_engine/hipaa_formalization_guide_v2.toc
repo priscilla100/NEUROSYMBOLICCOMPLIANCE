@@ -1,0 +1,182 @@
+\contentsline {section}{\numberline {1}Introduction to Souffl\'{e} Datalog}{7}{section.1}%
+\contentsline {subsection}{\numberline {1.1}What is Datalog?}{7}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}What is Souffl\'{e}?}{7}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Installing Souffl\'{e}}{7}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Running Souffl\'{e} Programs}{8}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Core Syntax Summary}{8}{subsection.1.5}%
+\contentsline {subsection}{\numberline {1.6}The Explain Feature}{9}{subsection.1.6}%
+\contentsline {subsection}{\numberline {1.7}Stratification Visualization}{9}{subsection.1.7}%
+\contentsline {section}{\numberline {2}Project Overview}{9}{section.2}%
+\contentsline {subsection}{\numberline {2.1}What is HIPAA?}{9}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}What is the Privacy Rule?}{9}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}What are \S 164.502 and \S 164.506?}{10}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}The Goal: A Compliance Checker}{10}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Architecture and File Organization}{10}{section.3}%
+\contentsline {subsection}{\numberline {3.1}File Overview}{10}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Dependency Order}{11}{subsection.3.2}%
+\contentsline {section}{\numberline {4}General Principles of Modeling}{12}{section.4}%
+\contentsline {subsection}{\numberline {4.1}High-Level Rule Organization Pattern}{12}{subsection.4.1}%
+\contentsline {paragraph}{Top-level disjunction.}{12}{section*.2}%
+\contentsline {paragraph}{Hierarchical decomposition.}{13}{section*.3}%
+\contentsline {paragraph}{Naming convention.}{13}{section*.4}%
+\contentsline {paragraph}{Rule hierarchy visualization.}{13}{section*.5}%
+\contentsline {subsection}{\numberline {4.2}Three Types of Norms}{14}{subsection.4.2}%
+\contentsline {subsection}{\numberline {4.3}Exception Handling Patterns}{15}{subsection.4.3}%
+\contentsline {paragraph}{Pattern 1: Exception-as-negation.}{15}{section*.6}%
+\contentsline {paragraph}{Pattern 2: Exception-as-separate-path.}{15}{section*.7}%
+\contentsline {paragraph}{Pattern 3: Exception-as-disjunction.}{16}{section*.8}%
+\contentsline {subsection}{\numberline {4.4}Oracle Predicates vs.\ Derived Predicates}{16}{subsection.4.4}%
+\contentsline {paragraph}{Oracle predicates (EDB --- Extensional Database).}{16}{section*.9}%
+\contentsline {paragraph}{Derived predicates (IDB --- Intensional Database).}{17}{section*.10}%
+\contentsline {paragraph}{When to use which.}{17}{section*.11}%
+\contentsline {subsection}{\numberline {4.5}The Action Parameter Translation}{18}{subsection.4.5}%
+\contentsline {subsection}{\numberline {4.6}Closed-World Assumption for Denial}{18}{subsection.4.6}%
+\contentsline {subsection}{\numberline {4.7}Stub Pattern for Incremental Formalization}{19}{subsection.4.7}%
+\contentsline {section}{\numberline {5}Type System and ADT Explanation Trees}{20}{section.5}%
+\contentsline {subsection}{\numberline {5.1}The 6-Tuple Action Signature}{20}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Preprocessor Macros for the Signature}{20}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Primitive Domain Types}{20}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}The \texttt {Expl} ADT: Explanation Trees}{21}{subsection.5.4}%
+\contentsline {subsection}{\numberline {5.5}How Explanation Trees Compose}{21}{subsection.5.5}%
+\contentsline {section}{\numberline {6}Hierarchy Design}{22}{section.6}%
+\contentsline {subsection}{\numberline {6.1}Role Hierarchy}{22}{subsection.6.1}%
+\contentsline {subsection}{\numberline {6.2}Transitive Closure}{24}{subsection.6.2}%
+\contentsline {subsection}{\numberline {6.3}Attribute Hierarchy}{24}{subsection.6.3}%
+\contentsline {subsection}{\numberline {6.4}Purpose Hierarchy}{25}{subsection.6.4}%
+\contentsline {section}{\numberline {7}Macro/Helper Predicates}{25}{section.7}%
+\contentsline {subsection}{\numberline {7.1}Entity Role Checks}{26}{subsection.7.1}%
+\contentsline {subsection}{\numberline {7.2}Attribute and Purpose Checks}{26}{subsection.7.2}%
+\contentsline {subsection}{\numberline {7.3}Personal Representative (\S 164.502(g))}{26}{subsection.7.3}%
+\contentsline {subsection}{\numberline {7.4}Oracle Predicates}{27}{subsection.7.4}%
+\contentsline {section}{\numberline {8}Formalization of \S 164.506}{28}{section.8}%
+\contentsline {subsection}{\numberline {8.1}\S 164.506 --- Top-Level}{28}{subsection.8.1}%
+\contentsline {subsection}{\numberline {8.2}\S 164.506(a) --- Standard Permitted Uses}{28}{subsection.8.2}%
+\contentsline {subsection}{\numberline {8.3}\S 164.506(b) --- Consent for TPO}{29}{subsection.8.3}%
+\contentsline {subsection}{\numberline {8.4}\S 164.506(c) --- Implementation Specification}{30}{subsection.8.4}%
+\contentsline {subsubsection}{\numberline {8.4.1}\S 164.506(c)(1) --- Own TPO}{30}{subsubsection.8.4.1}%
+\contentsline {subsubsection}{\numberline {8.4.2}\S 164.506(c)(2) --- Treatment Activities of a Provider}{30}{subsubsection.8.4.2}%
+\contentsline {subsubsection}{\numberline {8.4.3}\S 164.506(c)(3) --- Payment Activities of Receiving Entity}{31}{subsubsection.8.4.3}%
+\contentsline {subsubsection}{\numberline {8.4.4}\S 164.506(c)(4) --- Healthcare Operations Between Covered Entities}{31}{subsubsection.8.4.4}%
+\contentsline {subsubsection}{\numberline {8.4.5}\S 164.506(c)(5) --- Organized Health Care Arrangement}{32}{subsubsection.8.4.5}%
+\contentsline {section}{\numberline {9}Formalization of \S 164.502}{33}{section.9}%
+\contentsline {subsection}{\numberline {9.1}\S 164.502 --- Top-Level}{33}{subsection.9.1}%
+\contentsline {subsection}{\numberline {9.2}\S 164.502(a) --- Permitted and Required Disclosures}{33}{subsection.9.2}%
+\contentsline {subsection}{\numberline {9.3}\S 164.502(a)(1) --- Permitted Uses (i through vi)}{34}{subsection.9.3}%
+\contentsline {subsubsection}{\numberline {9.3.1}\S 164.502(a)(1)(i) --- To the Individual}{34}{subsubsection.9.3.1}%
+\contentsline {subsubsection}{\numberline {9.3.2}\S 164.502(a)(1)(ii) --- TPO per \S 164.506}{35}{subsubsection.9.3.2}%
+\contentsline {subsubsection}{\numberline {9.3.3}\S 164.502(a)(1)(iii) --- Incident to Use}{35}{subsubsection.9.3.3}%
+\contentsline {subsubsection}{\numberline {9.3.4}\S 164.502(a)(1)(iv) --- Valid Authorization per \S 164.508}{36}{subsubsection.9.3.4}%
+\contentsline {subsubsection}{\numberline {9.3.5}\S 164.502(a)(1)(v) --- Agreement per \S 164.510}{36}{subsubsection.9.3.5}%
+\contentsline {subsubsection}{\numberline {9.3.6}\S 164.502(a)(1)(vi) --- Per \S 164.512, \S 164.514(e)(f)(g)}{36}{subsubsection.9.3.6}%
+\contentsline {subsection}{\numberline {9.4}\S 164.502(a)(2) --- Required Disclosures}{36}{subsection.9.4}%
+\contentsline {subsubsection}{\numberline {9.4.1}\S 164.502(a)(2)(i) --- To Individual Upon Request}{36}{subsubsection.9.4.1}%
+\contentsline {subsubsection}{\numberline {9.4.2}\S 164.502(a)(2)(ii) --- To the Secretary for Investigation}{37}{subsubsection.9.4.2}%
+\contentsline {subsection}{\numberline {9.5}\S 164.502(b) --- Minimum Necessary Standard}{37}{subsection.9.5}%
+\contentsline {subsection}{\numberline {9.6}\S 164.502(d) --- De-identified Information}{38}{subsection.9.6}%
+\contentsline {subsection}{\numberline {9.7}\S 164.502(e) --- Business Associates}{39}{subsection.9.7}%
+\contentsline {subsection}{\numberline {9.8}\S 164.502(h) --- Provider/Plan Communication}{40}{subsection.9.8}%
+\contentsline {subsection}{\numberline {9.9}\S 164.502(i) --- Notice Consistency}{40}{subsection.9.9}%
+\contentsline {subsection}{\numberline {9.10}\S 164.502(j) --- Whistleblower and Crime Victim Protections}{41}{subsection.9.10}%
+\contentsline {subsubsection}{\numberline {9.10.1}\S 164.502(j)(1) --- Whistleblower}{41}{subsubsection.9.10.1}%
+\contentsline {subsubsection}{\numberline {9.10.2}\S 164.502(j)(2) --- Crime Victim}{41}{subsubsection.9.10.2}%
+\contentsline {section}{\numberline {10}Handling Negation}{42}{section.10}%
+\contentsline {subsection}{\numberline {10.1}Stratified Negation in Souffl\'{e}}{42}{subsection.10.1}%
+\contentsline {subsection}{\numberline {10.2}Stratification Design in the HIPAA Checker}{42}{subsection.10.2}%
+\contentsline {subsection}{\numberline {10.3}Examples of Negation in the Codebase}{42}{subsection.10.3}%
+\contentsline {subsection}{\numberline {10.4}Safety Rule for Negation}{43}{subsection.10.4}%
+\contentsline {section}{\numberline {11}Handling Temporal Logic}{43}{section.11}%
+\contentsline {subsection}{\numberline {11.1}Why Temporal Logic Matters}{43}{subsection.11.1}%
+\contentsline {subsection}{\numberline {11.2}Why Kamp-Style Translation Was Deferred}{43}{subsection.11.2}%
+\contentsline {subsection}{\numberline {11.3}Oracle Predicates as Temporal Substitutes}{44}{subsection.11.3}%
+\contentsline {subsection}{\numberline {11.4}Future Temporal Infrastructure}{44}{subsection.11.4}%
+\contentsline {section}{\numberline {12}Stub Pattern for Unformalized Sections}{44}{section.12}%
+\contentsline {subsection}{\numberline {12.1}The Problem}{44}{subsection.12.1}%
+\contentsline {subsection}{\numberline {12.2}The Solution: Empty Declarations}{44}{subsection.12.2}%
+\contentsline {subsection}{\numberline {12.3}Conservative Default}{45}{subsection.12.3}%
+\contentsline {section}{\numberline {13}Grounding Issues}{45}{section.13}%
+\contentsline {subsection}{\numberline {13.1}The Grounding Requirement}{45}{subsection.13.1}%
+\contentsline {subsection}{\numberline {13.2}Problem: Unrestricted Purpose Variable}{45}{subsection.13.2}%
+\contentsline {subsection}{\numberline {13.3}Solution: known\_purpose(u)}{46}{subsection.13.3}%
+\contentsline {subsection}{\numberline {13.4}Problem: Unrestricted Disclosure in (d)(2)}{46}{subsection.13.4}%
+\contentsline {section}{\numberline {14}Prolog to Souffl\'{e} Translation}{46}{section.14}%
+\contentsline {section}{\numberline {15}Test Scenarios}{47}{section.15}%
+\contentsline {subsection}{\numberline {15.1}Principals and Roles}{47}{subsection.15.1}%
+\contentsline {subsection}{\numberline {15.2}The 10 Scenarios}{48}{subsection.15.2}%
+\contentsline {subsection}{\numberline {15.3}Scenario Analysis}{48}{subsection.15.3}%
+\contentsline {subsubsection}{\numberline {15.3.1}Scenario 1: Hospital to Doctor for Treatment}{48}{subsubsection.15.3.1}%
+\contentsline {subsubsection}{\numberline {15.3.2}Scenario 4: Hospital to Random Person for Marketing (DENY)}{49}{subsubsection.15.3.2}%
+\contentsline {subsubsection}{\numberline {15.3.3}Scenario 9: Parent Requests PHI About Minor Child}{49}{subsubsection.15.3.3}%
+\contentsline {section}{\numberline {16}How to Run Everything}{49}{section.16}%
+\contentsline {subsection}{\numberline {16.1}Step 1: Install Souffl\'{e}}{49}{subsection.16.1}%
+\contentsline {subsection}{\numberline {16.2}Step 2: Navigate to the Project Directory}{49}{subsection.16.2}%
+\contentsline {subsection}{\numberline {16.3}Step 3: Run the Compliance Checker}{50}{subsection.16.3}%
+\contentsline {subsection}{\numberline {16.4}Step 4: Interpret the Output}{50}{subsection.16.4}%
+\contentsline {subsection}{\numberline {16.5}Step 5: Use Explain Mode for Debugging}{50}{subsection.16.5}%
+\contentsline {subsection}{\numberline {16.6}Step 6: Add New Test Scenarios}{51}{subsection.16.6}%
+\contentsline {section}{\numberline {17}Lessons Learned and Debugging Tips}{51}{section.17}%
+\contentsline {subsection}{\numberline {17.1}Reserved Words}{51}{subsection.17.1}%
+\contentsline {subsection}{\numberline {17.2}Grounding Errors}{51}{subsection.17.2}%
+\contentsline {subsection}{\numberline {17.3}Stratification Errors}{51}{subsection.17.3}%
+\contentsline {subsection}{\numberline {17.4}ADT Constructor Names Must Be Globally Unique}{51}{subsection.17.4}%
+\contentsline {subsection}{\numberline {17.5}Disjunction Gotchas}{52}{subsection.17.5}%
+\contentsline {subsection}{\numberline {17.6}Empty Stubs and Unintended Blocking}{52}{subsection.17.6}%
+\contentsline {subsection}{\numberline {17.7}The Closed-World Assumption and Denial}{52}{subsection.17.7}%
+\contentsline {section}{\numberline {18}Formalization of \S 164.508 --- Authorization Required}{52}{section.18}%
+\contentsline {subsection}{\numberline {18.1}What is Authorization?}{52}{subsection.18.1}%
+\contentsline {subsection}{\numberline {18.2}The Negative Norm Concept}{53}{subsection.18.2}%
+\contentsline {subsection}{\numberline {18.3}Structure of the Negative Norm}{53}{subsection.18.3}%
+\contentsline {subsection}{\numberline {18.4}Exception Predicates}{54}{subsection.18.4}%
+\contentsline {subsection}{\numberline {18.5}Example: Psychotherapy Notes for Payment}{54}{subsection.18.5}%
+\contentsline {section}{\numberline {19}Formalization of \S 164.510 --- Opportunity to Agree or Object}{55}{section.19}%
+\contentsline {subsection}{\numberline {19.1}Overview}{55}{subsection.19.1}%
+\contentsline {subsection}{\numberline {19.2}Facility Directories (\S 510(a))}{55}{subsection.19.2}%
+\contentsline {subsection}{\numberline {19.3}Incapacity and Emergency Exceptions (\S 510(a)(3))}{56}{subsection.19.3}%
+\contentsline {subsection}{\numberline {19.4}Care Involvement (\S 510(b))}{56}{subsection.19.4}%
+\contentsline {paragraph}{Example.}{57}{section*.12}%
+\contentsline {paragraph}{Notification (\S 510(b)(1)(ii)).}{57}{section*.13}%
+\contentsline {subsection}{\numberline {19.5}Disaster Relief (\S 510(b)(4))}{57}{subsection.19.5}%
+\contentsline {section}{\numberline {20}Formalization of \S 164.512 --- Uses and Disclosures Without Authorization or Agreement}{57}{section.20}%
+\contentsline {subsection}{\numberline {20.1}Overview}{57}{subsection.20.1}%
+\contentsline {subsection}{\numberline {20.2}Sub-section (a): Required by Law}{57}{subsection.20.2}%
+\contentsline {subsection}{\numberline {20.3}Sub-section (b): Public Health Activities}{58}{subsection.20.3}%
+\contentsline {subsection}{\numberline {20.4}Sub-section (c): Abuse, Neglect, or Domestic Violence}{58}{subsection.20.4}%
+\contentsline {subsection}{\numberline {20.5}Sub-section (d): Health Oversight Activities}{58}{subsection.20.5}%
+\contentsline {subsection}{\numberline {20.6}Sub-section (e): Judicial and Administrative Proceedings}{58}{subsection.20.6}%
+\contentsline {subsection}{\numberline {20.7}Sub-section (f): Law Enforcement}{59}{subsection.20.7}%
+\contentsline {subsection}{\numberline {20.8}Sub-section (g): Decedents}{59}{subsection.20.8}%
+\contentsline {subsection}{\numberline {20.9}Sub-section (h): Organ, Eye, or Tissue Donation}{59}{subsection.20.9}%
+\contentsline {subsection}{\numberline {20.10}Sub-section (i): Research}{59}{subsection.20.10}%
+\contentsline {subsection}{\numberline {20.11}Sub-section (j): Serious Threat to Health or Safety}{60}{subsection.20.11}%
+\contentsline {subsection}{\numberline {20.12}Sub-section (k): Specialized Government Functions}{60}{subsection.20.12}%
+\contentsline {subsection}{\numberline {20.13}Sub-section (l): Workers' Compensation}{60}{subsection.20.13}%
+\contentsline {subsection}{\numberline {20.14}The Oracle Predicate Pattern in \S 512}{60}{subsection.20.14}%
+\contentsline {section}{\numberline {21}Formalization of \S 164.514 --- Other Requirements}{60}{section.21}%
+\contentsline {subsection}{\numberline {21.1}Overview}{60}{subsection.21.1}%
+\contentsline {subsection}{\numberline {21.2}De-identification Standards (\S 514(a)--(c))}{61}{subsection.21.2}%
+\contentsline {subsection}{\numberline {21.3}Minimum Necessary Implementation (\S 514(d))}{61}{subsection.21.3}%
+\contentsline {subsection}{\numberline {21.4}Limited Data Sets (\S 514(e))}{61}{subsection.21.4}%
+\contentsline {subsection}{\numberline {21.5}Fundraising (\S 514(f))}{62}{subsection.21.5}%
+\contentsline {subsection}{\numberline {21.6}Health Plan Underwriting (\S 514(g))}{62}{subsection.21.6}%
+\contentsline {section}{\numberline {22}Formalization of \S 164.524 --- Individual Access}{62}{section.22}%
+\contentsline {subsection}{\numberline {22.1}Overview}{62}{subsection.22.1}%
+\contentsline {subsection}{\numberline {22.2}The Right of Access}{62}{subsection.22.2}%
+\contentsline {subsection}{\numberline {22.3}Denial Grounds Without Review (\S 524(a)(2))}{63}{subsection.22.3}%
+\contentsline {subsection}{\numberline {22.4}Denial Grounds With Review (\S 524(a)(3))}{63}{subsection.22.4}%
+\contentsline {subsection}{\numberline {22.5}How \S 524 Connects to \S 502}{63}{subsection.22.5}%
+\contentsline {section}{\numberline {23}Testing Methodology}{64}{section.23}%
+\contentsline {subsection}{\numberline {23.1}Test Case Structure}{64}{subsection.23.1}%
+\contentsline {subsection}{\numberline {23.2}The Run Script Pattern}{64}{subsection.23.2}%
+\contentsline {subsection}{\numberline {23.3}Test Coverage}{64}{subsection.23.3}%
+\contentsline {section}{\numberline {24}Oracle Predicates --- A Complete Reference}{65}{section.24}%
+\contentsline {subsection}{\numberline {24.1}What are Oracle Predicates?}{65}{subsection.24.1}%
+\contentsline {subsection}{\numberline {24.2}How Oracle Predicates are Used}{65}{subsection.24.2}%
+\contentsline {subsection}{\numberline {24.3}Oracle Predicates by Section}{66}{subsection.24.3}%
+\contentsline {paragraph}{\S 164.502/506 (General Rules and TPO):}{66}{section*.14}%
+\contentsline {paragraph}{\S 164.508 (Authorization):}{66}{section*.15}%
+\contentsline {paragraph}{\S 164.510 (Agree/Object):}{66}{section*.16}%
+\contentsline {paragraph}{\S 164.512 (Without Authorization):}{67}{section*.17}%
+\contentsline {paragraph}{\S 164.514 (Other Requirements):}{67}{section*.18}%
+\contentsline {paragraph}{\S 164.524 (Individual Access):}{67}{section*.19}%
+\contentsline {section}{\numberline {25}Conclusion}{67}{section.25}%
+\contentsline {section}{\numberline {A}Complete File: hipaa\_types.dl}{68}{appendix.1.A}%
+\contentsline {section}{\numberline {B}Complete File: hipaa\_top.dl}{68}{appendix.1.B}%

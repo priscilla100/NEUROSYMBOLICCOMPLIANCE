@@ -1,0 +1,138 @@
+// ============================================================================
+// ccpa_1798_120.dl — §1798.120: Right to Opt-Out of Sale or Sharing of
+//                    Personal Information
+// ============================================================================
+// Reference: Cal. Civ. Code §1798.120 (as amended by CPRA)
+//
+// Structure:
+//   §1798.120(a)  — consumer has right to opt-out of sale/sharing at any time
+//   §1798.120(b)  — business must provide "Do Not Sell or Share" notice
+//   §1798.120(c)  — business must respect opt-out within 15 business days
+//   §1798.120(d)  — minors: under-13 require parent opt-IN; 13-16 require
+//                   affirmative authorization before any sale
+//
+// Permitted: sale/sharing when consumer has NOT opted out (default state)
+// Blocked:   sale/sharing after consumer has exercised opt-out right
+// Blocked:   sale/sharing of minor's PI without the required opt-in
+// ============================================================================
+
+// =============================================
+// §1798.120 — Top-level: permitted if no opt-out and not a minor violation
+// =============================================
+.decl permitted_by_ccpa_1798_120(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_120(CCPA_ARGS, E) :- permitted_by_ccpa_1798_120_adult(CCPA_ARGS, E).
+permitted_by_ccpa_1798_120(CCPA_ARGS, E) :- permitted_by_ccpa_1798_120_minor_13_to_16(CCPA_ARGS, E).
+permitted_by_ccpa_1798_120(CCPA_ARGS, E) :- permitted_by_ccpa_1798_120_minor_under_13(CCPA_ARGS, E).
+
+// =============================================
+// §1798.120(a) — Adult consumer has NOT opted out: sale is permitted
+// =============================================
+// "A consumer shall have the right to opt-out of the sale or sharing of
+//  the consumer's personal information to third parties."
+// Default state (no opt-out filed): business may sell/share.
+// Note: this rule covers adult consumers only; minors handled separately.
+.decl permitted_by_ccpa_1798_120_adult(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_120_adult(CCPA_ARGS,
+    $Leaf("§1798.120(a): consumer has not opted out — sale/sharing is permitted")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    !has_opted_out(q, p1),
+    !is_minor_under_13(q),
+    !is_minor_13_to_16(q).
+
+// =============================================
+// §1798.120(d) — Minor aged 13–16: affirmative authorization required
+// =============================================
+// "A business shall not sell or share the personal information of a consumer
+//  the business has actual knowledge is between 13 and 16 years of age, unless
+//  the consumer has affirmatively authorized the sale or sharing."
+// Sale is PERMITTED if the minor aged 13–16 has affirmatively authorized.
+.decl permitted_by_ccpa_1798_120_minor_13_to_16(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_120_minor_13_to_16(CCPA_ARGS,
+    $Leaf("§1798.120(d): minor aged 13-16 has affirmatively authorized the sale/sharing")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    is_minor_13_to_16(q),
+    minor_opted_in(q, p1).
+
+// =============================================
+// §1798.120(d) — Minor under 13: parental opt-in consent required
+// =============================================
+// "A business shall not sell or share the personal information of a consumer
+//  the business has actual knowledge is less than 13 years of age, unless
+//  the business has received affirmative authorization from the consumer's
+//  parent or guardian."
+// Sale is PERMITTED only with verifiable parental authorization.
+.decl permitted_by_ccpa_1798_120_minor_under_13(CCPA_DECL_ARGS, e: Expl)
+
+permitted_by_ccpa_1798_120_minor_under_13(CCPA_ARGS,
+    $Leaf("§1798.120(d): parent/guardian has provided opt-in for minor under 13")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    is_minor_under_13(q),
+    parent_opted_in(q, p1).
+
+// =============================================
+// §1798.120(a) — NEGATIVE NORM: sale blocked after opt-out
+// =============================================
+// Once a consumer has submitted a valid opt-out, any subsequent sale or
+// sharing of their personal information is BLOCKED until the consumer
+// re-authorizes (§1798.120(c): 12-month re-authorization restriction applies).
+.decl blocked_by_ccpa_1798_120(CCPA_DECL_ARGS, e: Expl)
+
+blocked_by_ccpa_1798_120(CCPA_ARGS,
+    $Leaf("§1798.120(a): consumer has exercised opt-out right — sale/sharing is blocked")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    has_opted_out(q, p1).
+
+// =============================================
+// §1798.120(d) — NEGATIVE NORM: minor's PI blocked without required authorization
+// =============================================
+// Sale/sharing of a minor's PI without the required opt-in is BLOCKED.
+// This covers both minors under 13 (no parental opt-in) and
+// minors 13–16 (no affirmative authorization from the minor themselves).
+.decl blocked_minor_sale_no_authorization(CCPA_DECL_ARGS, e: Expl)
+
+// Blocked: minor 13–16 without affirmative authorization
+blocked_minor_sale_no_authorization(CCPA_ARGS,
+    $Leaf("§1798.120(d): minor aged 13-16 has not authorized — sale/sharing is blocked")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    is_minor_13_to_16(q),
+    !minor_opted_in(q, p1).
+
+// Blocked: minor under 13 without parental opt-in
+blocked_minor_sale_no_authorization(CCPA_ARGS,
+    $Leaf("§1798.120(d): no parental authorization for minor under 13 — sale/sharing is blocked")) :-
+    disclosure_attempted(CCPA_ARGS),
+    is_ccpa_business(p1),
+    is_california_consumer(q),
+    is_personal_info(t),
+    msg_contains(m, q, t),
+    (is_for_sale(u) ; is_for_sharing(u)),
+    is_minor_under_13(q),
+    !parent_opted_in(q, p1).

@@ -1,0 +1,50 @@
+// sox_types.dl
+// SOX — Sarbanes-Oxley Act of 2002
+// Governs: public company audit obligations, financial reporting, and executive certification.
+//
+// Unlike HIPAA/GDPR/CCPA (which govern privacy disclosures), SOX governs
+// whether a company's financial filing/certification process is COMPLIANT.
+//
+// Action signature:
+//   p1 = company (public issuer — the filing entity)
+//   p2 = auditor (registered public accounting firm, or SEC)
+//   q  = officer (CEO/CFO certifying, or the company itself)
+//   m  = record (financial statement, audit report, etc.)
+//   t  = RecordType
+//   u  = ActionType
+
+#define SOX_ARGS p1, p2, q, m, t, u
+#define SOX_DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:RecordType, u:ActionType
+
+// ── Primitive types ────────────────────────────────────────────────────────
+.type Principal   <: symbol
+.type Role        <: symbol
+.type RecordType  <: symbol   // financial_statement, audit_report, internal_control_assessment, ...
+.type ActionType  <: symbol   // certify, attest, disclose, file_with_sec, assess
+.type Message     <: symbol
+
+// ── Explanation ADT ────────────────────────────────────────────────────────
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+
+// ── Core relations ─────────────────────────────────────────────────────────
+.decl activerole(p: Principal, r: Role)
+.decl has_sox_role(p: Principal, r: Role)
+.decl msg_contains_record(m: Message, filer: Principal, t: RecordType)
+
+// The regulated action: company p1 filing/certifying record m through auditor p2
+// (for disclosure_attempted bridge — see sox_top.dl)
+.decl filing_attempted(p1: Principal, p2: Principal, q: Principal,
+                        m: Message, t: RecordType, u: ActionType)
+
+// ── Oracle predicates (no facts here — injected at query time) ─────────────
+.decl is_public_issuer(p: Principal)          // p1 is a public company registered with SEC
+.decl is_registered_auditor(p: Principal)     // p2 is registered with PCAOB (§101)
+.decl has_ceo_cfo_certification(company: Principal, officer: Principal)  // §302 cert given
+.decl has_management_assessment(company: Principal, record: Message)     // §404 mgmt assessment
+.decl auditor_attested(auditor: Principal, company: Principal, record: Message) // §404 attestation
+.decl has_material_weakness(company: Principal, record: Message)         // known material weakness
+.decl material_weakness_disclosed(company: Principal, record: Message)   // weakness was disclosed
+.decl required_by_sec(p1: Principal, t: RecordType)                      // SEC mandated filing

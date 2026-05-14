@@ -1,0 +1,311 @@
+// ============================================================================
+// gdpr_art17.dl — Article 17: Right to Erasure ("Right to be Forgotten")
+// ============================================================================
+// Reference: GDPR 2016/679, Article 17
+//
+// Structure:
+//   erasure_required_by_gdpr_art17       — top-level: any Art.17(1) ground AND
+//                                          no Art.17(3) exemption
+//   erasure_ground_art17_1_a through _f  — the six grounds in Art.17(1)
+//   erasure_exempt_by_gdpr_art17_3       — top-level: any Art.17(3) exemption
+//   erasure_exempt_art17_3_a through _e  — the five exemptions in Art.17(3)
+//
+// The top-level action signature is simplified to (controller, subject, category)
+// because erasure requests are addressed to the controller by the data subject
+// and concern all processing of a given data category, not a single message.
+// A full 6-tuple version is provided for integration with processing_attempted.
+// ============================================================================
+
+// =============================================
+// Top-level: erasure_required_by_gdpr_art17
+// =============================================
+// Erasure is required when at least one Art.17(1) ground is satisfied AND
+// no Art.17(3) exemption applies.
+//
+// Signature: (controller, subject, category, e)
+.decl erasure_required_by_gdpr_art17(p1: Principal, q: Principal,
+                                      dc: DataCategory, e: Expl)
+
+erasure_required_by_gdpr_art17(p1, q, dc,
+    $Step1("Art.17(1) — 2016/679 GDPR: erasure required (no Art.17(3) exemption)", E)) :-
+    erasure_ground_art17_1(p1, q, dc, E),
+    !erasure_exempt_by_gdpr_art17_3(p1, q, dc, _).
+
+// Intermediate: any Art.17(1) ground
+.decl erasure_ground_art17_1(p1: Principal, q: Principal,
+                               dc: DataCategory, e: Expl)
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_a(p1, q, dc, E).
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_b(p1, q, dc, E).
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_c(p1, q, dc, E).
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_d(p1, q, dc, E).
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_e(p1, q, dc, E).
+erasure_ground_art17_1(p1, q, dc, E) :- erasure_ground_art17_1_f(p1, q, dc, E).
+
+// =============================================
+// Art.17(1)(a) — Data no longer necessary
+// =============================================
+// "the personal data are no longer necessary in relation to the purposes
+//  for which they were collected or otherwise processed"
+//
+// Reference: GDPR 2016/679, Art.17(1)(a)
+// Oracle: data_no_longer_necessary(p1, q, dc) — controller's stated purposes
+//         have been achieved or abandoned
+.decl erasure_ground_art17_1_a(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_a(p1, q, dc,
+    $Leaf("Art.17(1)(a) — 2016/679 GDPR: personal data no longer necessary for original purpose")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    data_no_longer_necessary(p1, q, dc).
+
+// =============================================
+// Art.17(1)(b) — Withdrawal of consent
+// =============================================
+// "the data subject withdraws consent on which the processing is based
+//  according to point (a) of Article 6(1), or point (a) of Article 9(2),
+//  and where there is no other legal ground for the processing"
+//
+// Reference: GDPR 2016/679, Art.17(1)(b)
+// Oracle: consent_withdrawn(q, p1) — data subject has validly withdrawn consent
+//         no_other_legal_basis(p1, q, dc) — no remaining Art.6 or Art.9 basis
+.decl erasure_ground_art17_1_b(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_b(p1, q, dc,
+    $Leaf("Art.17(1)(b) — 2016/679 GDPR: consent withdrawn and no other legal basis")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    consent_withdrawn(q, p1),
+    no_other_legal_basis(p1, q, dc).
+
+// =============================================
+// Art.17(1)(c) — Object under Art.21 with no overriding grounds
+// =============================================
+// "the data subject objects to the processing pursuant to Article 21(1)
+//  and there are no overriding legitimate grounds for the processing, or the
+//  data subject objects pursuant to Article 21(2)"
+//
+// Reference: GDPR 2016/679, Art.17(1)(c)
+// Oracle: art21_objection_filed(q, p1) — data subject has lodged an Art.21 objection
+//         no_overriding_legitimate_grounds(p1, q, dc) — controller cannot demonstrate
+//         compelling legitimate grounds that override the data subject's interests
+.decl erasure_ground_art17_1_c(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_c(p1, q, dc,
+    $Leaf("Art.17(1)(c) — 2016/679 GDPR: Art.21 objection with no overriding grounds")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    art21_objection_filed(q, p1),
+    no_overriding_legitimate_grounds(p1, q, dc).
+
+// =============================================
+// Art.17(1)(d) — Unlawful processing
+// =============================================
+// "the personal data have been unlawfully processed"
+//
+// Reference: GDPR 2016/679, Art.17(1)(d)
+// Oracle: processing_was_unlawful(p1, q, dc) — processing lacked a valid Art.6
+//         or Art.9 basis, or violated other GDPR requirements
+.decl erasure_ground_art17_1_d(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_d(p1, q, dc,
+    $Leaf("Art.17(1)(d) — 2016/679 GDPR: personal data were unlawfully processed")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    processing_was_unlawful(p1, q, dc).
+
+// =============================================
+// Art.17(1)(e) — Erasure required for legal compliance
+// =============================================
+// "the personal data have to be erased for compliance with a legal obligation
+//  in Union or Member State law to which the controller is subject"
+//
+// Reference: GDPR 2016/679, Art.17(1)(e)
+// Oracle: erasure_legally_mandated(p1, dc) — a specific legal provision
+//         positively requires deletion
+.decl erasure_ground_art17_1_e(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_e(p1, q, dc,
+    $Leaf("Art.17(1)(e) — 2016/679 GDPR: erasure mandated by legal obligation")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    erasure_legally_mandated(p1, dc).
+
+// =============================================
+// Art.17(1)(f) — Children's data collected under Art.8
+// =============================================
+// "the personal data have been collected in relation to the offer of
+//  information society services referred to in Article 8(1)"
+//
+// Reference: GDPR 2016/679, Art.17(1)(f)
+// Oracle: collected_under_art8(p1, q, dc) — data was collected from a child
+//         via an information society service relying on Art.8 consent
+.decl erasure_ground_art17_1_f(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_ground_art17_1_f(p1, q, dc,
+    $Leaf("Art.17(1)(f) — 2016/679 GDPR: children's data collected under Art.8")) :-
+    is_data_controller(p1),
+    is_child_subject(q),
+    is_personal_data(dc),
+    collected_under_art8(p1, q, dc).
+
+// ============================================================================
+// Art.17(3) — Exemptions to the right to erasure
+// ============================================================================
+// "Paragraphs 1 and 2 shall not apply to the extent that processing is
+//  necessary for" one of five grounds in Art.17(3)(a)–(e).
+//
+// If ANY exemption applies, erasure is NOT required.
+// ============================================================================
+
+// Top-level exemption predicate
+.decl erasure_exempt_by_gdpr_art17_3(p1: Principal, q: Principal,
+                                       dc: DataCategory, e: Expl)
+
+erasure_exempt_by_gdpr_art17_3(p1, q, dc, E) :- erasure_exempt_art17_3_a(p1, q, dc, E).
+erasure_exempt_by_gdpr_art17_3(p1, q, dc, E) :- erasure_exempt_art17_3_b(p1, q, dc, E).
+erasure_exempt_by_gdpr_art17_3(p1, q, dc, E) :- erasure_exempt_art17_3_c(p1, q, dc, E).
+erasure_exempt_by_gdpr_art17_3(p1, q, dc, E) :- erasure_exempt_art17_3_d(p1, q, dc, E).
+erasure_exempt_by_gdpr_art17_3(p1, q, dc, E) :- erasure_exempt_art17_3_e(p1, q, dc, E).
+
+// =============================================
+// Art.17(3)(a) — Freedom of expression and information
+// =============================================
+// "for exercising the right of freedom of expression and information"
+//
+// Reference: GDPR 2016/679, Art.17(3)(a)
+// Oracle: necessary_for_freedom_of_expression(p1, dc)
+.decl erasure_exempt_art17_3_a(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_exempt_art17_3_a(p1, q, dc,
+    $Leaf("Art.17(3)(a) — 2016/679 GDPR: necessary for freedom of expression/information")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    necessary_for_freedom_of_expression(p1, dc).
+
+// =============================================
+// Art.17(3)(b) — Legal obligation compliance
+// =============================================
+// "for compliance with a legal obligation which requires processing by
+//  Union or Member State law to which the controller is subject or for the
+//  performance of a task carried out in the public interest or in the
+//  exercise of official authority vested in the controller"
+//
+// Reference: GDPR 2016/679, Art.17(3)(b)
+// Oracle: retention_legally_required(p1, dc)
+.decl erasure_exempt_art17_3_b(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_exempt_art17_3_b(p1, q, dc,
+    $Leaf("Art.17(3)(b) — 2016/679 GDPR: retention required by legal obligation or public task")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    retention_legally_required(p1, dc).
+
+// =============================================
+// Art.17(3)(c) — Public health interest
+// =============================================
+// "for reasons of public interest in the area of public health in accordance
+//  with points (h) and (i) of Article 9(2) as well as Article 9(3)"
+//
+// Reference: GDPR 2016/679, Art.17(3)(c)
+// Oracle: necessary_for_public_health(p1, dc)
+.decl erasure_exempt_art17_3_c(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_exempt_art17_3_c(p1, q, dc,
+    $Leaf("Art.17(3)(c) — 2016/679 GDPR: necessary for public health interest")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    necessary_for_public_health(p1, dc).
+
+// =============================================
+// Art.17(3)(d) — Archiving, research, statistical purposes
+// =============================================
+// "for archiving purposes in the public interest, scientific or historical
+//  research purposes or statistical purposes in accordance with Article 89(1)
+//  in so far as the right referred to in paragraph 1 is likely to render
+//  impossible or seriously impair the achievement of the objectives of that
+//  processing"
+//
+// Reference: GDPR 2016/679, Art.17(3)(d)
+// Oracle: necessary_for_archiving_or_research(p1, dc)
+.decl erasure_exempt_art17_3_d(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_exempt_art17_3_d(p1, q, dc,
+    $Leaf("Art.17(3)(d) — 2016/679 GDPR: necessary for archiving/research/statistical purposes (Art.89)")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    necessary_for_archiving_or_research(p1, dc).
+
+// =============================================
+// Art.17(3)(e) — Legal claims
+// =============================================
+// "for the establishment, exercise or defence of legal claims"
+//
+// Reference: GDPR 2016/679, Art.17(3)(e)
+// Oracle: necessary_for_legal_claims(p1, q, dc)
+.decl erasure_exempt_art17_3_e(p1: Principal, q: Principal,
+                                 dc: DataCategory, e: Expl)
+
+erasure_exempt_art17_3_e(p1, q, dc,
+    $Leaf("Art.17(3)(e) — 2016/679 GDPR: necessary for establishment, exercise or defence of legal claims")) :-
+    is_data_controller(p1),
+    is_data_subject(q),
+    is_personal_data(dc),
+    necessary_for_legal_claims(p1, q, dc).
+
+// =============================================
+// Oracle predicates for Art.17 (asserted as EDB facts)
+// =============================================
+
+// Art.17(1)(a)
+.decl data_no_longer_necessary(p1: Principal, q: Principal, dc: DataCategory)
+
+// Art.17(1)(b)
+.decl consent_withdrawn(q: Principal, p1: Principal)
+.decl no_other_legal_basis(p1: Principal, q: Principal, dc: DataCategory)
+
+// Art.17(1)(c)
+.decl art21_objection_filed(q: Principal, p1: Principal)
+.decl no_overriding_legitimate_grounds(p1: Principal, q: Principal, dc: DataCategory)
+
+// Art.17(1)(d)
+.decl processing_was_unlawful(p1: Principal, q: Principal, dc: DataCategory)
+
+// Art.17(1)(e)
+.decl erasure_legally_mandated(p1: Principal, dc: DataCategory)
+
+// Art.17(1)(f)
+.decl collected_under_art8(p1: Principal, q: Principal, dc: DataCategory)
+
+// Art.17(3)(a)
+.decl necessary_for_freedom_of_expression(p1: Principal, dc: DataCategory)
+
+// Art.17(3)(b)
+.decl retention_legally_required(p1: Principal, dc: DataCategory)
+
+// Art.17(3)(c)
+.decl necessary_for_public_health(p1: Principal, dc: DataCategory)
+
+// Art.17(3)(d)
+.decl necessary_for_archiving_or_research(p1: Principal, dc: DataCategory)
+
+// Art.17(3)(e)
+.decl necessary_for_legal_claims(p1: Principal, q: Principal, dc: DataCategory)

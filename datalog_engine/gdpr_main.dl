@@ -1,0 +1,28 @@
+// ============================================================================
+// gdpr_main.dl — Entry point for the GDPR compliance checker
+// ============================================================================
+// This file #includes all modules in dependency order and serves as the
+// single entry point for Soufflé compilation:
+//
+//   souffle -D output_gdpr gdpr_main.dl
+//
+// Reference: GDPR 2016/679 (Regulation (EU) 2016/679)
+// Currently formalized: Art.6 (lawful bases), Art.17 (right to erasure)
+// Stub: Art.9 (special-category guard — oracle-based until gdpr_art9.dl)
+// ============================================================================
+
+// 1. Type declarations and ADT explanation tree
+#include "gdpr_types.dl"
+
+// 2. Role, data-category, legal-basis, and purpose hierarchies
+#include "gdpr_hierarchies.dl"
+
+// 3. Art.6: Lawfulness of processing (the six lawful bases)
+//    Also contains the Art.9 stub (permitted_by_gdpr_art9)
+#include "gdpr_art6.dl"
+
+// 4. Art.17: Right to erasure ("right to be forgotten")
+#include "gdpr_art17.dl"
+
+// 5. Top-level permitted_by_gdpr rule and .input / .output directives
+#include "gdpr_top.dl"

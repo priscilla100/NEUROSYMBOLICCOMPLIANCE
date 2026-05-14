@@ -1,0 +1,69 @@
+// glba_313_14.dl
+// GLBA §313.14 — Exceptions to Opt-Out Requirements (16 CFR §313.14)
+//
+// These exceptions allow financial institutions to share NPI with certain
+// third parties REGARDLESS of whether the consumer has opted out.
+// Each exception maps to a separate Souffle rule with its own Expl leaf.
+
+.decl permitted_by_glba_313_14(GLBA_DECL_ARGS, e: Expl)
+
+// §313.14(a)(1): Service provider performing services on behalf of the institution.
+// Requires a written contract limiting the service provider's use of NPI
+// to the specific services provided and prohibiting further disclosure.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Step1("313.14(a)(1): service provider exception — written agreement required", $Leaf("written agreement confirmed"))) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    is_service_provider_glba(p2),
+    has_written_agreement(p1, p2).
+
+// §313.14(a)(2): Joint marketing arrangement with another financial institution.
+// Requires a written agreement limiting use of NPI to the joint marketing purpose.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Step1("313.14(a)(2): joint marketing exception — written agreement required", $Leaf("written agreement confirmed"))) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    has_financial_role(p2, "joint-marketer"),
+    has_written_agreement(p1, p2),
+    u = "joint-marketing".
+
+// §313.14(a)(3): Protect against or prevent actual or potential fraud,
+// unauthorized transactions, claims, or other liability.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Leaf("313.14(a)(3): fraud and unauthorized transaction protection exception")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    u = "fraud-protection".
+
+// §313.14(a)(4): Required or permitted by other law — e.g., subpoena,
+// court order, regulatory examination, or required by FCRA.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Leaf("313.14(a)(4): required or permitted by other law — subpoena, court order, or regulatory authority")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    required_by_law_glba(p1, p2, q).
+
+// §313.14(a)(5): Disclosure to consumer reporting agencies (credit bureaus)
+// as permitted by the Fair Credit Reporting Act (FCRA).
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Leaf("313.14(a)(5): credit reporting agency disclosure permitted by FCRA")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    is_credit_reporting_agency(p2).
+
+// §313.14(a)(6): Resolving consumer disputes, inquiries, or complaints
+// initiated by the consumer themselves.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Leaf("313.14(a)(6): consumer-initiated dispute or inquiry resolution")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    is_dispute_initiated_by_consumer(q, p1),
+    u = "dispute-resolution".
+
+// §313.14(a)(7): Emergency — protect the life, physical safety, or property
+// of a person from imminent harm.
+permitted_by_glba_313_14(GLBA_ARGS,
+    $Leaf("313.14(a)(7): safety emergency exception — protect life or property")) :-
+    sharing_attempted(GLBA_ARGS),
+    is_financial_institution(p1),
+    u = "safety-emergency".

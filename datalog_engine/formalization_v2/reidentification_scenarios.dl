@@ -1,0 +1,95 @@
+// ============================================================================
+// Re-identification Scenario — Research Subject Face Leak
+// ============================================================================
+// The individual is a research SUBJECT. Authors attempted de-identification
+// but used an ineffective method. Another researcher re-identified the face.
+// ============================================================================
+
+// === PRINCIPALS ===
+activerole("research_hospital", "hospital").
+activerole("lead_author", "doctor").
+is_employee_of("lead_author", "research_hospital").
+provider_of("lead_author", "research_subject").
+activerole("academic_journal", "individual").
+activerole("research_subject", "patient").
+belongstorole("research_subject", "adult").
+// The re-identifying researcher is at a different institution
+activerole("reidentifying_researcher", "researcher").
+
+// ============================================================================
+// SCENARIO A: Research disclosure with IRB waiver, authors believed data
+//             was de-identified but it wasn't actually (method was ineffective)
+// ============================================================================
+// Key question: Was the disclosure permitted under §512(i)?
+// The authors had IRB waiver, but the "de-identified" data still contained
+// an identifier (the reconstructable face).
+
+// Sub-scenario A1: Treat as IRB-waivered research disclosure of PHI
+// (recognizing that the data was NOT actually de-identified)
+activerole("researcher_A1", "researcher").
+has_irb_or_privacy_board_waiver("research_hospital", "researcher_A1", "research_subject", "medical-record", "research").
+msg_contains("ct_scan_A1", "research_subject", "medical-record").
+disclosure_attempted("research_hospital", "researcher_A1", "research_subject", "ct_scan_A1", "medical-record", "research").
+
+// Sub-scenario A2: Treat as disclosure of data the CE BELIEVED was de-identified
+// but which was actually PHI (face is reconstructable)
+// If the CE genuinely believed it was de-identified, they thought they were
+// disclosing DII. But since the method failed, it's actually PHI.
+// We test: what does the checker say if we call it "medical-record" (PHI)?
+msg_contains("ct_scan_A2", "research_subject", "medical-record").
+disclosure_attempted("research_hospital", "academic_journal", "research_subject", "ct_scan_A2", "medical-record", "research").
+// No IRB waiver for the journal — the hospital thought the data was de-identified
+// so they didn't get a waiver for this specific disclosure
+
+// Sub-scenario A3: What if the CE correctly characterized it as de-identified
+// at the time? Test with DII attribute.
+msg_contains("ct_scan_A3", "research_subject", "statistical-data").
+disclosure_attempted("research_hospital", "academic_journal", "research_subject", "ct_scan_A3", "statistical-data", "research").
+
+// ============================================================================
+// SCENARIO B: Authorization-based pathway
+// ============================================================================
+// The research subject signed an authorization for the study.
+// The authorization may have specified de-identification requirements.
+
+// Sub-scenario B1: Valid authorization (no defect — subject consented to research use)
+obtained_authorization_164_508("research_hospital", "academic_journal", "research_subject", "medical-record", "research").
+// Is it defective? The subject consented to research use of their images.
+// But did they consent to IDENTIFIABLE publication? If the authorization said
+// "de-identified images only" and the de-identification failed, it's defective.
+is_defective_authorization("auth_b1", "research_hospital", "academic_journal", "research_subject", "medical-record", "research").
+
+msg_contains("ct_scan_B1", "research_subject", "medical-record").
+disclosure_attempted("research_hospital", "academic_journal", "research_subject", "ct_scan_B1", "medical-record", "research").
+
+// Sub-scenario B2: Authorization WITHOUT the de-identification condition
+// (subject broadly consented to research use including identifiable images)
+// For this test, remove the defective authorization
+// This is modeled by having authorization but no defect for a different message
+msg_contains("ct_scan_B2", "research_subject", "medical-record").
+disclosure_attempted("research_hospital", "academic_journal", "research_subject", "ct_scan_B2", "medical-record", "research").
+// The B1 authorization covers all medical-record/research disclosures from
+// research_hospital to academic_journal. B1's defect also applies to B2.
+// To test a non-defective version, we'd need different principal names.
+
+// ============================================================================
+// SCENARIO C: The re-identification disclosure
+// ============================================================================
+// The re-identifying researcher takes the "de-identified" published data
+// and reconstructs the face. Is this re-identification regulated by HIPAA?
+// §164.502(d)(2)(ii): "If de-identified information is re-identified,
+//  a covered entity may use or disclose such re-identified information
+//  only as permitted or required by this subpart."
+
+// But: the re-identifying researcher is at a different institution.
+// Is that institution a covered entity? If yes, HIPAA applies to the
+// re-identified data. If no, HIPAA doesn't directly apply.
+
+// C1: Re-identifying researcher is at a covered entity
+activerole("other_university_hospital", "hospital").
+is_employee_of("reidentifying_researcher", "other_university_hospital").
+msg_contains("reidentified_face", "research_subject", "medical-record").
+// The re-identified data is now PHI again. If the researcher's institution
+// discloses it, HIPAA applies.
+disclosure_attempted("other_university_hospital", "academic_journal", "research_subject", "reidentified_face", "medical-record", "research").
+// No authorization, no IRB waiver for this disclosure

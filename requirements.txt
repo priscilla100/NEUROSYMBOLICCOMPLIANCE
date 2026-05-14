@@ -1,0 +1,16 @@
+python-dotenv
+anthropic
+streamlit
+faiss-cpu
+openai   
+pandas
+numpy
+requests
+pdfplumber
+PyPDF2
+google-genai     
+sentence-transformers 
+rank-bm25
+chromadb
+google-generativeai
+graphviz

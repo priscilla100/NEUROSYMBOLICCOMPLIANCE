@@ -1,0 +1,27 @@
+row_id,gold_label,verdict,match,answer,citations,scenario_json,latency_s,error
+1,DENIED,DENIED,Y,"**VERDICT:** ❌ DENIED
+
+**Answer:** The City of Plainfield's response to William H. Michelson's request for access to government records, limiting the scope of disclosed information due to privacy concerns, is denied.
+
+**Why:** HIPAA (45 CFR §164) requires that protected health information (PHI) be kept confidential and only shared with authorized individuals or entities. In this case, sharing detailed health plan information, including individual claims experience and participant names, would li",,"{
+  ""sender"":       ""William H. Michelson"",
+  ""sender_role"":  ""concerned_citizen"",
+  ""receiver"":     ""City_of_Plainfield"",
+  ""receiver_role"":""government_agency"",
+  ""subject"":      ""city_employees_officials_dependents"",
+  ""subject_category"": ""individuals"",
+  ""attribute"":    ""health_insurance_benefits",104.45,
+2,PERMITTED,DENIED,N,"**VERDICT:** ❌ DENIED
+
+**Answer:** The healthcare provider, Bay Area Healthcare Group, Ltd., is not permitted to release Diana Zamora's medical records in response to the subpoena from law enforcement.
+
+**Why:** HIPAA (45 CFR §164) requires that protected health information (PHI), including medical records, be disclosed only with the patient's authorization or under certain circumstances specified by the regulation. In this case, the healthcare provider is not permitted to release Zamora's medic",,"{
+""sender"": ""Bay Area Healthcare Group, Ltd."",
+""sender_role"": ""healthcare-provider"",
+""receiver"": ""law enforcement"",
+""receiver_role"": ""law-enforcement-official"",
+""subject"": ""Diana Zamora"",
+""subject_category"": ""patient"",
+""attribute"": ""medical-record"",
+""purpose"": ""criminal-investigation"",
+""message_id"":",110.17,

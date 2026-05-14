@@ -1,0 +1,58 @@
+// coppa_top.dl
+// COPPA entry point — Children's Online Privacy Protection Act, 16 CFR Part 312
+//
+// Include order (macros must precede all use):
+#include "coppa_types.dl"
+#include "coppa_hierarchies.dl"
+#include "coppa_312_4.dl"
+#include "coppa_312_5.dl"
+
+// ── Engine compatibility bridge ────────────────────────────────────────────
+// Map disclosure_attempted (engine format) → collection_attempted (COPPA format).
+
+.decl disclosure_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, t: ChildDataCategory, u: Purpose)
+collection_attempted(COPPA_ARGS) :- disclosure_attempted(COPPA_ARGS).
+
+// ── Top-level verdict: permitted_by_coppa ──────────────────────────────────
+
+.decl permitted_by_coppa(COPPA_DECL_ARGS, e: Expl)
+
+// Case 1: Subject is NOT a child under 13 — COPPA does not apply.
+permitted_by_coppa(COPPA_ARGS, $Leaf("COPPA not applicable: subject is not a child under 13")) :-
+    collection_attempted(COPPA_ARGS),
+    !is_child_under_13(q).
+
+// Case 2: Subject IS a child under 13 but collection is permitted under §312.5.
+permitted_by_coppa(COPPA_ARGS, $Step1("COPPA: collection permitted for child under 13", e_consent)) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    permitted_by_coppa_312_5(COPPA_ARGS, e_consent).
+
+// ── Top-level verdict: blocked_by_coppa ───────────────────────────────────
+
+.decl blocked_by_coppa(COPPA_DECL_ARGS, e: Expl)
+
+// Blocked when child is under 13 and no §312.5 exception or VPC applies.
+blocked_by_coppa(COPPA_ARGS, $Step1("COPPA: collection blocked", e_block)) :-
+    collection_attempted(COPPA_ARGS),
+    is_child_under_13(q),
+    blocked_no_parental_consent_312_5(COPPA_ARGS, e_block).
+
+// ── Engine output bridge ───────────────────────────────────────────────────
+.decl is_disclosure_allowed(COPPA_DECL_ARGS, e: Expl)
+.decl is_disclosure_denied(COPPA_DECL_ARGS, e: Expl)
+is_disclosure_allowed(COPPA_ARGS, e) :- permitted_by_coppa(COPPA_ARGS, e).
+is_disclosure_denied(COPPA_ARGS, e)  :- blocked_by_coppa(COPPA_ARGS, e).
+is_disclosure_denied(COPPA_ARGS, $Leaf("COPPA: collection not permitted")) :-
+    disclosure_attempted(COPPA_ARGS),
+    !permitted_by_coppa(COPPA_ARGS, _),
+    !blocked_by_coppa(COPPA_ARGS, _).
+
+// ── Outputs ────────────────────────────────────────────────────────────────
+.output is_disclosure_allowed
+.output is_disclosure_denied
+.output permitted_by_coppa
+.output blocked_by_coppa
+.output blocked_no_parental_consent_312_5
+.output collection_blocked_no_notice

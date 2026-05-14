@@ -1,0 +1,46 @@
+// coppa_types.dl
+// COPPA — Children's Online Privacy Protection Act, 16 CFR Part 312
+// Governs: operators collecting personal information from children under 13.
+//
+// Action signature:
+//   p1 = operator (website/app)
+//   p2 = recipient (third party or service provider)
+//   q  = child_or_parent (subject of data / consent grantor)
+//   m  = message (data transmission)
+//   t  = ChildDataCategory (type of personal info)
+//   u  = Purpose
+
+#define COPPA_ARGS p1, p2, q, m, t, u
+#define COPPA_DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, t:ChildDataCategory, u:Purpose
+
+// ── Primitive types ────────────────────────────────────────────────────────
+.type Principal    <: symbol
+.type Role         <: symbol
+.type ChildDataCategory <: symbol
+.type ConsentType  <: symbol
+.type Purpose      <: symbol
+.type Message      <: symbol
+
+// ── Explanation ADT ────────────────────────────────────────────────────────
+// Mirrors the HIPAA Expl tree so LLM2 can render justifications uniformly.
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+
+// ── Core relations ─────────────────────────────────────────────────────────
+.decl activerole(p: Principal, r: Role)
+.decl has_coppa_role(p: Principal, r: Role)
+.decl msg_contains_child_data(m: Message, subject: Principal, cdc: ChildDataCategory)
+
+// The regulated action: operator p1 attempting to collect/share child data
+.decl collection_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, t: ChildDataCategory, u: Purpose)
+
+// ── Oracle predicates (declared only; facts injected at query time) ─────────
+// These represent facts the symbolic engine cannot derive without external context.
+.decl has_verifiable_parental_consent(op: Principal, child: Principal, cdc: ChildDataCategory)
+.decl is_child_under_13(p: Principal)
+.decl is_educational_context(op: Principal, child: Principal)
+.decl is_internal_use_only(op: Principal, u: Purpose)
+.decl required_by_law_coppa(op: Principal, recipient: Principal, child: Principal)

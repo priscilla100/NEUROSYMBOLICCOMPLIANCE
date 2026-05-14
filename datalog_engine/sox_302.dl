@@ -1,0 +1,52 @@
+// sox_302.dl
+// SOX Section 302 — Corporate Responsibility for Financial Reports
+//
+// Requires the CEO and CFO of each public company to personally certify that:
+//   (1) they have reviewed the quarterly/annual report
+//   (2) the report contains no material misstatements or omissions
+//   (3) the financial statements fairly present the company's condition
+//   (4) they are responsible for internal controls and have evaluated them
+//
+// PERMITTED = filing is SOX-302 compliant (certification provided)
+// DENIED    = filing is non-compliant (certification missing or defective)
+
+// ── §302: Filing permitted (compliant) ────────────────────────────────────
+
+.decl permitted_by_sox_302(SOX_DECL_ARGS, e: Expl)
+
+// §302(a): CEO and CFO have certified the quarterly/annual financial report.
+permitted_by_sox_302(SOX_ARGS,
+    $Step1("SOX §302(a): CEO/CFO certification provided — financial report is compliant", $Leaf("has_ceo_cfo_certification confirmed"))) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    is_financial_statement(t),
+    has_ceo_cfo_certification(p1, q),
+    has_sox_role(q, "executive").
+
+// §302(b): Certification accompanied by management's evaluation of internal controls.
+// (Also covers 10-K/10-Q filings where §302 certification is embedded.)
+permitted_by_sox_302(SOX_ARGS,
+    $Step2("SOX §302(b): certification includes internal controls evaluation", $Leaf("CEO/CFO certified"), $Leaf("management assessed internal controls"))) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    t = "management-certification-302",
+    has_ceo_cfo_certification(p1, q),
+    has_management_assessment(p1, m).
+
+// ── §302: Filing blocked (non-compliant) ──────────────────────────────────
+
+.decl blocked_by_sox_302(SOX_DECL_ARGS, e: Expl)
+
+// Blocked when filing is a financial statement and no CEO/CFO certification exists.
+blocked_by_sox_302(SOX_ARGS,
+    $Leaf("SOX §302: filing blocked — CEO/CFO certification not provided for financial statement")) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    is_financial_statement(t),
+    !has_ceo_cfo_certification(p1, q).
+
+// Blocked when filer is NOT a registered public issuer.
+blocked_by_sox_302(SOX_ARGS,
+    $Leaf("SOX §302: not applicable — filer is not a registered public issuer")) :-
+    filing_attempted(SOX_ARGS),
+    !is_public_issuer(p1).

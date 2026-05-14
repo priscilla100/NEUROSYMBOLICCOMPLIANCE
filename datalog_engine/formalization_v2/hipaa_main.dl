@@ -1,0 +1,50 @@
+// ============================================================================
+// hipaa_main.dl — Entry point for the HIPAA Privacy Rule compliance checker
+// ============================================================================
+// This file #includes all modules in dependency order and serves as the
+// single entry point for Soufflé compilation:
+//
+//   souffle -D output_hipaa hipaa_main.dl
+//
+// Reference: HIPAA_FORMALIZATION.pdf, Chapter 4 (pages 30–122)
+// Currently formalized: §164.502, §164.506
+// ============================================================================
+
+// 1. Type declarations and ADT explanation tree
+#include "hipaa_types.dl"
+
+// 2. Role, attribute, and purpose hierarchies with transitive closure
+#include "hipaa_hierarchies.dl"
+
+// 3. Helper predicates (macros from the PDF formalization)
+#include "hipaa_macros.dl"
+
+// 4. Stub declarations for sections not yet formalized
+#include "hipaa_stubs.dl"
+
+// 5. §164.506: Treatment, payment, healthcare operations
+#include "hipaa_164_506.dl"
+
+// 6. §164.508: Authorization required (must be before §164.502 for negation)
+#include "hipaa_164_508.dl"
+
+// 7. §164.510: Opportunity to agree or object
+#include "hipaa_164_510.dl"
+
+// 8. §164.512: No authorization required (the big one)
+#include "hipaa_164_512.dl"
+
+// 9. §164.514: Other requirements (de-identification, minimum necessary, limited data sets)
+#include "hipaa_164_514.dl"
+
+// 10. §164.524: Individual access to PHI
+#include "hipaa_164_524.dl"
+
+// 11. §164.502: General rules (references §164.506, §164.508, §164.510, §164.512, §164.514)
+#include "hipaa_164_502.dl"
+
+// 12. Top-level rule and output directives
+#include "hipaa_top.dl"
+
+// 13. Fact database (test scenarios)
+#include "hipaa_facts.dl"

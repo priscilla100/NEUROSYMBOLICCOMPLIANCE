@@ -1,0 +1,65 @@
+// sox_802.dl
+// SOX §802 — Criminal Penalties for Altering Documents
+//
+// 18 U.S.C. §1519 (destruction/alteration of records to impede investigation)
+// 18 U.S.C. §1520 (destruction of corporate audit records before retention period)
+//
+// Action: p1 (company/officer) acts on record m of type t with action u.
+// Prohibited u values: "destroy", "alter", "conceal", "falsify"
+// Prohibited before retention period expires (5 years for audit workpapers).
+//
+// §802 applies when:
+//   - The record is a financial statement, audit workpaper, or internal control record
+//   - The action is destructive (destroy/alter/conceal/falsify)
+//   - The retention period has NOT yet expired (or the intent is to obstruct)
+//
+// Oracle predicates (injected as facts at query time):
+//   retention_period_expired(p1, m)   — true iff the required period has passed
+//   has_destructive_intent(p1, m)     — evidence of intent to obstruct/impede
+//   is_audit_record(m)                — record is a covered audit workpaper
+
+#include "sox_types.dl"
+
+// ── Oracle predicates for §802 ────────────────────────────────────────────────
+.decl retention_period_expired(company: Principal, record: Message)
+.decl has_destructive_intent(company: Principal, record: Message)
+.decl is_audit_record(record: Message)
+
+// ── §802: Prohibited actions ──────────────────────────────────────────────────
+.decl prohibited_by_sox_802(SOX_DECL_ARGS, e: Expl)
+
+// §1520(a)(1): Destruction before 5-year retention period expires
+prohibited_by_sox_802(SOX_ARGS,
+    $Step1("SOX §802 / 18 U.S.C. §1520: destruction of audit records before retention period expires",
+           $Leaf("audit workpapers must be retained for 5 years from end of fiscal period"))) :-
+    filing_attempted(SOX_ARGS),
+    ( u = "destroy" ; u = "alter" ; u = "conceal" ; u = "falsify" ),
+    is_audit_record(m),
+    !retention_period_expired(p1, m).
+
+// §1519: Destruction/alteration with intent to obstruct investigation
+prohibited_by_sox_802(SOX_ARGS,
+    $Step1("SOX §802 / 18 U.S.C. §1519: destruction with intent to obstruct federal investigation",
+           $Leaf("knowing destruction/alteration of records to impede federal proceedings is a federal crime"))) :-
+    filing_attempted(SOX_ARGS),
+    ( u = "destroy" ; u = "alter" ; u = "conceal" ; u = "falsify" ),
+    has_destructive_intent(p1, m).
+
+// §802 also covers financial statements and internal control records (broader scope)
+prohibited_by_sox_802(SOX_ARGS,
+    $Step1("SOX §802: prohibited alteration of financial records",
+           $Leaf("financial statements and internal control records subject to mandatory retention"))) :-
+    filing_attempted(SOX_ARGS),
+    ( u = "destroy" ; u = "alter" ; u = "conceal" ; u = "falsify" ),
+    ( t = "financial_statement" ; t = "internal_control_assessment" ; t = "audit_report" ),
+    !retention_period_expired(p1, m).
+
+// ── Auto-inject oracle facts from ActionType/RecordType ──────────────────────
+// If question says "destroy before retention period" → is_audit_record and !retention_period_expired
+// These let the engine fire §802 rules when the extractor sets u="destroy" and t="audit_report"
+is_audit_record(m) :-
+    filing_attempted(_, _, _, m, t, _),
+    ( t = "audit_report" ; t = "audit_workpaper" ; t = "financial_statement" ;
+      t = "internal_control_assessment" ).
+
+.output prohibited_by_sox_802

@@ -1,0 +1,76 @@
+// ============================================================================
+// gdpr_types.dl — Type declarations for GDPR formalization
+// ============================================================================
+// This file defines all domain types and the shared Expl ADT used
+// throughout the GDPR compliance checker.
+//
+// Reference: Regulation (EU) 2016/679 (General Data Protection Regulation)
+// Action signature: (controller, processor, data_subject, message,
+//                    data_category, legal_basis)
+//   controller   = data controller (the entity that determines purpose/means)
+//   processor    = data processor or recipient (may equal controller for
+//                  direct collection / internal use)
+//   data_subject = the natural person whose personal data is processed
+//   message      = message/record identifier carrying the personal data
+//   category     = DataCategory (what kind of personal data)
+//   legal_basis  = LegalBasis (the Art.6/9 basis claimed by the controller)
+// ============================================================================
+
+// === Preprocessor macros for the 6-tuple action signature ===
+#define GDPR_ARGS p1, p2, q, m, dc, lb
+#define GDPR_DECL_ARGS p1:Principal, p2:Principal, q:Principal, m:Message, dc:DataCategory, lb:LegalBasis
+
+// === Primitive domain subtypes ===
+
+// Principals: natural persons, organisations, supervisory authorities, etc.
+.type Principal <: symbol
+
+// Roles: data-controller, data-processor, data-subject, supervisory-authority, etc.
+.type Role <: symbol
+
+// DataCategory: personal-data, special-category-data, children-data, etc.
+.type DataCategory <: symbol
+
+// LegalBasis: consent, contract, legal-obligation, vital-interests,
+//             public-task, legitimate-interests
+.type LegalBasis <: symbol
+
+// Purpose: the stated purpose of processing (marketing, research, etc.)
+.type Purpose <: symbol
+
+// Message identifiers (record or transmission carrying personal data)
+.type Message <: symbol
+
+// === ADT: Explanation tree ===
+// Every permission/denial rule carries an Expl value recording WHY the rule
+// fired. Branch names must be globally unique across all ADTs in Soufflé.
+//   Leaf   — base fact or oracle predicate (no sub-explanations)
+//   Step1  — rule with one sub-explanation
+//   Step2  — rule combining two sub-explanations
+//   Step3  — rule combining three sub-explanations
+.type Expl = Leaf  { reason: symbol }
+           | Step1 { reason: symbol, sub1: Expl }
+           | Step2 { reason: symbol, sub1: Expl, sub2: Expl }
+           | Step3 { reason: symbol, sub1: Expl, sub2: Expl, sub3: Expl }
+
+// =============================================
+// Base EDB relations (populated from input facts)
+// =============================================
+
+// activerole(P, R): principal P currently holds role R
+.decl activerole(p: Principal, r: Role)
+
+// has_role(P, R): P has role R (direct or via hierarchy — see gdpr_hierarchies.dl)
+.decl has_role(p: Principal, r: Role)
+
+// msg_contains(M, Q, CAT): message M carries data of category CAT about subject Q
+// Note: "contains" is reserved in Soufflé; we use msg_contains.
+.decl msg_contains(m: Message, q: Principal, dc: DataCategory)
+
+// processing_attempted: the core action fact — controller P1 uses/transfers data
+// of category CAT about subject Q to/via processor P2, citing legal basis LB.
+// Corresponds to the GDPR notion of "processing" (Art.4(2)).
+.decl processing_attempted(p1: Principal, p2: Principal, q: Principal,
+                            m: Message, dc: DataCategory, lb: LegalBasis)
+
+// .input directive lives in gdpr_top.dl to avoid duplicate declarations.

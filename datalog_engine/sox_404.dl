@@ -1,0 +1,78 @@
+// sox_404.dl
+// SOX Section 404 — Management Assessment of Internal Controls
+//
+// Requires public companies to:
+//   (a) include management's assessment of internal control over financial reporting
+//       in their annual report (10-K)
+//   (b) have the company's registered auditor attest to and report on management's
+//       assessment (for accelerated filers)
+//
+// Key rule: if there is a material weakness in internal controls, it MUST be
+// disclosed — concealing it makes the filing non-compliant.
+//
+// PERMITTED = §404 requirements are satisfied (assessment provided, weaknesses disclosed)
+// DENIED    = §404 requirements violated (missing assessment, undisclosed weakness)
+
+// ── §404(a): Management assessment provided ───────────────────────────────
+
+.decl permitted_by_sox_404(SOX_DECL_ARGS, e: Expl)
+
+// §404(a): Annual report includes management's internal control assessment.
+// No material weakness present — clean assessment.
+permitted_by_sox_404(SOX_ARGS,
+    $Step1("SOX §404(a): management assessment of internal controls included in annual report", $Leaf("no material weakness identified"))) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    (t = "annual-report" ; t = "internal-control-assessment"),
+    has_management_assessment(p1, m),
+    !has_material_weakness(p1, m).
+
+// §404(a)+(b): Material weakness EXISTS but is properly disclosed — compliant.
+// Disclosure of a known weakness satisfies §404 even if it reflects poorly on controls.
+permitted_by_sox_404(SOX_ARGS,
+    $Step2("SOX §404(a)+(b): material weakness identified and properly disclosed", $Leaf("management assessment completed"), $Leaf("material weakness disclosed as required"))) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    (t = "annual-report" ; t = "internal-control-assessment"),
+    has_management_assessment(p1, m),
+    has_material_weakness(p1, m),
+    material_weakness_disclosed(p1, m).
+
+// §404(b): Accelerated filer — registered auditor also attested to assessment.
+permitted_by_sox_404(SOX_ARGS,
+    $Step2("SOX §404(b): auditor attestation provided for accelerated filer", $Leaf("management assessment completed"), $Leaf("registered auditor attested"))) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    (t = "accelerated-filer-assessment" ; t = "internal-control-assessment" ; t = "annual-report"),
+    has_management_assessment(p1, m),
+    is_registered_auditor(p2),
+    auditor_attested(p2, p1, m).
+
+// ── §404: Filing blocked (non-compliant) ──────────────────────────────────
+
+.decl blocked_by_sox_404(SOX_DECL_ARGS, e: Expl)
+
+// Blocked: material weakness exists but was NOT disclosed — concealment violation.
+blocked_by_sox_404(SOX_ARGS,
+    $Leaf("SOX §404: filing blocked — material weakness in internal controls exists but was not disclosed")) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    (t = "annual-report" ; t = "internal-control-assessment"),
+    has_material_weakness(p1, m),
+    !material_weakness_disclosed(p1, m).
+
+// Blocked: annual report filed without any management assessment.
+blocked_by_sox_404(SOX_ARGS,
+    $Leaf("SOX §404(a): filing blocked — no management assessment of internal controls in annual report")) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    (t = "annual-report" ; t = "internal-control-assessment"),
+    !has_management_assessment(p1, m).
+
+// Blocked: accelerated filer without registered auditor attestation.
+blocked_by_sox_404(SOX_ARGS,
+    $Leaf("SOX §404(b): filing blocked — accelerated filer must have registered auditor attestation")) :-
+    filing_attempted(SOX_ARGS),
+    is_public_issuer(p1),
+    t = "accelerated-filer-assessment",
+    !is_registered_auditor(p2).
