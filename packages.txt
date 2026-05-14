@@ -6,4 +6,3 @@ libsqlite3-dev
 zlib1g-dev
 libsqlite3-0
 zlib1g
-souffle
