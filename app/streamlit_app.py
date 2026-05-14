@@ -24,7 +24,21 @@ st.set_page_config(
 )
 
 from connector.settings import get_settings, MODEL_REGISTRY
+import subprocess, os
 
+def install_souffle():
+    if os.path.exists("/usr/local/bin/souffle"):
+        return
+    subprocess.run([
+        "bash", "-c",
+        """
+        wget -q https://github.com/souffle-lang/souffle/releases/download/2.5/\
+souffle_2.5_amd64.deb -O /tmp/souffle.deb &&
+        dpkg -i /tmp/souffle.deb || apt-get install -f -y
+        """
+    ], check=True)
+
+install_souffle()
 # ── CSS ───────────────────────────────────────────────────────────────────────
 st.markdown("""
 <style>
